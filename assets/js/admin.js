@@ -16,6 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
     setupTestimonialsCRUD();
     setupAdminChat();
     setupClientsDatabaseManager();
+    setupPasswordToggles();
+    setupVSLAndCalculatorForm();
 });
 
 // 1. Admin Authorization guard
@@ -118,6 +120,7 @@ function initializeAdminWorkspace() {
 
     populateBrandingFields();
     populateColorSliders();
+    populateVSLAndCalculatorFields();
     renderRosterList();
     populateCategoryDropdowns();
     renderPortfolioList();
@@ -1160,3 +1163,107 @@ window.deleteClientAccount = function(email) {
         alert("Success! Client workspace account and all associated records have been permanently wiped from fzmedia_db.");
     }
 };
+
+function setupPasswordToggles() {
+    const toggleBtns = document.querySelectorAll(".password-toggle-eye");
+    toggleBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const input = btn.parentElement.querySelector("input");
+            if (!input) return;
+            const isPassword = input.type === "password";
+            input.type = isPassword ? "text" : "password";
+            
+            const visibleIcon = btn.querySelector(".eye-icon-visible");
+            const hiddenIcon = btn.querySelector(".eye-icon-hidden");
+            
+            if (isPassword) {
+                if (visibleIcon) visibleIcon.style.display = "block";
+                if (hiddenIcon) hiddenIcon.style.display = "none";
+            } else {
+                if (visibleIcon) visibleIcon.style.display = "none";
+                if (hiddenIcon) hiddenIcon.style.display = "block";
+            }
+        });
+    });
+}
+
+function setupVSLAndCalculatorForm() {
+    const form = document.getElementById("admin-vsl-calc-form");
+    if (!form) return;
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const db = getDB();
+        
+        // 1. Save Hero VSL Settings
+        db.settings.heroVideo = {
+            title: document.getElementById("vsl-title-input").value.trim(),
+            description: document.getElementById("vsl-desc-input").value.trim(),
+            videoUrl: document.getElementById("vsl-video-url-input").value.trim(),
+            thumbnailUrl: document.getElementById("vsl-thumb-url-input").value.trim()
+        };
+
+        // 2. Save Calculator Factors
+        db.settings.calculator = {
+            basePricePerMinute: parseInt(document.getElementById("calc-base-price").value, 10),
+            basicLabel: document.getElementById("calc-basic-label").value.trim(),
+            standardLabel: document.getElementById("calc-standard-label").value.trim(),
+            standardMultiplier: parseInt(document.getElementById("calc-standard-mult").value, 10),
+            premiumLabel: document.getElementById("calc-premium-label").value.trim(),
+            premiumMultiplier: parseInt(document.getElementById("calc-premium-mult").value, 10)
+        };
+
+        saveDB(db);
+        alert("Homepage Hero VSL & Custom Calculator Settings saved successfully!");
+    });
+}
+
+function populateVSLAndCalculatorFields() {
+    const db = getDB();
+    const s = db.settings;
+
+    // Default VSL settings fallback if not seeded
+    const hero = s.heroVideo || {
+        title: "Watch FZ Showreel",
+        description: "Targeted VSL templates, product focus, and Call to Actions",
+        videoUrl: "assets/videos/solo showreel.mp4",
+        thumbnailUrl: "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?auto=format&fit=crop&w=1000&q=80"
+    };
+
+    // Default Calculator settings fallback if not seeded
+    const calc = s.calculator || {
+        basePricePerMinute: 10,
+        basicLabel: "Basic cuts & music",
+        standardLabel: "Standard text & SFX",
+        standardMultiplier: 20,
+        premiumLabel: "Premium AE & Grading",
+        premiumMultiplier: 50
+    };
+
+    // Populate Hero VSL inputs
+    const vslTitleInput = document.getElementById("vsl-title-input");
+    const vslDescInput = document.getElementById("vsl-desc-input");
+    const vslVideoUrlInput = document.getElementById("vsl-video-url-input");
+    const vslThumbUrlInput = document.getElementById("vsl-thumb-url-input");
+
+    if (vslTitleInput) vslTitleInput.value = hero.title;
+    if (vslDescInput) vslDescInput.value = hero.description;
+    if (vslVideoUrlInput) vslVideoUrlInput.value = hero.videoUrl;
+    if (vslThumbUrlInput) vslThumbUrlInput.value = hero.thumbnailUrl;
+
+    // Populate Calculator inputs
+    const calcBasePrice = document.getElementById("calc-base-price");
+    const calcBasicLabel = document.getElementById("calc-basic-label");
+    const calcStandardLabel = document.getElementById("calc-standard-label");
+    const calcStandardMult = document.getElementById("calc-standard-mult");
+    const calcPremiumLabel = document.getElementById("calc-premium-label");
+    const calcPremiumMult = document.getElementById("calc-premium-mult");
+
+    if (calcBasePrice) calcBasePrice.value = calc.basePricePerMinute;
+    if (calcBasicLabel) calcBasicLabel.value = calc.basicLabel;
+    if (calcStandardLabel) calcStandardLabel.value = calc.standardLabel;
+    if (calcStandardMult) calcStandardMult.value = calc.standardMultiplier;
+    if (calcPremiumLabel) calcPremiumLabel.value = calc.premiumLabel;
+    if (calcPremiumMult) calcPremiumMult.value = calc.premiumMultiplier;
+}
