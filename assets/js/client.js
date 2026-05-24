@@ -83,7 +83,8 @@ function setupAuthGuard() {
             position: fixed;
             top: 24px;
             right: 24px;
-            width: 380px;
+            width: calc(100% - 48px);
+            max-width: 380px;
             background: rgba(20, 20, 20, 0.9);
             backdrop-filter: blur(16px);
             border: 1px solid var(--accent-primary);
