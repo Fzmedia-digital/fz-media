@@ -25,6 +25,20 @@ const DEFAULT_BRAND_DATA = {
             fiverr: "https://www.fiverr.com/fz_media",
             upwork: "https://www.upwork.com/freelancers/~0142030ef402084057?mp_source=share",
             whatsapp: "https://wa.me/8801635333356"
+        },
+        heroVideo: {
+            title: "Watch FZ Showreel",
+            description: "Targeted VSL templates, product focus, and Call to Actions",
+            videoUrl: "assets/videos/solo showreel.mp4",
+            thumbnailUrl: "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?auto=format&fit=crop&w=1000&q=80"
+        },
+        calculator: {
+            basePricePerMinute: 10,
+            basicLabel: "Basic cuts & music",
+            standardLabel: "Standard text & SFX",
+            standardMultiplier: 20,
+            premiumLabel: "Premium AE & Grading",
+            premiumMultiplier: 50
         }
     },
     navLinks: [
