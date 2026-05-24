@@ -390,3 +390,94 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ==========================================================================
+   RESPONSIVE MOBILE STYLING ENHANCEMENTS
+   ========================================================================== */
+
+/* Responsive Client Intake Form Grid */
+.client-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+/* Banner Sub Info flex layout properties */
+.banner-sub-info {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 20px 24px;
+    text-align: right;
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: flex-end;
+}
+
+@media (max-width: 768px) {
+    .client-form-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .dashboard-banner {
+        padding: 24px 20px;
+    }
+    
+    .banner-sub-info {
+        text-align: left;
+        max-width: 100%;
+        align-items: flex-start;
+    }
+    
+    .dashboard-tabs {
+        gap: 8px;
+    }
+    
+    .dash-tab {
+        padding: 10px 14px;
+        font-size: 0.85rem;
+        flex: 1;
+        min-width: calc(50% - 8px);
+        text-align: center;
+    }
+    
+    .dash-tab.active::after {
+        bottom: 0;
+        height: 2px;
+    }
+}
+
+@media (max-width: 480px) {
+    .client-auth-section {
+        padding: 60px 0;
+    }
+    
+    .auth-card {
+        padding: 24px 16px !important;
+    }
+    
+    .checkout-tabs {
+        gap: 4px;
+        padding: 4px;
+    }
+    
+    .checkout-tab-btn {
+        padding: 8px;
+        font-size: 0.8rem;
+    }
+    
+    .otp-inputs-row {
+        gap: 6px !important;
+    }
+    
+    .otp-box {
+        font-size: 1.15rem !important;
+    }
+    
+    .revision-player-card, .revision-timeline-card {
+        padding: 20px 14px;
+    }
+}
