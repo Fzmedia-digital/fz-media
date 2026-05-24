@@ -23,30 +23,56 @@
         <section class="client-auth-section" id="auth-panel">
             <div class="auth-glow-top"></div>
             <div class="container" style="max-width: 460px;">
-                <div class="glass-card auth-card" style="text-align: center;">
+                <div class="glass-card auth-card" style="text-align: center; padding: 32px 28px;">
                     <span class="section-badge" style="font-size: 0.72rem; padding: 4px 10px; margin-bottom: 12px;">Client Portal</span>
                     
                     <!-- Auth Switch Tabs -->
-                    <div class="checkout-tabs" style="margin-bottom: 28px;">
+                    <div class="checkout-tabs" style="margin-bottom: 24px;" id="auth-tabs-row">
                         <button class="checkout-tab-btn active" id="toggle-login-tab">Log In</button>
                         <button class="checkout-tab-btn" id="toggle-signup-tab">Sign Up</button>
                     </div>
 
                     <div id="auth-error-msg" class="auth-error-alert" style="display: none;"></div>
 
+                    <!-- SOCIAL LOGINS -->
+                    <div id="social-auth-box" style="margin-bottom: 24px;">
+                        <div style="display: flex; gap: 12px; justify-content: center;">
+                            <button type="button" class="btn-secondary social-btn" id="social-btn-google" style="flex: 1; padding: 10px; font-size: 0.85rem; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; cursor: pointer; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); color: var(--text-primary); transition: var(--transition-snappy);">
+                                <svg width="18" height="18" viewBox="0 0 18 18">
+                                    <path fill="#4285F4" d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.47h4.84a4.14 4.14 0 0 1-1.8 2.71v2.26h2.91a8.78 8.78 0 0 0 2.69-6.6z"/>
+                                    <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.2l-2.91-2.26a5.52 5.52 0 0 1-8.08-2.9H1v2.33A9 9 0 0 0 9 18z"/>
+                                    <path fill="#FBBC05" d="M3.97 10.64a5.4 5.4 0 0 1 0-3.28V5.03H1v2.33a9 9 0 0 0 0 8.56l2.97-2.28z"/>
+                                    <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35L15 2.1A9 9 0 0 0 1 5.03l2.97 2.28A5.4 5.4 0 0 1 9 3.58z"/>
+                                </svg>
+                                Google
+                            </button>
+                            <button type="button" class="btn-secondary social-btn" id="social-btn-linkedin" style="flex: 1; padding: 10px; font-size: 0.85rem; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; cursor: pointer; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); color: var(--text-primary); transition: var(--transition-snappy);">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="#0A66C2">
+                                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                                </svg>
+                                LinkedIn
+                            </button>
+                        </div>
+                        <div class="or-separator" style="display: flex; align-items: center; justify-content: center; margin: 18px 0; color: var(--text-muted); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+                            <span style="border-bottom: 1px solid var(--border-color); flex: 1; margin-right: 12px; opacity: 0.5;"></span>
+                            or continue with email
+                            <span style="border-bottom: 1px solid var(--border-color); flex: 1; margin-left: 12px; opacity: 0.5;"></span>
+                        </div>
+                    </div>
+
                     <!-- LOGIN FORM -->
                     <form id="client-login-form" style="text-align: left;">
-                        <h2 style="font-size: 1.5rem; margin-bottom: 6px;">Client Space Login</h2>
-                        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 20px;">Access your active editing projects and revisions timeline.</p>
+                        <h2 style="font-size: 1.4rem; margin-bottom: 6px;">Client Space Login</h2>
+                        <p style="color: var(--text-secondary); font-size: 0.82rem; margin-bottom: 20px;">Access your active editing projects and revisions timeline.</p>
 
                         <div class="form-group">
                             <label class="form-label" for="client-auth-email">Client Account Email</label>
-                            <input type="email" id="client-auth-email" class="form-control" placeholder="client@gmail.com" value="client@gmail.com" required>
+                            <input type="email" id="client-auth-email" class="form-control" placeholder="client@gmail.com" required>
                         </div>
                         
                         <div class="form-group" style="margin-bottom: 16px;">
                             <label class="form-label" for="client-auth-pass">Password</label>
-                            <input type="password" id="client-auth-pass" class="form-control" placeholder="••••••••" value="client123" required>
+                            <input type="password" id="client-auth-pass" class="form-control" placeholder="••••••••" required>
                         </div>
 
                         <div style="text-align: right; margin-bottom: 24px;">
@@ -60,8 +86,8 @@
 
                     <!-- SIGNUP FORM (Hidden by default) -->
                     <form id="client-signup-form" style="text-align: left; display: none;">
-                        <h2 style="font-size: 1.5rem; margin-bottom: 6px;">Create Client Workspace</h2>
-                        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 20px;">Register your FZ space and submit custom brief coordinates.</p>
+                        <h2 style="font-size: 1.4rem; margin-bottom: 6px;">Create Client Workspace</h2>
+                        <p style="color: var(--text-secondary); font-size: 0.82rem; margin-bottom: 20px;">Register your FZ space and submit custom brief coordinates.</p>
 
                         <div class="form-group">
                             <label class="form-label" for="client-reg-name">Your Full Name *</label>
@@ -84,13 +110,34 @@
                         </div>
 
                         <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; font-size: 1rem;">
-                            Register Account & Login
+                            Register Account & Verify
                         </button>
                     </form>
 
-                </div>
-            </div>
-        </section>
+                    <!-- OTP VERIFICATION FORM (Hidden by default) -->
+                    <div id="client-otp-form" style="text-align: left; display: none;">
+                        <h2 style="font-size: 1.4rem; margin-bottom: 6px;">Verify Security Code</h2>
+                        <p style="color: var(--text-secondary); font-size: 0.82rem; margin-bottom: 24px;">We've sent a 6-digit verification code to <span id="otp-sent-email" style="color: var(--accent-primary); font-weight: 700;"></span>.</p>
+                        
+                        <div style="display: flex; gap: 8px; justify-content: space-between; margin-bottom: 24px;" class="otp-inputs-row">
+                            <input type="text" maxlength="1" class="form-control otp-box" style="width: 48px; height: 48px; text-align: center; font-size: 1.4rem; font-weight: 700; color: var(--accent-primary); border-radius: var(--radius-md); background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);" required>
+                            <input type="text" maxlength="1" class="form-control otp-box" style="width: 48px; height: 48px; text-align: center; font-size: 1.4rem; font-weight: 700; color: var(--accent-primary); border-radius: var(--radius-md); background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);" required>
+                            <input type="text" maxlength="1" class="form-control otp-box" style="width: 48px; height: 48px; text-align: center; font-size: 1.4rem; font-weight: 700; color: var(--accent-primary); border-radius: var(--radius-md); background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);" required>
+                            <input type="text" maxlength="1" class="form-control otp-box" style="width: 48px; height: 48px; text-align: center; font-size: 1.4rem; font-weight: 700; color: var(--accent-primary); border-radius: var(--radius-md); background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);" required>
+                            <input type="text" maxlength="1" class="form-control otp-box" style="width: 48px; height: 48px; text-align: center; font-size: 1.4rem; font-weight: 700; color: var(--accent-primary); border-radius: var(--radius-md); background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);" required>
+                            <input type="text" maxlength="1" class="form-control otp-box" style="width: 48px; height: 48px; text-align: center; font-size: 1.4rem; font-weight: 700; color: var(--accent-primary); border-radius: var(--radius-md); background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);" required>
+                        </div>
+
+                        <button type="button" id="otp-verify-btn" class="btn-primary" style="width: 100%; justify-content: center; font-size: 1rem; margin-bottom: 20px;">
+                            Verify & Access Workspace
+                        </button>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem;">
+                            <span id="otp-countdown" style="color: var(--text-muted);">Resend code in <span id="otp-seconds" style="color: var(--accent-secondary); font-weight: 700;">60</span>s</span>
+                            <button type="button" id="otp-resend-link" style="background: none; border: none; color: var(--accent-primary); font-weight: 600; cursor: pointer; display: none;">Resend Code</button>
+                            <span id="otp-cancel-btn" style="color: var(--text-muted); cursor: pointer; font-weight: 600; text-decoration: underline;">Go Back</span>
+                        </div>
+                    </div>
 
         <!-- 2. Main Portal Workspace (Hidden by default until logged in) -->
         <section class="client-dashboard-section" id="workspace-panel" style="display: none; padding: 40px 0;">
@@ -261,6 +308,49 @@
         </section>
 
     </main>
+
+    <!-- Mock Social OAuth Secure Gateway Popup -->
+    <div id="mock-oauth-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); z-index: 10000; align-items: center; justify-content: center;">
+        <div class="glass-card oauth-popup-card" style="width: 100%; max-width: 440px; border-radius: var(--radius-lg); padding: 32px; text-align: center; border: 1px solid var(--border-color); box-shadow: 0 20px 50px rgba(0,0,0,0.5); transform: scale(0.9); transition: all 0.3s ease; background: rgba(15,15,15,0.7);">
+            <div style="display: flex; justify-content: center; gap: 16px; align-items: center; margin-bottom: 24px;">
+                <img src="assets/img/logo/FZ logo 1.png" style="height: 38px; border-radius: 6px;">
+                <span style="font-size: 1.5rem; color: var(--text-muted);">⚡</span>
+                <span id="oauth-logo-placeholder"></span>
+            </div>
+            
+            <h3 style="font-size: 1.4rem; margin-bottom: 8px;" id="oauth-title">Connect with Google</h3>
+            <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 28px;" id="oauth-desc">FZ Media requests secure access to your profile data and email address.</p>
+            
+            <!-- Account Selection Mock -->
+            <div id="oauth-account-selection" style="margin-bottom: 28px;">
+                <div class="glass-card oauth-account-row" style="display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: var(--radius-md); text-align: left; cursor: pointer; border: 1px solid var(--accent-primary); background: rgba(22, 163, 74, 0.05); margin-bottom: 12px;" id="oauth-select-primary">
+                    <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--accent-primary); display: flex; align-items: center; justify-content: center; font-weight: 700; color: white;" id="oauth-avatar-char">J</div>
+                    <div>
+                        <div style="font-weight: 700; font-size: 0.9rem;" id="oauth-profile-name">John Doe</div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted);" id="oauth-profile-email">john.doe@gmail.com</div>
+                    </div>
+                </div>
+                <div class="glass-card oauth-account-row" style="display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: var(--radius-md); text-align: left; cursor: pointer; border: 1px solid var(--border-color);" id="oauth-select-another">
+                    <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--text-muted); display: flex; align-items: center; justify-content: center; font-weight: 700; color: white;">+</div>
+                    <div>
+                        <div style="font-weight: 700; font-size: 0.9rem;">Use another account</div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted);">Sign in with a different profile</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loader Mock -->
+            <div id="oauth-loader" style="display: none; margin: 32px 0;">
+                <div class="loading-spinner" style="margin: 0 auto 16px auto; width: 32px; height: 32px; border: 3px solid rgba(255,255,255,0.05); border-top-color: var(--accent-primary); border-radius: 50%; animation: spin 1s infinite linear;"></div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);" id="oauth-loader-text">Authorizing with secure gateway...</div>
+            </div>
+
+            <div style="display: flex; gap: 12px;" id="oauth-actions-row">
+                <button type="button" class="btn-secondary" id="oauth-cancel-btn" style="flex: 1; justify-content: center;">Cancel</button>
+                <button type="button" class="btn-primary" id="oauth-approve-btn" style="flex: 1; justify-content: center;">Authorize Space</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Shared Footer Mounting -->
     <footer id="global-footer"></footer>
