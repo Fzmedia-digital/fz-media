@@ -8,6 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // 1. Dynamic Rendering of Services Teaser
     renderServicesTeaser();
     
+    // 1.5. Dynamic Rendering of Portfolio Highlights
+    setupHomePortfolio();
+    
     // 2. Animated Counter Stats
     setupCounters();
 
@@ -353,11 +356,23 @@ function setupCinemaModal() {
         });
     }
 
-    // Event listeners for testimonial video review buttons (loads dynamically rendered tags)
+    // Event listeners for video review buttons and homepage portfolio cards
     document.addEventListener("click", (e) => {
+        // Testimonials dynamic triggers
         const videoBtn = e.target.closest(".testimonial-video-preview-btn");
         if (videoBtn) {
             const videoSrc = videoBtn.getAttribute("data-video");
+            if (videoSrc) openVideo(videoSrc);
+            return;
+        }
+
+        // Portfolio cards dynamic triggers
+        if (e.target.closest(".portfolio-like-btn")) {
+            return; // let like handler process this
+        }
+        const card = e.target.closest(".portfolio-card");
+        if (card) {
+            const videoSrc = card.getAttribute("data-video");
             if (videoSrc) openVideo(videoSrc);
         }
     });
@@ -487,3 +502,71 @@ function loadHeroVSLData() {
         vslDesc.textContent = s.heroVideo.description;
     }
 }
+
+// 8. Render Portfolio highlights dynamically on homepage
+function setupHomePortfolio() {
+    const grid = document.getElementById("home-portfolio-grid");
+    if (!grid) return;
+
+    const db = getDB();
+    
+    // Display the top 3 liked/featured portfolio items (first 3 items)
+    const featuredItems = db.portfolio.slice(0, 3);
+
+    grid.innerHTML = featuredItems.map(item => `
+        <div class="glass-card portfolio-card" data-video="${item.videoUrl}">
+            <div class="portfolio-thumbnail-wrapper">
+                <img src="${encodeURI(item.thumbnail)}" alt="${item.title}" class="portfolio-img">
+                <button class="portfolio-play-btn" aria-label="Play Portfolio Video">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                </button>
+            </div>
+            <div class="portfolio-card-info" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 100px;">
+                <div>
+                    <span class="portfolio-card-category">${item.category}</span>
+                    <h3 style="margin-top: 4px; font-size: 1.05rem; line-height: 1.45;">${item.title}</h3>
+                </div>
+                <div style="display: flex; justify-content: flex-end; align-items: center; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 8px;">
+                    <button class="portfolio-like-btn" data-id="${item.id}" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.82rem; padding: 5px 10px; border-radius: var(--radius-sm); transition: var(--transition-snappy);" aria-label="Like project">
+                        <span class="heart-icon" style="color: #ef4444; font-size: 0.9rem; transition: transform 0.2s ease; display: inline-block;">❤️</span> 
+                        <span class="likes-count" style="font-weight: 700; color: var(--text-secondary);">${item.likes || 0}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    `).join("");
+
+    // Hook up home portfolio like trigger
+    grid.addEventListener("click", (e) => {
+        const likeBtn = e.target.closest(".portfolio-like-btn");
+        if (likeBtn) {
+            e.stopPropagation();
+            const itemId = likeBtn.getAttribute("data-id");
+            if (itemId) {
+                const db = getDB();
+                const item = db.portfolio.find(p => p.id === itemId);
+                if (item) {
+                    if (typeof item.likes === 'undefined') item.likes = 0;
+                    item.likes += 1;
+                    saveDB(db);
+                    
+                    // Update likes count in DOM immediately
+                    const countEl = likeBtn.querySelector(".likes-count");
+                    if (countEl) {
+                        countEl.textContent = item.likes;
+                    }
+                    
+                    // Trigger a bounce micro-animation on heart
+                    const heart = likeBtn.querySelector(".heart-icon");
+                    if (heart) {
+                        heart.style.transform = "scale(1.4) rotate(-15deg)";
+                        setTimeout(() => {
+                            heart.style.transform = "scale(1) rotate(0deg)";
+                        }, 200);
+                    }
+                }
+            }
+        }
+    });
+}
+
