@@ -2,6 +2,9 @@
 
 document.addEventListener("DOMContentLoaded", () => {
     
+    // Load dynamic VSL variables on public homepage
+    loadHeroVSLData();
+
     // 1. Dynamic Rendering of Services Teaser
     renderServicesTeaser();
     
@@ -343,8 +346,10 @@ function setupCinemaModal() {
     const vslTrigger = document.getElementById("vsl-video-trigger");
     if (vslTrigger) {
         vslTrigger.addEventListener("click", () => {
-            // Main VSL uses the copied showreel file
-            openVideo("assets/videos/solo showreel.mp4");
+            // Main VSL uses the dynamic video showreel file from DB settings
+            const db = getDB();
+            const videoSrc = (db.settings.heroVideo && db.settings.heroVideo.videoUrl) ? db.settings.heroVideo.videoUrl : "assets/videos/solo showreel.mp4";
+            openVideo(videoSrc);
         });
     }
 
@@ -374,6 +379,26 @@ function setupPricingEstimator() {
 
     if (!timeSlider || !timeVal || !totalPriceEl || !checkoutLink) return;
 
+    // Load complexity labels dynamically from database
+    const db = getDB();
+    const calc = db.settings.calculator || {
+        basePricePerMinute: 10,
+        basicLabel: "Basic cuts & music",
+        standardLabel: "Standard text & SFX",
+        standardMultiplier: 20,
+        premiumLabel: "Premium AE & Grading",
+        premiumMultiplier: 50
+    };
+
+    // Mount labels onto index.html
+    const basicLabelEl = document.getElementById("est-label-basic");
+    const standardLabelEl = document.getElementById("est-label-standard");
+    const premiumLabelEl = document.getElementById("est-label-premium");
+
+    if (basicLabelEl) basicLabelEl.textContent = calc.basicLabel;
+    if (standardLabelEl) standardLabelEl.textContent = calc.standardLabel;
+    if (premiumLabelEl) premiumLabelEl.textContent = calc.premiumLabel;
+
     function calculatePrice() {
         const duration = parseInt(timeSlider.value, 10);
         timeVal.textContent = duration === 1 ? "1 minute" : `${duration} minutes`;
@@ -389,12 +414,12 @@ function setupPricingEstimator() {
         }
 
         if (complexity === "standard") {
-            multiplier = 20;
+            multiplier = parseInt(calc.standardMultiplier, 10);
         } else if (complexity === "premium") {
-            multiplier = 50;
+            multiplier = parseInt(calc.premiumMultiplier, 10);
         }
 
-        const totalPrice = (duration * 10) + multiplier;
+        const totalPrice = (duration * parseInt(calc.basePricePerMinute, 10)) + multiplier;
         totalPriceEl.textContent = `$${totalPrice}`;
 
         // Format parameters nicely for checkout
@@ -440,4 +465,25 @@ function setupScrollReveal() {
         const heroReveals = document.querySelectorAll(".hero-section .reveal-on-scroll");
         heroReveals.forEach(el => el.classList.add("revealed"));
     }, 100);
+}
+
+// 7. Load custom VSL hero video parameters dynamically from local database
+function loadHeroVSLData() {
+    const db = getDB();
+    const s = db.settings;
+    if (!s || !s.heroVideo) return;
+
+    const vslTitle = document.getElementById("vsl-video-title");
+    const vslThumbnail = document.getElementById("vsl-video-thumbnail");
+    const vslDesc = document.getElementById("vsl-video-desc");
+
+    if (vslTitle && s.heroVideo.title) {
+        vslTitle.textContent = s.heroVideo.title;
+    }
+    if (vslThumbnail && s.heroVideo.thumbnailUrl) {
+        vslThumbnail.src = s.heroVideo.thumbnailUrl;
+    }
+    if (vslDesc && s.heroVideo.description) {
+        vslDesc.textContent = s.heroVideo.description;
+    }
 }
