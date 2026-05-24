@@ -81,6 +81,7 @@
                 <div class="services-tab-container" style="margin-bottom: 40px;">
                     <div class="services-tabs-list" style="margin: 0 auto;">
                         <button class="services-tab-trigger dash-tab active" data-target="admin-general">⚙ General & Colors</button>
+                        <button class="services-tab-trigger dash-tab" data-target="admin-theme-engine">🎨 Visual Theme Engine</button>
                         <button class="services-tab-trigger dash-tab" data-target="admin-team">👥 Team Roster CRUD</button>
                         <button class="services-tab-trigger dash-tab" data-target="admin-portfolio">🎬 Portfolio CRUD</button>
                         <button class="services-tab-trigger dash-tab" data-target="admin-testimonials">⭐ Client Reviews CRUD</button>
@@ -88,6 +89,7 @@
                         <button class="services-tab-trigger dash-tab" data-target="admin-inbox">📬 Inbox & Revisions</button>
                     </div>
                 </div>
+
 
                 <!-- PANEL A. General & HSL Color Theme Customizer & CSS Charts -->
                 <div class="dash-tab-content active" id="admin-general">
@@ -138,22 +140,68 @@
                             <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 24px;">Drag the sliders to adjust the Primary (Violet/Indigo) and Secondary (Cyan/Teal) colors across the entire website. These write dynamically to the global CSS engine!</p>
                             
                             <div class="color-picker-control-box">
-                                <div class="color-picker-row" style="margin-bottom: 28px;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                                        <span class="form-label">Primary Accent Hue (HSL Base)</span>
-                                        <span id="primary-hue-val" style="font-family: var(--font-headings); font-weight: 700; color: var(--accent-primary);">267</span>
+                                <!-- Primary Accent Controls Group -->
+                                <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px; margin-bottom: 20px;">
+                                    <h4 style="font-size: 0.95rem; text-transform: uppercase; color: var(--accent-primary); margin-bottom: 16px; font-weight: 700;">1. Primary Accent Controls</h4>
+                                    
+                                    <div class="color-picker-row" style="margin-bottom: 18px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                            <span class="form-label" style="font-size: 0.85rem;">Primary Accent Hue</span>
+                                            <span id="primary-hue-val" style="font-family: var(--font-headings); font-weight: 700; color: var(--accent-primary);">267</span>
+                                        </div>
+                                        <input type="range" min="0" max="360" value="267" class="hue-slider-input" id="hue-primary-slider">
+                                        <div class="color-gradient-bar primary-rainbow" style="height: 4px; border-radius: 2px; margin-top: 6px;"></div>
                                     </div>
-                                    <input type="range" min="0" max="360" value="267" class="hue-slider-input" id="hue-primary-slider">
-                                    <div class="color-gradient-bar primary-rainbow"></div>
+                                    
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                                <span class="form-label" style="font-size: 0.8rem;">Saturation</span>
+                                                <span id="primary-sat-val" style="font-size: 0.8rem; color: var(--accent-primary); font-weight: 700;">90%</span>
+                                            </div>
+                                            <input type="range" min="0" max="100" value="90" class="hue-slider-input" id="hue-primary-sat-slider">
+                                        </div>
+                                        
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                                <span class="form-label" style="font-size: 0.8rem;">Lightness</span>
+                                                <span id="primary-light-val" style="font-size: 0.8rem; color: var(--accent-primary); font-weight: 700;">61%</span>
+                                            </div>
+                                            <input type="range" min="10" max="90" value="61" class="hue-slider-input" id="hue-primary-light-slider">
+                                        </div>
+                                    </div>
                                 </div>
                                 
-                                <div class="color-picker-row" style="margin-bottom: 28px;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                                        <span class="form-label">Secondary Accent Hue (HSL Base)</span>
-                                        <span id="secondary-hue-val" style="font-family: var(--font-headings); font-weight: 700; color: var(--accent-secondary);">185</span>
+                                <!-- Secondary Accent Controls Group -->
+                                <div style="margin-bottom: 20px;">
+                                    <h4 style="font-size: 0.95rem; text-transform: uppercase; color: var(--accent-secondary); margin-bottom: 16px; font-weight: 700;">2. Secondary Accent Controls</h4>
+                                    
+                                    <div class="color-picker-row" style="margin-bottom: 18px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                            <span class="form-label" style="font-size: 0.85rem;">Secondary Accent Hue</span>
+                                            <span id="secondary-hue-val" style="font-family: var(--font-headings); font-weight: 700; color: var(--accent-secondary);">185</span>
+                                        </div>
+                                        <input type="range" min="0" max="360" value="185" class="hue-slider-input" id="hue-secondary-slider">
+                                        <div class="color-gradient-bar secondary-rainbow" style="height: 4px; border-radius: 2px; margin-top: 6px;"></div>
                                     </div>
-                                    <input type="range" min="0" max="360" value="185" class="hue-slider-input" id="hue-secondary-slider">
-                                    <div class="color-gradient-bar secondary-rainbow"></div>
+                                    
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                                <span class="form-label" style="font-size: 0.8rem;">Saturation</span>
+                                                <span id="secondary-sat-val" style="font-size: 0.8rem; color: var(--accent-secondary); font-weight: 700;">90%</span>
+                                            </div>
+                                            <input type="range" min="0" max="100" value="90" class="hue-slider-input" id="hue-secondary-sat-slider">
+                                        </div>
+                                        
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                                <span class="form-label" style="font-size: 0.8rem;">Lightness</span>
+                                                <span id="secondary-light-val" style="font-size: 0.8rem; color: var(--accent-secondary); font-weight: 700;">50%</span>
+                                            </div>
+                                            <input type="range" min="10" max="90" value="50" class="hue-slider-input" id="hue-secondary-light-slider">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -322,8 +370,232 @@
                     </div>
                 </div>
 
+                <!-- PANEL A.5. Premium Visual Theme Engine & SAAS Templates Customizer -->
+                <div class="dash-tab-content" id="admin-theme-engine">
+                    <h2 style="font-size: 1.6rem; color: var(--accent-primary); margin-bottom: 8px;">🎨 Ultimate Visual Theme Engine</h2>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 32px;">Load dynamic SaaS templates, custom tweak background HSL layers, glass blur factors, border thickness, card radius and glowing breath animation metrics.</p>
+
+                    <!-- 1. Clickable SaaS Design Templates Presets -->
+                    <div style="margin-bottom: 40px;">
+                        <h3 style="font-size: 1.15rem; margin-bottom: 16px; color: var(--text-primary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">1. One-Click SaaS Design Templates</h3>
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+                            
+                            <!-- Template 1 -->
+                            <div class="glass-card template-preset-card active" data-preset="midnight" style="cursor: pointer; padding: 20px; text-align: center; border: 1px solid var(--border-color); transition: var(--transition-smooth); border-radius: var(--radius-md);">
+                                <span style="font-size: 2rem; display: block; margin-bottom: 10px;">🌌</span>
+                                <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; color: var(--accent-primary);">Midnight SaaS Grid</h4>
+                                <span style="font-size: 0.75rem; color: var(--text-muted);">Obsidian & Neon Cyan Accents</span>
+                            </div>
+                            
+                            <!-- Template 2 -->
+                            <div class="glass-card template-preset-card" data-preset="aurora" style="cursor: pointer; padding: 20px; text-align: center; border: 1px solid var(--border-color); transition: var(--transition-smooth); border-radius: var(--radius-md);">
+                                <span style="font-size: 2rem; display: block; margin-bottom: 10px;">💧</span>
+                                <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; color: var(--accent-secondary);">Aurora Liquid Glow</h4>
+                                <span style="font-size: 0.75rem; color: var(--text-muted);">High-Radius Glass & Magenta Glow</span>
+                            </div>
+                            
+                            <!-- Template 3 -->
+                            <div class="glass-card template-preset-card" data-preset="cyberpunk" style="cursor: pointer; padding: 20px; text-align: center; border: 1px solid var(--border-color); transition: var(--transition-smooth); border-radius: var(--radius-md);">
+                                <span style="font-size: 2rem; display: block; margin-bottom: 10px;">⚡</span>
+                                <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; color: #facc15;">Retro Cyber-Punk</h4>
+                                <span style="font-size: 0.75rem; color: var(--text-muted);">Sharp Solid Corners & Monospace Hues</span>
+                            </div>
+                            
+                            <!-- Template 4 -->
+                            <div class="glass-card template-preset-card" data-preset="minimal" style="cursor: pointer; padding: 20px; text-align: center; border: 1px solid var(--border-color); transition: var(--transition-smooth); border-radius: var(--radius-md);">
+                                <span style="font-size: 2rem; display: block; margin-bottom: 10px;">💻</span>
+                                <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; color: var(--text-primary);">Clean Tech Minimal</h4>
+                                <span style="font-size: 0.75rem; color: var(--text-muted);">Sophisticated Slate & Subtle Outlines</span>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                    <form id="admin-theme-form">
+                        <div class="admin-grid-layout" style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: flex-start;">
+                            
+                            <!-- Left Side: Styling Controls -->
+                            <div class="glass-card" style="display: flex; flex-direction: column; gap: 24px;">
+                                <h3 style="font-size: 1.15rem; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 8px;">Theme Layout & Style Parameters</h3>
+                                
+                                <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                    <div class="form-group">
+                                        <label class="form-label" for="theme-radius">Card Border Radius (px)</label>
+                                        <input type="range" id="theme-radius" min="0" max="32" value="12" class="hue-slider-input">
+                                        <span id="theme-radius-val" style="font-size: 0.8rem; color: var(--accent-primary); font-weight: 700; margin-top: 2px;">12px</span>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label" for="theme-border-thickness">Card Border Thickness (px)</label>
+                                        <input type="range" id="theme-border-thickness" min="1" max="3" value="1" class="hue-slider-input">
+                                        <span id="theme-border-thickness-val" style="font-size: 0.8rem; color: var(--accent-primary); font-weight: 700; margin-top: 2px;">1px</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                    <div class="form-group">
+                                        <label class="form-label" for="theme-blur">Glass Backing Blur (px)</label>
+                                        <input type="range" id="theme-blur" min="0" max="40" value="16" class="hue-slider-input">
+                                        <span id="theme-blur-val" style="font-size: 0.8rem; color: var(--accent-primary); font-weight: 700; margin-top: 2px;">16px</span>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label" for="theme-glow-intensity">Glow Shadows Intensity (Multiplier)</label>
+                                        <input type="range" id="theme-glow-intensity" min="0" max="20" value="10" class="hue-slider-input">
+                                        <span id="theme-glow-intensity-val" style="font-size: 0.8rem; color: var(--accent-primary); font-weight: 700; margin-top: 2px;">1.0x</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                    <div class="form-group">
+                                        <label class="form-label" for="theme-glow-speed">Glow Breath Pulse Speed (seconds)</label>
+                                        <input type="range" id="theme-glow-speed" min="1" max="6" value="3" class="hue-slider-input">
+                                        <span id="theme-glow-speed-val" style="font-size: 0.8rem; color: var(--accent-primary); font-weight: 700; margin-top: 2px;">3s</span>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label" for="theme-gaps">CSS Grid Layout Gap (px)</label>
+                                        <input type="range" id="theme-gaps" min="16" max="48" value="30" class="hue-slider-input">
+                                        <span id="theme-gaps-val" style="font-size: 0.8rem; color: var(--accent-primary); font-weight: 700; margin-top: 2px;">30px</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                    <div class="form-group">
+                                        <label class="form-label" for="theme-padding">Section Vertical Padding (px)</label>
+                                        <input type="range" id="theme-padding" min="40" max="120" value="80" class="hue-slider-input">
+                                        <span id="theme-padding-val" style="font-size: 0.8rem; color: var(--accent-primary); font-weight: 700; margin-top: 2px;">80px</span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label" for="theme-header-style">Header Navigation Layout Style</label>
+                                        <select id="theme-header-style" class="form-control" style="background-color: var(--bg-secondary); border-color: var(--border-color); cursor: pointer;" required>
+                                            <option value="floating-glass">💎 Floating Glassmorphic Pill</option>
+                                            <option value="sticky-solid">🌌 Sticky Solid Block</option>
+                                            <option value="centered">🎯 Centered Double Row</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="theme-fonts">Typography Font Combinations Preset</label>
+                                    <select id="theme-fonts" class="form-control" style="background-color: var(--bg-secondary); border-color: var(--border-color); cursor: pointer;" required>
+                                        <option value="minimal-slate">⭐ Premium Creative (Outfit Headings + Jakarta Body)</option>
+                                        <option value="tech-modern">💻 Tech Corporate (Roboto Headings + Roboto Body)</option>
+                                        <option value="cyberpunk">⚡ High-Volt Monospace (Courier Monospace)</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Realtime Color tweaks sections -->
+                                <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 10px;">
+                                    <h4 style="font-size: 1rem; color: var(--accent-secondary); margin-bottom: 16px; font-weight: 700; text-transform: uppercase;">2. Fine-Tuned Background & Card Colors</h4>
+                                    
+                                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                        <div class="form-group">
+                                            <label class="form-label" for="theme-bg-hue">Body Background Hue</label>
+                                            <input type="range" id="theme-bg-hue" min="0" max="360" value="240" class="hue-slider-input">
+                                            <span id="theme-bg-hue-val" style="font-size: 0.8rem; color: var(--accent-secondary); font-weight: 700; margin-top: 2px;">240°</span>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label" for="theme-bg-sat">Body Saturation (%)</label>
+                                            <input type="range" id="theme-bg-sat" min="0" max="25" value="10" class="hue-slider-input">
+                                            <span id="theme-bg-sat-val" style="font-size: 0.8rem; color: var(--accent-secondary); font-weight: 700; margin-top: 2px;">10%</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                        <div class="form-group">
+                                            <label class="form-label" for="theme-bg-light">Body Background Lightness</label>
+                                            <input type="range" id="theme-bg-light" min="1" max="20" value="3" class="hue-slider-input">
+                                            <span id="theme-bg-light-val" style="font-size: 0.8rem; color: var(--accent-secondary); font-weight: 700; margin-top: 2px;">3%</span>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label" for="theme-card-light">Card Background Lightness</label>
+                                            <input type="range" id="theme-card-light" min="2" max="28" value="5" class="hue-slider-input">
+                                            <span id="theme-card-light-val" style="font-size: 0.8rem; color: var(--accent-secondary); font-weight: 700; margin-top: 2px;">5%</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                        <div class="form-group">
+                                            <label class="form-label" for="theme-card-opacity">Card Background Opacity</label>
+                                            <input type="range" id="theme-card-opacity" min="5" max="80" value="40" class="hue-slider-input">
+                                            <span id="theme-card-opacity-val" style="font-size: 0.8rem; color: var(--accent-secondary); font-weight: 700; margin-top: 2px;">0.40</span>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label" for="theme-border-opacity">Card Border Opacity/Alpha</label>
+                                            <input type="range" id="theme-border-opacity" min="2" max="40" value="8" class="hue-slider-input">
+                                            <span id="theme-border-opacity-val" style="font-size: 0.8rem; color: var(--accent-secondary); font-weight: 700; margin-top: 2px;">0.08</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                        <div class="form-group">
+                                            <label class="form-label" for="theme-glow-hue">Glow Accent Shadow Hue</label>
+                                            <input type="range" id="theme-glow-hue" min="0" max="360" value="267" class="hue-slider-input">
+                                            <span id="theme-glow-hue-val" style="font-size: 0.8rem; color: var(--accent-secondary); font-weight: 700; margin-top: 2px;">267°</span>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label" for="theme-glow-sat">Glow Shadow Saturation</label>
+                                            <input type="range" id="theme-glow-sat" min="20" max="100" value="90" class="hue-slider-input">
+                                            <span id="theme-glow-sat-val" style="font-size: 0.8rem; color: var(--accent-secondary); font-weight: 700; margin-top: 2px;">90%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div style="text-align: right; border-top: 1px solid var(--border-color); padding-top: 18px;">
+                                    <button type="submit" class="btn-primary" style="padding: 12px 30px; font-size: 0.95rem; width: 100%; justify-content: center;">
+                                        Save & Apply Theme Styles
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Right Side: Real-time Visual Theme Preview Card -->
+                            <div class="glass-card" style="position: sticky; top: 120px; display: flex; flex-direction: column; gap: 24px; align-items: stretch; border: 1px solid var(--border-color);" id="theme-preview-body">
+                                <h3 style="font-size: 1.1rem; text-align: center; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 8px;">Interactive Real-Time Preview Panel</h3>
+                                
+                                <!-- Floating Header Nav Mock -->
+                                <div id="preview-header-mock" style="padding: 10px; border-radius: 12px; border: 1px solid var(--border-color); text-align: center; font-size: 0.82rem; font-weight: 700; transition: var(--transition-smooth);" class="glow-breath-highlight">
+                                    <span>🌐 Navbar Navigation Style Preview</span>
+                                </div>
+                                
+                                <!-- Mock Glass Card Dynamic -->
+                                <div id="preview-card-mock" style="padding: 28px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); transition: var(--transition-smooth); background: rgba(255,255,255,0.03);" class="glow-breath-highlight">
+                                    <span class="portfolio-card-category" style="font-size: 0.72rem; color: var(--accent-secondary); font-weight: 800;">Visual Category</span>
+                                    <h4 id="preview-title-mock" style="font-size: 1.3rem; margin-top: 8px; font-weight: 700; transition: var(--transition-smooth); margin-bottom: 12px;">Premium Theme Styling Showcase Card</h4>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.45; margin-bottom: 20px;">
+                                        This card previews your customized typography presets, border thicknesses, border radiuses, box-glow shadows, and glassmorphic backing blurs in real time as you adjust the sliders.
+                                    </p>
+                                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                                        <button class="btn-primary" type="button" style="padding: 6px 12px; font-size: 0.75rem;">Accept Presets</button>
+                                        <button class="btn-secondary" type="button" style="padding: 6px 12px; font-size: 0.75rem;">Secondary Option</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Preview Stats Grid -->
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;" id="preview-gap-mock">
+                                    <div style="padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center; background: rgba(255,255,255,0.01);">
+                                        <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Spacings Gap</span>
+                                        <span style="font-size: 1.15rem; font-weight: 700; color: var(--accent-primary);" id="preview-gap-val">30px</span>
+                                    </div>
+                                    <div style="padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center; background: rgba(255,255,255,0.01);">
+                                        <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Layout padding</span>
+                                        <span style="font-size: 1.15rem; font-weight: 700; color: var(--accent-secondary);" id="preview-padding-val">80px</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </form>
+                </div>
+
                 <!-- PANEL B. Team Roster Dynamic CRUD Manager -->
                 <div class="dash-tab-content" id="admin-team">
+
                     <div class="admin-grid-layout" style="display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 32px; align-items: flex-start;">
                         
                         <div class="glass-card">
