@@ -1,0 +1,360 @@
+/* FZ Media - Client Portal Dashboard Styles */
+
+/* Auth Panel */
+.client-auth-section {
+    position: relative;
+    padding: 100px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-glow-top {
+    position: absolute;
+    top: 0;
+    width: 60%;
+    height: 50%;
+    background: radial-gradient(circle, var(--accent-primary-glow) 0%, transparent 65%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.auth-card {
+    position: relative;
+    z-index: 2;
+}
+
+.auth-error-alert {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #f87171;
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+/* Dashboard Banner */
+.dashboard-banner {
+    padding: 40px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+}
+
+.banner-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+}
+
+.banner-sub-info {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 20px 24px;
+    text-align: right;
+    max-width: 320px;
+}
+
+@media (max-width: 768px) {
+    .banner-flex {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 24px;
+    }
+    .banner-sub-info {
+        text-align: left;
+        max-width: 100%;
+    }
+}
+/* Dashboard Navigation Tabs */
+.dashboard-tabs {
+    display: flex;
+    gap: 12px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.dash-tab {
+    background: none;
+    border: none;
+    padding: 12px 24px;
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: var(--transition-snappy);
+    position: relative;
+}
+
+.dash-tab:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.dash-tab.active {
+    color: var(--accent-primary);
+    background: rgba(var(--accent-primary-h), var(--accent-primary-s), var(--accent-primary-l), 0.05);
+}
+
+.dash-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -13px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--accent-primary);
+    box-shadow: 0 0 10px var(--accent-primary-glow);
+}
+
+.dash-tab-content {
+    display: none;
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+}
+
+.dash-tab-content.active {
+    display: block;
+    animation: clientPanelPopup 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.dash-tab-content.leaving {
+    display: block !important;
+    animation: clientPanelGoDown 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes clientPanelPopup {
+    from {
+        opacity: 0;
+        transform: translateY(25px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes clientPanelGoDown {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(25px) scale(0.97);
+    }
+}
+
+/* Active Projects Cards */
+.active-projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+}
+
+.client-project-card {
+    padding: 32px;
+}
+
+.project-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.project-card-header h3 {
+    font-size: 1.3rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+}
+
+.project-badge {
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.status-review {
+    background: rgba(var(--accent-primary-h), var(--accent-primary-s), var(--accent-primary-l), 0.1);
+    border: 1px solid rgba(var(--accent-primary-h), var(--accent-primary-s), var(--accent-primary-l), 0.2);
+    color: var(--accent-primary);
+}
+
+.status-edit {
+    background: rgba(var(--accent-secondary-h), var(--accent-secondary-s), var(--accent-secondary-l), 0.1);
+    border: 1px solid rgba(var(--accent-secondary-h), var(--accent-secondary-s), var(--accent-secondary-l), 0.2);
+    color: var(--accent-secondary);
+}
+
+.status-delivered {
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    color: #4ade80;
+}
+
+.status-queue {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.project-progress-row {
+    margin-bottom: 28px;
+}
+
+.progress-label-flex {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.project-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+}
+
+.delivery-tag {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+}
+
+.delivery-tag strong {
+    color: var(--text-primary);
+}
+
+@media (max-width: 991px) {
+    .active-projects-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Revision Hub two column */
+.revision-hub-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.revision-player-card {
+    padding: 30px;
+}
+
+.draft-video-player-container {
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: #000;
+    border: 1px solid var(--border-color);
+}
+
+.draft-video-player {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Timeline Checklist */
+.revision-timeline-card {
+    padding: 30px;
+    max-height: 700px;
+    display: flex;
+    flex-direction: column;
+}
+
+.feedback-checklist-feed {
+    overflow-y: auto;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-right: 8px;
+}
+
+.feedback-timeline-item {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    cursor: pointer;
+    transition: var(--transition-snappy);
+}
+
+.feedback-timeline-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--accent-primary);
+}
+
+.feedback-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.feedback-time-stamp {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-secondary);
+    background: rgba(var(--accent-secondary-h), var(--accent-secondary-s), var(--accent-secondary-l), 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.feedback-item-text {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: var(--text-primary);
+}
+
+.feedback-status-badge {
+    align-self: flex-start;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text-muted);
+}
+
+.feedback-status-badge.resolved {
+    color: #4ade80;
+}
+
+.feedback-status-badge.pending {
+    color: var(--accent-primary);
+}
+
+.no-revisions-msg {
+    text-align: center;
+    padding: 40px 0;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+@media (max-width: 1199px) {
+    .revision-hub-layout {
+        grid-template-columns: 1fr;
+    }
+}
