@@ -34,12 +34,18 @@
                     <form id="admin-login-form" style="text-align: left;">
                         <div class="form-group">
                             <label class="form-label" for="admin-email">Admin Email Address</label>
-                            <input type="email" id="admin-email" class="form-control" placeholder="framezonem@gmail.com" required>
+                            <input type="email" id="admin-email" class="form-control" placeholder="Enter admin email address" required>
                         </div>
                         
                         <div class="form-group" style="margin-bottom: 24px;">
                             <label class="form-label" for="admin-pass">Security Password</label>
-                            <input type="password" id="admin-pass" class="form-control" placeholder="••••••••" required>
+                            <div style="position: relative; display: flex; align-items: center;">
+                                <input type="password" id="admin-pass" class="form-control" placeholder="••••••••" style="padding-right: 46px;" required>
+                                <button type="button" class="password-toggle-eye" style="position: absolute; right: 14px; background: none; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; padding: 4px; z-index: 10;" aria-label="Toggle Password Visibility">
+                                    <svg class="eye-icon-visible" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    <svg class="eye-icon-hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                                </button>
+                            </div>
                         </div>
 
                         <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; font-size: 1rem;">
@@ -158,6 +164,91 @@
                                     <button class="btn-secondary" type="button" style="font-size: 0.82rem; padding: 8px 16px; border-color: var(--accent-secondary); color: var(--accent-secondary);">Secondary Outlined</button>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Hero Video VSL & Custom Calculator Settings (Spans both columns) -->
+                        <div class="glass-card" style="grid-column: span 2; margin-top: 32px;">
+                            <h3 style="font-size: 1.35rem; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">Homepage Hero VSL & Custom Budget Calculator Configurations</h3>
+                            
+                            <form id="admin-vsl-calc-form">
+                                <div class="admin-grid-layout" style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                                    
+                                    <!-- Left: Hero Video VSL Settings -->
+                                    <div>
+                                        <h4 style="font-size: 1rem; color: var(--accent-primary); margin-bottom: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">1. Homepage Hero VSL Settings</h4>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label" for="vsl-title-input">Hero Video Title Badge</label>
+                                            <input type="text" id="vsl-title-input" class="form-control" placeholder="e.g. Watch FZ Showreel" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="vsl-desc-input">Hero Video description (Lead Conversions Stat)</label>
+                                            <input type="text" id="vsl-desc-input" class="form-control" placeholder="e.g. Targeted VSL templates..." required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="vsl-video-url-input">Hero Video File Path / Streaming Link</label>
+                                            <input type="text" id="vsl-video-url-input" class="form-control" placeholder="e.g. assets/videos/solo showreel.mp4" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="vsl-thumb-url-input">Hero Video Thumbnail Image Link</label>
+                                            <input type="text" id="vsl-thumb-url-input" class="form-control" placeholder="e.g. https://images.unsplash.com/photo-..." required>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right: Custom Cost Calculator Settings -->
+                                    <div>
+                                        <h4 style="font-size: 1rem; color: var(--accent-secondary); margin-bottom: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">2. Custom Budget Calculator Factors</h4>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label" for="calc-base-price">Base Price Rate ($ Per Minute)</label>
+                                            <input type="number" id="calc-base-price" class="form-control" min="1" required>
+                                        </div>
+                                        
+                                        <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 14px; margin-top: 14px;">
+                                            <h5 style="font-size: 0.88rem; margin-bottom: 10px; color: var(--text-muted);">Complexity Option 1: Basic</h5>
+                                            <div class="form-group">
+                                                <label class="form-label" for="calc-basic-label">Option Label Text</label>
+                                                <input type="text" id="calc-basic-label" class="form-control" required>
+                                            </div>
+                                        </div>
+                                        
+                                        <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 14px; margin-top: 14px;">
+                                            <h5 style="font-size: 0.88rem; margin-bottom: 10px; color: var(--text-muted);">Complexity Option 2: Standard</h5>
+                                            <div class="form-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 12px;">
+                                                <div class="form-group">
+                                                    <label class="form-label" for="calc-standard-label">Option Label Text</label>
+                                                    <input type="text" id="calc-standard-label" class="form-control" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="form-label" for="calc-standard-mult">Multiplier ($)</label>
+                                                    <input type="number" id="calc-standard-mult" class="form-control" min="0" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 14px; margin-top: 14px;">
+                                            <h5 style="font-size: 0.88rem; margin-bottom: 10px; color: var(--text-muted);">Complexity Option 3: Premium</h5>
+                                            <div class="form-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 12px;">
+                                                <div class="form-group">
+                                                    <label class="form-label" for="calc-premium-label">Option Label Text</label>
+                                                    <input type="text" id="calc-premium-label" class="form-control" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="form-label" for="calc-premium-mult">Multiplier ($)</label>
+                                                    <input type="number" id="calc-premium-mult" class="form-control" min="0" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+
+                                <div style="text-align: right; margin-top: 28px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                                    <button type="submit" class="btn-primary" style="padding: 12px 36px; font-size: 1rem;">
+                                        Save Hero VSL & Calculator Settings
+                                    </button>
+                                </div>
+                            </form>
                         </div>
 
                         <!-- CSS Analytics Visualizations Charts (Spans both columns) -->
