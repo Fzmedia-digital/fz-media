@@ -469,7 +469,7 @@ function injectTheme() {
     const activeTheme = s.theme || "default";
     
     // Remove existing layout classes
-    document.body.classList.remove("theme-liquid", "theme-saas");
+    document.body.classList.remove("theme-liquid", "theme-saas", "theme-gradient", "theme-flat");
     
     if (activeTheme === "liquid") {
         document.body.classList.add("theme-liquid");
@@ -489,6 +489,10 @@ function injectTheme() {
         
         if (activeTheme === "saas") {
             document.body.classList.add("theme-saas");
+        } else if (activeTheme === "gradient") {
+            document.body.classList.add("theme-gradient");
+        } else if (activeTheme === "flat") {
+            document.body.classList.add("theme-flat");
         }
     }
 }
