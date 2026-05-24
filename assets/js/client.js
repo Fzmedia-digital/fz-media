@@ -499,18 +499,6 @@ function setupAuthGuard() {
         });
     }
 
-        saveDB(db);
-
-        activeClientEmail = email;
-        sessionStorage.setItem("fzmedia_logged_client", email);
-
-        errorMsg.style.display = "none";
-        authPanel.style.display = "none";
-        workspacePanel.style.display = "block";
-        
-        initializeWorkspace();
-        alert(`Welcome, ${name}! Your FZ Media Client Portal workspace is active. Let's create beautiful contents!`);
-    });
 }
 
 // 2. Auth tabs toggling (Login vs Signup)
