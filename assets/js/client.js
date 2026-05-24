@@ -12,7 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
     setupBriefForm();
     setupLogout();
     setupClientChat();
+    setupPasswordToggles();
 });
+
 
 // 1. Client authentication login and signup guard with OTP verification and Social Logins
 function setupAuthGuard() {
@@ -1007,3 +1009,27 @@ function renderChatMessages(client) {
     // Auto scroll chat to the bottom
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
+
+function setupPasswordToggles() {
+    const toggleBtns = document.querySelectorAll(".password-toggle-eye");
+    toggleBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const input = btn.parentElement.querySelector("input");
+            if (!input) return;
+            const isPassword = input.type === "password";
+            input.type = isPassword ? "text" : "password";
+            
+            const visibleIcon = btn.querySelector(".eye-icon-visible");
+            const hiddenIcon = btn.querySelector(".eye-icon-hidden");
+            
+            if (isPassword) {
+                if (visibleIcon) visibleIcon.style.display = "block";
+                if (hiddenIcon) hiddenIcon.style.display = "none";
+            } else {
+                if (visibleIcon) visibleIcon.style.display = "none";
+                if (hiddenIcon) hiddenIcon.style.display = "block";
+            }
+        });
+    });
+}
+
