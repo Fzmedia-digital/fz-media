@@ -99,23 +99,63 @@ function setupCinemaPlayer() {
 
     if (!modal || !modalPlayer || !closeBtn) return;
 
-    // Helper to get YouTube Embed URL
-    function getYouTubeEmbedUrl(url) {
-        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-        const match = url.match(regExp);
-        if (match && match[2].length === 11) {
-            return `https://www.youtube.com/embed/${match[2]}?autoplay=1&rel=0`;
+    // Helper to get robust Embed URL (YouTube with Shorts, or Vimeo)
+    function getEmbedUrl(url) {
+        if (!url) return null;
+        url = url.trim();
+        
+        // 1. YouTube Parsing (Standard, Embed, Mobile, or Shorts)
+        let ytId = null;
+        if (url.includes("/shorts/")) {
+            const parts = url.split("/shorts/");
+            if (parts[1]) {
+                ytId = parts[1].split(/[?#&]/)[0];
+            }
+        } else {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            if (match && match[2].length === 11) {
+                ytId = match[2];
+            }
         }
+        if (!ytId && (url.includes("youtube.com") || url.includes("youtu.be"))) {
+            try {
+                const urlObj = new URL(url);
+                if (urlObj.searchParams.has("v")) {
+                    ytId = urlObj.searchParams.get("v");
+                } else {
+                    const pathname = urlObj.pathname;
+                    const pathParts = pathname.split("/");
+                    const lastPart = pathParts[pathParts.length - 1];
+                    if (lastPart && lastPart.length === 11) {
+                        ytId = lastPart;
+                    }
+                }
+            } catch (e) {
+                console.log("Error parsing URL parameters:", e);
+            }
+        }
+        if (ytId && ytId.length === 11) {
+            return `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0`;
+        }
+        
+        // 2. Vimeo Parsing
+        const vimeoRegExp = /vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)/;
+        const vimeoMatch = url.match(vimeoRegExp);
+        if (vimeoMatch && vimeoMatch[3]) {
+            return `https://player.vimeo.com/video/${vimeoMatch[3]}?autoplay=1`;
+        }
+        
         return null;
     }
 
     function openPlayer(src) {
-        const ytEmbed = getYouTubeEmbedUrl(src);
+        const embedUrl = getEmbedUrl(src);
         let iframe = document.getElementById("video-modal-iframe");
         
         modal.classList.add("open");
         
-        if (ytEmbed) {
+        if (embedUrl) {
             // Hide local HTML5 video element
             modalPlayer.style.display = "none";
             modalPlayer.pause();
@@ -134,7 +174,7 @@ function setupCinemaPlayer() {
                 iframe.allowFullscreen = true;
                 modalPlayer.parentElement.appendChild(iframe);
             }
-            iframe.src = ytEmbed;
+            iframe.src = embedUrl;
             iframe.style.display = "block";
         } else {
             // Hide iframe if it exists
