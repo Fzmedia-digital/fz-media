@@ -461,7 +461,7 @@ function setupPortfolioCRUD() {
             category: document.getElementById("port-category-select").value,
             videoUrl: document.getElementById("port-video-url").value.trim(),
             thumbnail: document.getElementById("port-thumb").value.trim(),
-            likes: 0
+            likes: parseInt(document.getElementById("port-likes").value, 10) || 0
         };
 
         if (editId) {
@@ -521,6 +521,7 @@ window.editPortfolioItem = function(id) {
     document.getElementById("port-category-select").value = p.category;
     document.getElementById("port-video-url").value = p.videoUrl;
     document.getElementById("port-thumb").value = p.thumbnail;
+    document.getElementById("port-likes").value = p.likes || 0;
 
     document.getElementById("portfolio-form-headline").textContent = `Editing Project Link`;
     document.getElementById("admin-portfolio-form").scrollIntoView({ behavior: 'smooth' });
@@ -1336,7 +1337,7 @@ function populateVSLAndCalculatorFields() {
     if (vslTitleInput) vslTitleInput.value = hero.title;
     if (vslDescInput) vslDescInput.value = hero.description;
     if (vslVideoUrlInput) vslVideoUrlInput.value = hero.videoUrl;
-    if (vslThumbUrlInput) vslThumbUrlInput.value = hero.thumbnailUrl;
+    if (vslThumbUrlInput) vslThumbUrlInput.value = hero.thumbnailUrl || "";
 
     // Populate Calculator inputs
     const calcBasePrice = document.getElementById("calc-base-price");
