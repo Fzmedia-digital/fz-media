@@ -372,7 +372,7 @@
 .pricing-tier-card.popular {
     border-color: var(--accent-primary);
     background: rgba(var(--bg-secondary-h), var(--bg-secondary-s), var(--bg-secondary-l), 0.55);
-    box-shadow: 0 15px 35px rgba(var(--accent-primary-h), var(--accent-primary-s), 20%, 0.15);
+    box-shadow: 0 15px 35px hsla(var(--accent-primary-h), var(--accent-primary-s), 20%, 0.15);
 }
 
 .popular-badge {
