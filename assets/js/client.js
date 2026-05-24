@@ -610,6 +610,25 @@ function renderActiveDeliverables(client) {
             `;
         }
 
+        let processingWidgetMarkup = "";
+        if (proj.status === "In Queue" || proj.status === "First Cut Editing") {
+            processingWidgetMarkup = `
+                <div class="vsl-processing-widget" data-proj-id="${proj.id}">
+                    <div class="processing-orbit-container">
+                        <svg class="processing-ring-svg">
+                            <circle class="processing-ring-bg" cx="34" cy="34" r="30"></circle>
+                            <circle class="processing-ring-active" cx="34" cy="34" r="30" id="ring-active-${proj.id}"></circle>
+                        </svg>
+                        <div class="processing-orbit-percent" id="ring-percent-${proj.id}">0%</div>
+                    </div>
+                    <div class="processing-details">
+                        <h4 class="processing-phase-title" id="ring-title-${proj.id}">⚙️ FZ Render System Active</h4>
+                        <p class="processing-phase-subtitle" id="ring-sub-${proj.id}">Awaiting asset verification...</p>
+                    </div>
+                </div>
+            `;
+        }
+
         return `
             <div class="glass-card client-project-card" style="grid-column: span 2; display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
@@ -629,6 +648,8 @@ function renderActiveDeliverables(client) {
                             <div class="progress-fill" style="width: ${proj.progress}%;"></div>
                         </div>
                     </div>
+                    
+                    ${processingWidgetMarkup}
                 </div>
                 
                 <div class="project-card-footer" style="margin-top: 16px;">
@@ -642,6 +663,9 @@ function renderActiveDeliverables(client) {
             </div>
         `;
     }).join("");
+
+    startProcessingLoops();
+}
 }
 
 // Copy OBS fields trigger
@@ -1020,5 +1044,78 @@ function setupPasswordToggles() {
             }
         });
     });
+}
+
+// 12. Centralized FZ Rendering loop animation for In Queue/Editing states
+let activeProcessingInterval = null;
+
+function startProcessingLoops() {
+    // Clear any existing interval to prevent memory leaks
+    if (activeProcessingInterval) {
+        clearInterval(activeProcessingInterval);
+    }
+
+    const widgets = document.querySelectorAll(".vsl-processing-widget");
+    if (widgets.length === 0) return;
+
+    // Define standard creative editing phases
+    const phases = [
+        { title: "Raw Footage Analysis 📁", sub: "Ingesting media files and syncing high-quality dialogue feeds..." },
+        { title: "Kinetic Trim & Pacing ✂️", sub: "Trimming filler words and shaping dynamic creative hooks..." },
+        { title: "AE Motions & Typo ⚡", sub: "Rendering vector motion animations and custom captions overlay..." },
+        { title: "HSL Color Grading 🎨", sub: "Balancing camera profiles and grading premium custom LUTs..." },
+        { title: "Sound Design & Master 🔊", sub: "Integrating sound FX sweeps and mastering background elements..." }
+    ];
+
+    const projectStates = {};
+
+    widgets.forEach(widget => {
+        const id = widget.getAttribute("data-proj-id");
+        projectStates[id] = {
+            progress: 0
+        };
+    });
+
+    activeProcessingInterval = setInterval(() => {
+        widgets.forEach(widget => {
+            const id = widget.getAttribute("data-proj-id");
+            const state = projectStates[id];
+            if (!state) return;
+
+            // Increment progress
+            state.progress += 1;
+            if (state.progress > 100) {
+                state.progress = 0;
+            }
+
+            // Update percentage label
+            const percentEl = document.getElementById(`ring-percent-${id}`);
+            if (percentEl) {
+                percentEl.textContent = `${state.progress}%`;
+            }
+
+            // Update SVG circle stroke offset (Circumference = 2 * PI * r = 2 * 3.14 * 30 = 188)
+            const circleEl = document.getElementById(`ring-active-${id}`);
+            if (circleEl) {
+                const circumference = 188;
+                const offset = circumference - (state.progress / 100) * circumference;
+                circleEl.style.strokeDashoffset = offset;
+            }
+
+            // Update detailed phase text according to progress brackets (20% increments)
+            const titleEl = document.getElementById(`ring-title-${id}`);
+            const subEl = document.getElementById(`ring-sub-${id}`);
+            
+            const phaseIndex = Math.min(Math.floor(state.progress / 20), phases.length - 1);
+            const currentPhase = phases[phaseIndex];
+
+            if (titleEl && currentPhase) {
+                titleEl.innerHTML = `⚙️ ${currentPhase.title}`;
+            }
+            if (subEl && currentPhase) {
+                subEl.textContent = currentPhase.sub;
+            }
+        });
+    }, 120); // Smooth sweeps every 120ms
 }
 
