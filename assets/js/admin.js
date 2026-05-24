@@ -1329,6 +1329,7 @@ function setupVisualThemeEngine() {
         
         const headerStyle = document.getElementById("theme-header-style").value;
         const fontPreset = document.getElementById("theme-fonts").value;
+        const layoutStyle = document.getElementById("theme-layout-style").value;
         
         const bgH = parseInt(document.getElementById("theme-bg-hue").value, 10);
         const bgS = parseInt(document.getElementById("theme-bg-sat").value, 10);
@@ -1338,6 +1339,14 @@ function setupVisualThemeEngine() {
         const borderA = parseInt(document.getElementById("theme-border-opacity").value, 10) * 0.01;
         const glowH = parseInt(document.getElementById("theme-glow-hue").value, 10);
         const glowS = parseInt(document.getElementById("theme-glow-sat").value, 10);
+
+        // Accent Colors
+        const priH = parseInt(document.getElementById("theme-primary-hue").value, 10);
+        const priS = parseInt(document.getElementById("theme-primary-sat").value, 10);
+        const priL = parseInt(document.getElementById("theme-primary-light").value, 10);
+        const secH = parseInt(document.getElementById("theme-secondary-hue").value, 10);
+        const secS = parseInt(document.getElementById("theme-secondary-sat").value, 10);
+        const secL = parseInt(document.getElementById("theme-secondary-light").value, 10);
 
         // Update labels text
         document.getElementById("theme-radius-val").textContent = `${radius}px`;
@@ -1356,6 +1365,13 @@ function setupVisualThemeEngine() {
         document.getElementById("theme-border-opacity-val").textContent = `${borderA.toFixed(2)}`;
         document.getElementById("theme-glow-hue-val").textContent = `${glowH}°`;
         document.getElementById("theme-glow-sat-val").textContent = `${glowS}%`;
+
+        document.getElementById("theme-primary-hue-val").textContent = `${priH}°`;
+        document.getElementById("theme-primary-sat-val").textContent = `${priS}%`;
+        document.getElementById("theme-primary-light-val").textContent = `${priL}%`;
+        document.getElementById("theme-secondary-hue-val").textContent = `${secH}°`;
+        document.getElementById("theme-secondary-sat-val").textContent = `${secS}%`;
+        document.getElementById("theme-secondary-light-val").textContent = `${secL}%`;
 
         // Update preview labels in stats
         document.getElementById("preview-gap-val").textContent = `${gaps}px`;
@@ -1411,15 +1427,84 @@ function setupVisualThemeEngine() {
         if (previewBody) {
             previewBody.style.background = `hsl(${bgH}, ${bgS}%, ${bgL + 1}%)`;
         }
+
+        // ==========================================
+        // DYNAMIC RESPONSIVE REAL-TIME FEEDBACK ON ROOT!
+        // ==========================================
+        document.documentElement.style.setProperty('--radius-md', `${radius}px`);
+        document.documentElement.style.setProperty('--radius-lg', `${radius + 4}px`);
+        document.documentElement.style.setProperty('--border-thickness', `${thickness}px`);
+        document.documentElement.style.setProperty('--glass-blur', `${blurVal}px`);
+        document.documentElement.style.setProperty('--glow-intensity', glowMult);
+        document.documentElement.style.setProperty('--glow-speed', `${glowSpeed}s`);
+        document.documentElement.style.setProperty('--grid-gap', `${gaps}px`);
+        document.documentElement.style.setProperty('--section-padding', `${padding}px 0`);
+
+        document.documentElement.style.setProperty('--bg-primary', `hsl(${bgH}, ${bgS}%, ${bgL}%)`);
+        document.documentElement.style.setProperty('--card-bg-custom', `hsla(${bgH}, ${bgS + 5}%, ${cardL}%, ${cardA})`);
+        document.documentElement.style.setProperty('--border-color-custom', `hsla(${bgH}, 20%, 80%, ${borderA})`);
+        document.documentElement.style.setProperty('--glow-color-custom', `hsla(${glowH}, ${glowS}%, 50%, 0.15)`);
+
+        // Accent Colors real-time injection
+        document.documentElement.style.setProperty('--accent-primary-h', priH);
+        document.documentElement.style.setProperty('--accent-primary-s', `${priS}%`);
+        document.documentElement.style.setProperty('--accent-primary-l', `${priL}%`);
+        document.documentElement.style.setProperty('--accent-secondary-h', secH);
+        document.documentElement.style.setProperty('--accent-secondary-s', `${secS}%`);
+        document.documentElement.style.setProperty('--accent-secondary-l', `${secL}%`);
+
+        // Typography Fonts real-time injection
+        if (fontPreset === "cyberpunk") {
+            document.documentElement.style.setProperty('--font-headings', "'Courier New', Courier, monospace");
+            document.documentElement.style.setProperty('--font-body', "'Courier New', Courier, monospace");
+        } else if (fontPreset === "tech-modern") {
+            document.documentElement.style.setProperty('--font-headings', "'Roboto', sans-serif");
+            document.documentElement.style.setProperty('--font-body', "'Roboto', sans-serif");
+        } else {
+            document.documentElement.style.setProperty('--font-headings', "'Outfit', sans-serif");
+            document.documentElement.style.setProperty('--font-body', "'Plus Jakarta Sans', sans-serif");
+        }
+
+        // Layout Theme real-time injection
+        document.body.classList.remove("theme-liquid", "theme-saas");
+        if (layoutStyle === "liquid") {
+            document.body.classList.add("theme-liquid");
+            if (!document.querySelector(".liquid-bg-blob")) {
+                const blob1 = document.createElement("div");
+                blob1.className = "liquid-bg-blob blob-1";
+                const blob2 = document.createElement("div");
+                blob2.className = "liquid-bg-blob blob-2";
+                document.body.appendChild(blob1);
+                document.body.appendChild(blob2);
+            }
+        } else {
+            document.querySelectorAll(".liquid-bg-blob").forEach(el => el.remove());
+            if (layoutStyle === "saas") {
+                document.body.classList.add("theme-saas");
+            }
+        }
+
+        // Toggle sticky header classes in real-time
+        const globalHeader = document.getElementById("global-header");
+        if (globalHeader) {
+            globalHeader.classList.remove("header-floating-glass", "header-centered");
+            if (headerStyle === 'floating-glass') {
+                globalHeader.classList.add("header-floating-glass");
+            } else if (headerStyle === 'centered') {
+                globalHeader.classList.add("header-centered");
+            }
+        }
     }
 
     // Attach real-time input event listeners to all sliders & controls
     const controlsList = [
         "theme-radius", "theme-border-thickness", "theme-blur", "theme-glow-intensity",
         "theme-glow-speed", "theme-gaps", "theme-padding", "theme-header-style",
-        "theme-fonts", "theme-bg-hue", "theme-bg-sat", "theme-bg-light",
+        "theme-fonts", "theme-layout-style", "theme-bg-hue", "theme-bg-sat", "theme-bg-light",
         "theme-card-light", "theme-card-opacity", "theme-border-opacity",
-        "theme-glow-hue", "theme-glow-sat"
+        "theme-glow-hue", "theme-glow-sat",
+        "theme-primary-hue", "theme-primary-sat", "theme-primary-light",
+        "theme-secondary-hue", "theme-secondary-sat", "theme-secondary-light"
     ];
     
     controlsList.forEach(id => {
@@ -1450,6 +1535,7 @@ function setupVisualThemeEngine() {
                 document.getElementById("theme-padding").value = 80;
                 document.getElementById("theme-header-style").value = "sticky-solid";
                 document.getElementById("theme-fonts").value = "minimal-slate";
+                document.getElementById("theme-layout-style").value = "saas";
 
                 document.getElementById("theme-bg-hue").value = 240;
                 document.getElementById("theme-bg-sat").value = 10;
@@ -1459,6 +1545,13 @@ function setupVisualThemeEngine() {
                 document.getElementById("theme-border-opacity").value = 8; // 0.08
                 document.getElementById("theme-glow-hue").value = 267;
                 document.getElementById("theme-glow-sat").value = 90;
+
+                document.getElementById("theme-primary-hue").value = 267;
+                document.getElementById("theme-primary-sat").value = 90;
+                document.getElementById("theme-primary-light").value = 61;
+                document.getElementById("theme-secondary-hue").value = 185;
+                document.getElementById("theme-secondary-sat").value = 90;
+                document.getElementById("theme-secondary-light").value = 50;
             } else if (presetName === 'aurora') {
                 document.getElementById("theme-radius").value = 24;
                 document.getElementById("theme-border-thickness").value = 1;
@@ -1469,6 +1562,7 @@ function setupVisualThemeEngine() {
                 document.getElementById("theme-padding").value = 90;
                 document.getElementById("theme-header-style").value = "floating-glass";
                 document.getElementById("theme-fonts").value = "minimal-slate";
+                document.getElementById("theme-layout-style").value = "liquid";
 
                 document.getElementById("theme-bg-hue").value = 310;
                 document.getElementById("theme-bg-sat").value = 15;
@@ -1478,6 +1572,13 @@ function setupVisualThemeEngine() {
                 document.getElementById("theme-border-opacity").value = 12; // 0.12
                 document.getElementById("theme-glow-hue").value = 185;
                 document.getElementById("theme-glow-sat").value = 90;
+
+                document.getElementById("theme-primary-hue").value = 310;
+                document.getElementById("theme-primary-sat").value = 90;
+                document.getElementById("theme-primary-light").value = 60;
+                document.getElementById("theme-secondary-hue").value = 185;
+                document.getElementById("theme-secondary-sat").value = 90;
+                document.getElementById("theme-secondary-light").value = 50;
             } else if (presetName === 'cyberpunk') {
                 document.getElementById("theme-radius").value = 0;
                 document.getElementById("theme-border-thickness").value = 2;
@@ -1488,6 +1589,7 @@ function setupVisualThemeEngine() {
                 document.getElementById("theme-padding").value = 60;
                 document.getElementById("theme-header-style").value = "sticky-solid";
                 document.getElementById("theme-fonts").value = "cyberpunk";
+                document.getElementById("theme-layout-style").value = "default";
 
                 document.getElementById("theme-bg-hue").value = 55;
                 document.getElementById("theme-bg-sat").value = 25;
@@ -1497,6 +1599,13 @@ function setupVisualThemeEngine() {
                 document.getElementById("theme-border-opacity").value = 25; // 0.25
                 document.getElementById("theme-glow-hue").value = 320;
                 document.getElementById("theme-glow-sat").value = 95;
+
+                document.getElementById("theme-primary-hue").value = 320;
+                document.getElementById("theme-primary-sat").value = 95;
+                document.getElementById("theme-primary-light").value = 50;
+                document.getElementById("theme-secondary-hue").value = 55;
+                document.getElementById("theme-secondary-sat").value = 95;
+                document.getElementById("theme-secondary-light").value = 50;
             } else if (presetName === 'minimal') {
                 document.getElementById("theme-radius").value = 12;
                 document.getElementById("theme-border-thickness").value = 1;
@@ -1507,6 +1616,7 @@ function setupVisualThemeEngine() {
                 document.getElementById("theme-padding").value = 80;
                 document.getElementById("theme-header-style").value = "centered";
                 document.getElementById("theme-fonts").value = "tech-modern";
+                document.getElementById("theme-layout-style").value = "saas";
 
                 document.getElementById("theme-bg-hue").value = 210;
                 document.getElementById("theme-bg-sat").value = 5;
@@ -1516,6 +1626,13 @@ function setupVisualThemeEngine() {
                 document.getElementById("theme-border-opacity").value = 6; // 0.06
                 document.getElementById("theme-glow-hue").value = 200;
                 document.getElementById("theme-glow-sat").value = 50;
+
+                document.getElementById("theme-primary-hue").value = 200;
+                document.getElementById("theme-primary-sat").value = 50;
+                document.getElementById("theme-primary-light").value = 60;
+                document.getElementById("theme-secondary-hue").value = 210;
+                document.getElementById("theme-secondary-sat").value = 5;
+                document.getElementById("theme-secondary-light").value = 20;
             }
 
             // Sync visual preview instantly
@@ -1537,6 +1654,7 @@ function setupVisualThemeEngine() {
         db.settings.sectionPadding = parseInt(document.getElementById("theme-padding").value, 10);
         db.settings.headerStyle = document.getElementById("theme-header-style").value;
         db.settings.fontPreset = document.getElementById("theme-fonts").value;
+        db.settings.theme = document.getElementById("theme-layout-style").value;
 
         db.settings.customBgH = parseInt(document.getElementById("theme-bg-hue").value, 10);
         db.settings.customBgS = parseInt(document.getElementById("theme-bg-sat").value, 10);
@@ -1547,9 +1665,14 @@ function setupVisualThemeEngine() {
         db.settings.customGlowH = parseInt(document.getElementById("theme-glow-hue").value, 10);
         db.settings.customGlowS = parseInt(document.getElementById("theme-glow-sat").value, 10);
 
-        // Dynamically sync base accents for fallback elements
-        db.settings.primaryColorH = db.settings.customGlowH;
-        db.settings.primaryColorS = db.settings.customGlowS;
+        // Dynamically sync base accents for global pages
+        db.settings.primaryColorH = parseInt(document.getElementById("theme-primary-hue").value, 10);
+        db.settings.primaryColorS = parseInt(document.getElementById("theme-primary-sat").value, 10);
+        db.settings.primaryColorL = parseInt(document.getElementById("theme-primary-light").value, 10);
+        
+        db.settings.secondaryColorH = parseInt(document.getElementById("theme-secondary-hue").value, 10);
+        db.settings.secondaryColorS = parseInt(document.getElementById("theme-secondary-sat").value, 10);
+        db.settings.secondaryColorL = parseInt(document.getElementById("theme-secondary-light").value, 10);
         
         saveDB(db);
         injectTheme();
@@ -1574,6 +1697,7 @@ function populateVisualThemeEngineFields() {
     
     document.getElementById("theme-header-style").value = s.headerStyle || "floating-glass";
     document.getElementById("theme-fonts").value = s.fontPreset || "minimal-slate";
+    document.getElementById("theme-layout-style").value = s.theme || "default";
 
     document.getElementById("theme-bg-hue").value = s.customBgH !== undefined ? s.customBgH : 240;
     document.getElementById("theme-bg-sat").value = s.customBgS !== undefined ? s.customBgS : 10;
@@ -1584,102 +1708,122 @@ function populateVisualThemeEngineFields() {
     document.getElementById("theme-glow-hue").value = s.customGlowH !== undefined ? s.customGlowH : 267;
     document.getElementById("theme-glow-sat").value = s.customGlowS !== undefined ? s.customGlowS : 90;
 
-    // Initialize mock preview sync instantly
-    const themeForm = document.getElementById("admin-theme-form");
-    if (themeForm) {
-        // Trigger visual sync by invoking the helper
-        const radius = parseInt(document.getElementById("theme-radius").value, 10);
-        const thickness = parseInt(document.getElementById("theme-border-thickness").value, 10);
-        const blurVal = parseInt(document.getElementById("theme-blur").value, 10);
-        const glowMult = parseInt(document.getElementById("theme-glow-intensity").value, 10) * 0.1;
-        const glowSpeed = parseInt(document.getElementById("theme-glow-speed").value, 10);
-        const gaps = parseInt(document.getElementById("theme-gaps").value, 10);
-        const padding = parseInt(document.getElementById("theme-padding").value, 10);
-        
-        const headerStyle = document.getElementById("theme-header-style").value;
-        const fontPreset = document.getElementById("theme-fonts").value;
-        
-        const bgH = parseInt(document.getElementById("theme-bg-hue").value, 10);
-        const bgS = parseInt(document.getElementById("theme-bg-sat").value, 10);
-        const bgL = parseInt(document.getElementById("theme-bg-light").value, 10);
-        const cardL = parseInt(document.getElementById("theme-card-light").value, 10);
-        const cardA = parseInt(document.getElementById("theme-card-opacity").value, 10) * 0.01;
-        const borderA = parseInt(document.getElementById("theme-border-opacity").value, 10) * 0.01;
-        const glowH = parseInt(document.getElementById("theme-glow-hue").value, 10);
-        const glowS = parseInt(document.getElementById("theme-glow-sat").value, 10);
+    // Accent Colors population
+    document.getElementById("theme-primary-hue").value = s.primaryColorH !== undefined ? s.primaryColorH : 267;
+    document.getElementById("theme-primary-sat").value = s.primaryColorS !== undefined ? s.primaryColorS : 90;
+    document.getElementById("theme-primary-light").value = s.primaryColorL !== undefined ? s.primaryColorL : 61;
+    
+    document.getElementById("theme-secondary-hue").value = s.secondaryColorH !== undefined ? s.secondaryColorH : 185;
+    document.getElementById("theme-secondary-sat").value = s.secondaryColorS !== undefined ? s.secondaryColorS : 90;
+    document.getElementById("theme-secondary-light").value = s.secondaryColorL !== undefined ? s.secondaryColorL : 50;
 
-        // Update labels text
-        document.getElementById("theme-radius-val").textContent = `${radius}px`;
-        document.getElementById("theme-border-thickness-val").textContent = `${thickness}px`;
-        document.getElementById("theme-blur-val").textContent = `${blurVal}px`;
-        document.getElementById("theme-glow-intensity-val").textContent = `${glowMult.toFixed(1)}x`;
-        document.getElementById("theme-glow-speed-val").textContent = `${glowSpeed}s`;
-        document.getElementById("theme-gaps-val").textContent = `${gaps}px`;
-        document.getElementById("theme-padding-val").textContent = `${padding}px`;
+    // Trigger visual sync by invoking the helper
+    const radius = parseInt(document.getElementById("theme-radius").value, 10);
+    const thickness = parseInt(document.getElementById("theme-border-thickness").value, 10);
+    const blurVal = parseInt(document.getElementById("theme-blur").value, 10);
+    const glowMult = parseInt(document.getElementById("theme-glow-intensity").value, 10) * 0.1;
+    const glowSpeed = parseInt(document.getElementById("theme-glow-speed").value, 10);
+    const gaps = parseInt(document.getElementById("theme-gaps").value, 10);
+    const padding = parseInt(document.getElementById("theme-padding").value, 10);
+    
+    const headerStyle = document.getElementById("theme-header-style").value;
+    const fontPreset = document.getElementById("theme-fonts").value;
+    const layoutStyle = document.getElementById("theme-layout-style").value;
+    
+    const bgH = parseInt(document.getElementById("theme-bg-hue").value, 10);
+    const bgS = parseInt(document.getElementById("theme-bg-sat").value, 10);
+    const bgL = parseInt(document.getElementById("theme-bg-light").value, 10);
+    const cardL = parseInt(document.getElementById("theme-card-light").value, 10);
+    const cardA = parseInt(document.getElementById("theme-card-opacity").value, 10) * 0.01;
+    const borderA = parseInt(document.getElementById("theme-border-opacity").value, 10) * 0.01;
+    const glowH = parseInt(document.getElementById("theme-glow-hue").value, 10);
+    const glowS = parseInt(document.getElementById("theme-glow-sat").value, 10);
 
-        document.getElementById("theme-bg-hue-val").textContent = `${bgH}°`;
-        document.getElementById("theme-bg-sat-val").textContent = `${bgS}%`;
-        document.getElementById("theme-bg-light-val").textContent = `${bgL}%`;
-        document.getElementById("theme-card-light-val").textContent = `${cardL}%`;
-        document.getElementById("theme-card-opacity-val").textContent = `${cardA.toFixed(2)}`;
-        document.getElementById("theme-border-opacity-val").textContent = `${borderA.toFixed(2)}`;
-        document.getElementById("theme-glow-hue-val").textContent = `${glowH}°`;
-        document.getElementById("theme-glow-sat-val").textContent = `${glowS}%`;
+    const priH = parseInt(document.getElementById("theme-primary-hue").value, 10);
+    const priS = parseInt(document.getElementById("theme-primary-sat").value, 10);
+    const priL = parseInt(document.getElementById("theme-primary-light").value, 10);
+    const secH = parseInt(document.getElementById("theme-secondary-hue").value, 10);
+    const secS = parseInt(document.getElementById("theme-secondary-sat").value, 10);
+    const secL = parseInt(document.getElementById("theme-secondary-light").value, 10);
 
-        // Update preview labels in stats
-        document.getElementById("preview-gap-val").textContent = `${gaps}px`;
-        document.getElementById("preview-padding-val").textContent = `${padding}px`;
+    // Update labels text
+    document.getElementById("theme-radius-val").textContent = `${radius}px`;
+    document.getElementById("theme-border-thickness-val").textContent = `${thickness}px`;
+    document.getElementById("theme-blur-val").textContent = `${blurVal}px`;
+    document.getElementById("theme-glow-intensity-val").textContent = `${glowMult.toFixed(1)}x`;
+    document.getElementById("theme-glow-speed-val").textContent = `${glowSpeed}s`;
+    document.getElementById("theme-gaps-val").textContent = `${gaps}px`;
+    document.getElementById("theme-padding-val").textContent = `${padding}px`;
 
-        // Apply visual properties to preview mock card element
-        const mockCard = document.getElementById("preview-card-mock");
-        if (mockCard) {
-            mockCard.style.borderRadius = `${radius}px`;
-            mockCard.style.borderWidth = `${thickness}px`;
-            mockCard.style.backdropFilter = `blur(${blurVal}px)`;
-            mockCard.style.webkitBackdropFilter = `blur(${blurVal}px)`;
-            mockCard.style.background = `hsla(${bgH}, ${bgS + 5}%, ${cardL}%, ${cardA})`;
-            mockCard.style.borderColor = `hsla(${bgH}, 20%, 80%, ${borderA})`;
-            mockCard.style.boxShadow = `0 10px 35px rgba(0,0,0,0.4), 0 0 ${16 * glowMult}px hsla(${glowH}, ${glowS}%, 50%, 0.15)`;
+    document.getElementById("theme-bg-hue-val").textContent = `${bgH}°`;
+    document.getElementById("theme-bg-sat-val").textContent = `${bgS}%`;
+    document.getElementById("theme-bg-light-val").textContent = `${bgL}%`;
+    document.getElementById("theme-card-light-val").textContent = `${cardL}%`;
+    document.getElementById("theme-card-opacity-val").textContent = `${cardA.toFixed(2)}`;
+    document.getElementById("theme-border-opacity-val").textContent = `${borderA.toFixed(2)}`;
+    document.getElementById("theme-glow-hue-val").textContent = `${glowH}°`;
+    document.getElementById("theme-glow-sat-val").textContent = `${glowS}%`;
+
+    document.getElementById("theme-primary-hue-val").textContent = `${priH}°`;
+    document.getElementById("theme-primary-sat-val").textContent = `${priS}%`;
+    document.getElementById("theme-primary-light-val").textContent = `${priL}%`;
+    document.getElementById("theme-secondary-hue-val").textContent = `${secH}°`;
+    document.getElementById("theme-secondary-sat-val").textContent = `${secS}%`;
+    document.getElementById("theme-secondary-light-val").textContent = `${secL}%`;
+
+    // Update preview labels in stats
+    document.getElementById("preview-gap-val").textContent = `${gaps}px`;
+    document.getElementById("preview-padding-val").textContent = `${padding}px`;
+
+    // Apply visual properties to preview mock card element
+    const mockCard = document.getElementById("preview-card-mock");
+    if (mockCard) {
+        mockCard.style.borderRadius = `${radius}px`;
+        mockCard.style.borderWidth = `${thickness}px`;
+        mockCard.style.backdropFilter = `blur(${blurVal}px)`;
+        mockCard.style.webkitBackdropFilter = `blur(${blurVal}px)`;
+        mockCard.style.background = `hsla(${bgH}, ${bgS + 5}%, ${cardL}%, ${cardA})`;
+        mockCard.style.borderColor = `hsla(${bgH}, 20%, 80%, ${borderA})`;
+        mockCard.style.boxShadow = `0 10px 35px rgba(0,0,0,0.4), 0 0 ${16 * glowMult}px hsla(${glowH}, ${glowS}%, 50%, 0.15)`;
+    }
+
+    // Apply font styling preview to mock title
+    const mockTitle = document.getElementById("preview-title-mock");
+    if (mockTitle) {
+        if (fontPreset === "cyberpunk") {
+            mockTitle.style.fontFamily = "'Courier New', Courier, monospace";
+        } else if (fontPreset === "tech-modern") {
+            mockTitle.style.fontFamily = "'Roboto', sans-serif";
+        } else {
+            mockTitle.style.fontFamily = "'Outfit', sans-serif";
         }
+    }
 
-        // Apply font styling preview to mock title
-        const mockTitle = document.getElementById("preview-title-mock");
-        if (mockTitle) {
-            if (fontPreset === "cyberpunk") {
-                mockTitle.style.fontFamily = "'Courier New', Courier, monospace";
-            } else if (fontPreset === "tech-modern") {
-                mockTitle.style.fontFamily = "'Roboto', sans-serif";
-            } else {
-                mockTitle.style.fontFamily = "'Outfit', sans-serif";
-            }
+    // Apply header styling preview
+    const mockHeader = document.getElementById("preview-header-mock");
+    if (mockHeader) {
+        mockHeader.style.borderRadius = `${radius}px`;
+        mockHeader.style.borderWidth = `${thickness}px`;
+        mockHeader.style.borderColor = `hsla(${bgH}, 20%, 80%, ${borderA})`;
+        if (headerStyle === 'floating-glass') {
+            mockHeader.style.transform = 'scale(0.95)';
+            mockHeader.style.background = `rgba(255,255,255,0.02)`;
+            mockHeader.style.boxShadow = `0 0 10px hsla(${glowH}, ${glowS}%, 50%, 0.1)`;
+        } else if (headerStyle === 'centered') {
+            mockHeader.style.transform = 'scale(1)';
+            mockHeader.style.background = 'none';
+            mockHeader.style.boxShadow = 'none';
+        } else { // sticky-solid
+            mockHeader.style.transform = 'scale(1)';
+            mockHeader.style.background = `hsl(${bgH}, ${bgS}%, ${bgL + 4}%)`;
+            mockHeader.style.boxShadow = '0 5px 15px rgba(0,0,0,0.3)';
         }
+    }
 
-        // Apply header styling preview
-        const mockHeader = document.getElementById("preview-header-mock");
-        if (mockHeader) {
-            mockHeader.style.borderRadius = `${radius}px`;
-            mockHeader.style.borderWidth = `${thickness}px`;
-            mockHeader.style.borderColor = `hsla(${bgH}, 20%, 80%, ${borderA})`;
-            if (headerStyle === 'floating-glass') {
-                mockHeader.style.transform = 'scale(0.95)';
-                mockHeader.style.background = `rgba(255,255,255,0.02)`;
-                mockHeader.style.boxShadow = `0 0 10px hsla(${glowH}, ${glowS}%, 50%, 0.1)`;
-            } else if (headerStyle === 'centered') {
-                mockHeader.style.transform = 'scale(1)';
-                mockHeader.style.background = 'none';
-                mockHeader.style.boxShadow = 'none';
-            } else { // sticky-solid
-                mockHeader.style.transform = 'scale(1)';
-                mockHeader.style.background = `hsl(${bgH}, ${bgS}%, ${bgL + 4}%)`;
-                mockHeader.style.boxShadow = '0 5px 15px rgba(0,0,0,0.3)';
-            }
-        }
-
-        // Apply main background preview on parent card wrapper
-        const previewBody = document.getElementById("theme-preview-body");
-        if (previewBody) {
-            previewBody.style.background = `hsl(${bgH}, ${bgS}%, ${bgL + 1}%)`;
-        }
+    // Apply main background preview on parent card wrapper
+    const previewBody = document.getElementById("theme-preview-body");
+    if (previewBody) {
+        previewBody.style.background = `hsl(${bgH}, ${bgS}%, ${bgL + 1}%)`;
     }
 }
 
