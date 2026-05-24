@@ -492,6 +492,8 @@
                                             <option value="default">🌌 Central Obsidian (Default Dark Glass)</option>
                                             <option value="liquid">💧 3D Liquid Glow (Moving Fluid Blobs)</option>
                                             <option value="saas">💻 SaaS Professional (Crisp Tech Grid Mesh)</option>
+                                            <option value="gradient">🎨 Premium Gradient Blur (Orbital Space Aura)</option>
+                                            <option value="flat">🔲 Solid Flat Sleek (No backing patterns)</option>
                                         </select>
                                     </div>
                                 </div>
@@ -499,6 +501,34 @@
                                 <!-- Realtime Color tweaks sections -->
                                 <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 10px;">
                                     <h4 style="font-size: 1rem; color: var(--accent-secondary); margin-bottom: 16px; font-weight: 700; text-transform: uppercase;">2. Fine-Tuned Background & Card Colors</h4>
+                                    
+                                    <!-- Quick Color Pickers Block -->
+                                    <div class="glass-card" style="background: rgba(255, 255, 255, 0.02); border: 1px dashed var(--border-color); padding: 20px; margin-bottom: 24px; border-radius: var(--radius-md);">
+                                        <h5 style="font-size: 0.88rem; font-weight: 700; color: var(--accent-secondary); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; text-align: center;">🎨 Quick Brand Color Pickers</h5>
+                                        <p style="font-size: 0.78rem; color: var(--text-muted); text-align: center; margin-bottom: 16px;">Directly select a color, and HSL sliders will auto-synchronize in real time!</p>
+                                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(75px, 1fr)); gap: 12px; justify-content: center;">
+                                            <div class="form-group" style="margin-bottom: 0; align-items: center; text-align: center; gap: 4px;">
+                                                <label class="form-label" for="theme-bg-color-picker" style="font-size: 0.72rem; margin-bottom: 2px;">Background</label>
+                                                <input type="color" id="theme-bg-color-picker" value="#05050a" style="width: 50px; height: 38px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; background: transparent; padding: 0;">
+                                            </div>
+                                            <div class="form-group" style="margin-bottom: 0; align-items: center; text-align: center; gap: 4px;">
+                                                <label class="form-label" for="theme-card-color-picker" style="font-size: 0.72rem; margin-bottom: 2px;">Card Backing</label>
+                                                <input type="color" id="theme-card-color-picker" value="#0f0f15" style="width: 50px; height: 38px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; background: transparent; padding: 0;">
+                                            </div>
+                                            <div class="form-group" style="margin-bottom: 0; align-items: center; text-align: center; gap: 4px;">
+                                                <label class="form-label" for="theme-primary-color-picker" style="font-size: 0.72rem; margin-bottom: 2px;">Primary</label>
+                                                <input type="color" id="theme-primary-color-picker" value="#8b5cf6" style="width: 50px; height: 38px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; background: transparent; padding: 0;">
+                                            </div>
+                                            <div class="form-group" style="margin-bottom: 0; align-items: center; text-align: center; gap: 4px;">
+                                                <label class="form-label" for="theme-secondary-color-picker" style="font-size: 0.72rem; margin-bottom: 2px;">Secondary</label>
+                                                <input type="color" id="theme-secondary-color-picker" value="#06b6d4" style="width: 50px; height: 38px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; background: transparent; padding: 0;">
+                                            </div>
+                                            <div class="form-group" style="margin-bottom: 0; align-items: center; text-align: center; gap: 4px;">
+                                                <label class="form-label" for="theme-glow-color-picker" style="font-size: 0.72rem; margin-bottom: 2px;">Shadow Glow</label>
+                                                <input type="color" id="theme-glow-color-picker" value="#8b5cf6" style="width: 50px; height: 38px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; background: transparent; padding: 0;">
+                                            </div>
+                                        </div>
+                                    </div>
                                     
                                     <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                                         <div class="form-group">
