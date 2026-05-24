@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Admin Control Panel | FZ Media</title>
+    
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="assets/css/global.css">
+    <link rel="stylesheet" href="assets/css/pages.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="assets/img/logo/FZ logo 1.png" type="image/x-icon">
+</head>
+<body>
+
+    <!-- Shared Header Mounting -->
+    <header id="global-header"></header>
+
+    <main style="padding-top: 80px; min-height: 100vh;">
+
+        <!-- 1. Admin Login Panel (Hidden after authentication) -->
+        <section class="admin-auth-section" id="admin-auth-panel">
+            <div class="admin-glow-top"></div>
+            <div class="container" style="max-width: 440px;">
+                <div class="glass-card auth-card" style="text-align: center;">
+                    <span class="section-badge" style="font-size: 0.72rem; padding: 4px 10px; margin-bottom: 12px;">Admin Center</span>
+                    <h2 style="font-size: 1.8rem; margin-bottom: 10px;">Executive Sign-In</h2>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 28px;">Authorize credentials to access FZ Media state managers and configuration control panels.</p>
+                    
+                    <div id="admin-auth-error" class="auth-error-alert" style="display: none;"></div>
+
+                    <form id="admin-login-form" style="text-align: left;">
+                        <div class="form-group">
+                            <label class="form-label" for="admin-email">Admin Email Address</label>
+                            <input type="email" id="admin-email" class="form-control" placeholder="framezonem@gmail.com" value="framezonem@gmail.com" required>
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 24px;">
+                            <label class="form-label" for="admin-pass">Security Password</label>
+                            <input type="password" id="admin-pass" class="form-control" placeholder="••••••••" value="Fzmedia@123" required>
+                        </div>
+
+                        <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; font-size: 1rem;">
+                            Authorize & Unlock Dashboard
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Main Admin Dashboard Workspace (Mounted after sign-in) -->
+        <section class="admin-workspace-section" id="admin-workspace" style="display: none; padding: 40px 0;">
+            <div class="container">
+                
+                <!-- Master Dashboard Header -->
+                <div class="admin-header-flex" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+                    <div>
+                        <h1 style="font-size: 2.5rem; line-height: 1.1;">FZ Media <span class="text-gradient-cyan">Command Center</span></h1>
+                        <p style="color: var(--text-secondary); margin-top: 6px; font-size: 0.98rem;">Manage team members, brand assets, active category tabs, portfolio videos, and packages.</p>
+                    </div>
+                    
+                    <div style="display: flex; gap: 14px;">
+                        <button class="btn-secondary" id="admin-reset-btn" style="border-color: rgba(239, 68, 68, 0.4); color: #f87171;">
+                            Reset to Seed Defaults ⚠
+                        </button>
+                        <button class="btn-secondary" id="admin-logout-btn">
+                            Exit Session
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Horizontal Section Tabs Styled Premium Like Services Tiers -->
+                <div class="services-tab-container" style="margin-bottom: 40px;">
+                    <div class="services-tabs-list" style="margin: 0 auto;">
+                        <button class="services-tab-trigger dash-tab active" data-target="admin-general">⚙ General & Colors</button>
+                        <button class="services-tab-trigger dash-tab" data-target="admin-team">👥 Team Roster CRUD</button>
+                        <button class="services-tab-trigger dash-tab" data-target="admin-portfolio">🎬 Portfolio CRUD</button>
+                        <button class="services-tab-trigger dash-tab" data-target="admin-testimonials">⭐ Client Reviews CRUD</button>
+                        <button class="services-tab-trigger dash-tab" data-target="admin-services">💰 Service Packages</button>
+                        <button class="services-tab-trigger dash-tab" data-target="admin-inbox">📬 Inbox & Revisions</button>
+                    </div>
+                </div>
+
+                <!-- PANEL A. General & HSL Color Theme Customizer & CSS Charts -->
+                <div class="dash-tab-content active" id="admin-general">
+                    <div class="admin-grid-layout" style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                        
+                        <!-- Dynamic Logo and Branding Settings -->
+                        <div class="glass-card">
+                            <h3 style="font-size: 1.3rem; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">Branding Asset Configurations</h3>
+                            
+                            <form id="admin-branding-form">
+                                <div class="form-group">
+                                    <label class="form-label" for="cfg-agency-name">Agency Brand Name</label>
+                                    <input type="text" id="cfg-agency-name" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="cfg-agency-fullname">Agency Corporate Full Name</label>
+                                    <input type="text" id="cfg-agency-fullname" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="cfg-logo-path">Navbar Logo File Path / Image Link</label>
+                                    <input type="text" id="cfg-logo-path" class="form-control" placeholder="e.g. assets/img/logo/FZ logo.png" required>
+                                </div>
+                                <div class="form-group">
+                                     <label class="form-label" for="cfg-logo-icon">Navbar Logo Icon (Tiny Profile Icon) *</label>
+                                     <input type="text" id="cfg-logo-icon" class="form-control" placeholder="e.g. assets/img/logo/FZ logo 1.png" required>
+                                 </div>
+                                 
+                                 <div class="form-group" style="margin-bottom: 20px;">
+                                     <label class="form-label" for="cfg-theme-select">Website Premium Layout Theme Style *</label>
+                                     <select id="cfg-theme-select" class="form-control" style="background-color: var(--bg-secondary); border-color: var(--border-color); cursor: pointer;" required>
+                                         <option value="default">🌌 Central Obsidian (Default Dark Glass)</option>
+                                         <option value="liquid">💧 3D Liquid Glow (Premium Fluid Gradients)</option>
+                                         <option value="saas">💻 SaaS Professional (Crisp High-Contrast Tech Grid)</option>
+                                     </select>
+                                 </div>
+                                 
+                                 <div style="text-align: right; margin-top: 24px;">
+                                    <button type="submit" class="btn-primary" style="padding: 10px 24px; font-size: 0.92rem;">
+                                        Save Branding Assets
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <!-- CSS Variable HSL Theme Color Customizer -->
+                        <div class="glass-card">
+                            <h3 style="font-size: 1.3rem; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">Website Dynamic HSL Color Theme</h3>
+                            <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 24px;">Drag the sliders to adjust the Primary (Violet/Indigo) and Secondary (Cyan/Teal) colors across the entire website. These write dynamically to the global CSS engine!</p>
+                            
+                            <div class="color-picker-control-box">
+                                <div class="color-picker-row" style="margin-bottom: 28px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                        <span class="form-label">Primary Accent Hue (HSL Base)</span>
+                                        <span id="primary-hue-val" style="font-family: var(--font-headings); font-weight: 700; color: var(--accent-primary);">267</span>
+                                    </div>
+                                    <input type="range" min="0" max="360" value="267" class="hue-slider-input" id="hue-primary-slider">
+                                    <div class="color-gradient-bar primary-rainbow"></div>
+                                </div>
+                                
+                                <div class="color-picker-row" style="margin-bottom: 28px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                        <span class="form-label">Secondary Accent Hue (HSL Base)</span>
+                                        <span id="secondary-hue-val" style="font-family: var(--font-headings); font-weight: 700; color: var(--accent-secondary);">185</span>
+                                    </div>
+                                    <input type="range" min="0" max="360" value="185" class="hue-slider-input" id="hue-secondary-slider">
+                                    <div class="color-gradient-bar secondary-rainbow"></div>
+                                </div>
+                            </div>
+
+                            <div class="glowing-accent-preview-box" style="margin-top: 32px; padding: 20px; border-radius: var(--radius-md); text-align: center; border: 1px solid var(--border-color);">
+                                <span style="font-size: 0.82rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 12px;">Visual Theme Accent Preview</span>
+                                <div style="display: flex; justify-content: center; gap: 14px;">
+                                    <button class="btn-primary" type="button" style="font-size: 0.82rem; padding: 8px 16px;">Primary Glow Button</button>
+                                    <button class="btn-secondary" type="button" style="font-size: 0.82rem; padding: 8px 16px; border-color: var(--accent-secondary); color: var(--accent-secondary);">Secondary Outlined</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CSS Analytics Visualizations Charts (Spans both columns) -->
+                        <div class="glass-card" style="grid-column: span 2; margin-top: 32px;">
+                            <h3 style="font-size: 1.35rem; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">Executive Performance & Conversion Analytics</h3>
+                            
+                            <div class="analytics-stat-flex" style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 40px;">
+                                <div style="flex: 1; min-width: 150px; background: rgba(255,255,255,0.01); border: 1px solid var(--border-color); padding: 20px; border-radius: var(--radius-md); text-align: center;">
+                                    <div style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Monthly Revenue</div>
+                                    <h2 style="font-size: 2.2rem; color: #4ade80; margin-top: 6px;" id="stat-revenue">$1,240</h2>
+                                </div>
+                                <div style="flex: 1; min-width: 150px; background: rgba(255,255,255,0.01); border: 1px solid var(--border-color); padding: 20px; border-radius: var(--radius-md); text-align: center;">
+                                    <div style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Active Clients</div>
+                                    <h2 style="font-size: 2.2rem; color: var(--accent-primary); margin-top: 6px;" id="stat-active-clients">3</h2>
+                                </div>
+                                <div style="flex: 1; min-width: 150px; background: rgba(255,255,255,0.01); border: 1px solid var(--border-color); padding: 20px; border-radius: var(--radius-md); text-align: center;">
+                                    <div style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Active Projects</div>
+                                    <h2 style="font-size: 2.2rem; color: var(--accent-secondary); margin-top: 6px;" id="stat-active-projects">4</h2>
+                                </div>
+                                <div style="flex: 1; min-width: 150px; background: rgba(255,255,255,0.01); border: 1px solid var(--border-color); padding: 20px; border-radius: var(--radius-md); text-align: center;">
+                                    <div style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Pending Revisions</div>
+                                    <h2 style="font-size: 2.2rem; color: #f87171; margin-top: 6px;" id="stat-pending-revisions">1</h2>
+                                </div>
+                            </div>
+
+                            <h4 style="font-size: 1.05rem; margin-bottom: 20px;">Monthly Video Deliveries Volume (Last 4 Weeks)</h4>
+                            
+                            <!-- Premium Pure CSS Dynamic Bar Chart -->
+                            <div class="chart-outer-container" style="background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); padding: 30px; border-radius: var(--radius-md); height: 280px; display: flex; align-items: flex-end; justify-content: space-around; gap: 40px; position: relative;">
+                                
+                                <!-- Background Y-axis gridlines -->
+                                <div style="position: absolute; left: 0; right: 0; top: 20%; border-top: 1px dashed rgba(255,255,255,0.04); pointer-events: none;"></div>
+                                <div style="position: absolute; left: 0; right: 0; top: 50%; border-top: 1px dashed rgba(255,255,255,0.04); pointer-events: none;"></div>
+                                <div style="position: absolute; left: 0; right: 0; top: 80%; border-top: 1px dashed rgba(255,255,255,0.04); pointer-events: none;"></div>
+
+                                <!-- Week 1 -->
+                                <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; z-index: 2; flex: 1;">
+                                    <div style="width: 100%; max-width: 60px; height: 120px; background: linear-gradient(to top, var(--accent-primary) 0%, var(--accent-secondary) 100%); border-radius: 4px; box-shadow: 0 5px 15px var(--accent-primary-glow); position: relative;" class="chart-bar">
+                                        <span style="position: absolute; top: -26px; left: 50%; transform: translateX(-50%); font-size: 0.85rem; font-weight: 700;">8 vids</span>
+                                    </div>
+                                    <span style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Week 1</span>
+                                </div>
+
+                                <!-- Week 2 -->
+                                <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; z-index: 2; flex: 1;">
+                                    <div style="width: 100%; max-width: 60px; height: 180px; background: linear-gradient(to top, var(--accent-primary) 0%, var(--accent-secondary) 100%); border-radius: 4px; box-shadow: 0 5px 15px var(--accent-primary-glow); position: relative;" class="chart-bar">
+                                        <span style="position: absolute; top: -26px; left: 50%; transform: translateX(-50%); font-size: 0.85rem; font-weight: 700;">12 vids</span>
+                                    </div>
+                                    <span style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Week 2</span>
+                                </div>
+
+                                <!-- Week 3 -->
+                                <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; z-index: 2; flex: 1;">
+                                    <div style="width: 100%; max-width: 60px; height: 90px; background: linear-gradient(to top, var(--accent-primary) 0%, var(--accent-secondary) 100%); border-radius: 4px; box-shadow: 0 5px 15px var(--accent-primary-glow); position: relative;" class="chart-bar">
+                                        <span style="position: absolute; top: -26px; left: 50%; transform: translateX(-50%); font-size: 0.85rem; font-weight: 700;">6 vids</span>
+                                    </div>
+                                    <span style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Week 3</span>
+                                </div>
+
+                                <!-- Week 4 -->
+                                <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; z-index: 2; flex: 1;">
+                                    <div style="width: 100%; max-width: 60px; height: 210px; background: linear-gradient(to top, var(--accent-primary) 0%, var(--accent-secondary) 100%); border-radius: 4px; box-shadow: 0 5px 15px var(--accent-primary-glow); position: relative;" class="chart-bar">
+                                        <span style="position: absolute; top: -26px; left: 50%; transform: translateX(-50%); font-size: 0.85rem; font-weight: 700;">15 vids</span>
+                                    </div>
+                                    <span style="font-size: 0.82rem; color: var(--text-secondary); font-weight: 800;">Active Week</span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- PANEL B. Team Roster Dynamic CRUD Manager -->
+                <div class="dash-tab-content" id="admin-team">
+                    <div class="admin-grid-layout" style="display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 32px; align-items: flex-start;">
+                        
+                        <div class="glass-card">
+                            <h3 id="team-form-headline" style="font-size: 1.3rem; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">Add / Edit Team Member</h3>
+                            
+                            <form id="admin-team-form">
+                                <input type="hidden" id="team-member-edit-id">
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="tm-name">Full Name *</label>
+                                    <input type="text" id="tm-name" class="form-control" placeholder="e.g. Protik Hasan" required>
+                                </div>
+                                
+                                <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                    <div class="form-group">
+                                        <label class="form-label" for="tm-role">Corporate Role *</label>
+                                        <input type="text" id="tm-role" class="form-control" placeholder="e.g. Founder" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="tm-experience">Experience *</label>
+                                        <input type="text" id="tm-experience" class="form-control" placeholder="e.g. 5+ Years" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="tm-title">Dynamic Expertise Title *</label>
+                                    <input type="text" id="tm-title" class="form-control" placeholder="e.g. Motion & Saas Expert" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="tm-image">Avatar Image File Path / URL</label>
+                                    <input type="text" id="tm-image" class="form-control" placeholder="e.g. assets/img/team/Protik.png">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="tm-skills">Skills & capabilities checklist (Comma-separated) *</label>
+                                    <input type="text" id="tm-skills" class="form-control" placeholder="e.g. Premiere Pro, Explainer Videos, Colorist" required>
+                                </div>
+
+                                <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: flex-end;">
+                                    <button type="button" class="btn-secondary" id="tm-clear-btn" style="padding: 10px 20px; font-size: 0.9rem;">Clear Form</button>
+                                    <button type="submit" class="btn-primary" style="padding: 10px 24px; font-size: 0.92rem;">Save Member Card</button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <div class="glass-card">
+                            <h3 style="font-size: 1.3rem; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">Active FZ Media Team Roster</h3>
+                            
+                            <div class="admin-data-list-container" id="admin-roster-list-container">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- PANEL C. Portfolio and Video CRUD Manager -->
+                <div class="dash-tab-content" id="admin-portfolio">
+                    <div class="admin-grid-layout" style="display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 32px; align-items: flex-start;">
+                        
+                        <div class="glass-card">
+                            <h3 id="portfolio-form-headline" style="font-size: 1.3rem; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">Add / Edit Video Project</h3>
+                            
+                            <form id="admin-portfolio-form">
+                                <input type="hidden" id="port-edit-id">
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="port-title">Video Project Title *</label>
+                                    <input type="text" id="port-title" class="form-control" placeholder="e.g. Cinematic SaaS Video Edit" required>
+                                </div>
+                                
+                                <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                    <div class="form-group">
+                                        <label class="form-label" for="port-category-select">Select Category *</label>
+                                        <select id="port-category-select" class="form-control" style="background-color: var(--bg-secondary); border-color: var(--border-color); cursor: pointer;" required>
+                                            <!-- Choices populated by JS -->
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 4px;">
+                                        <button type="button" class="btn-secondary" id="manage-categories-btn" style="padding: 12px 10px; font-size: 0.82rem; width: 100%;">
+                                            Manage Category Tabs 🏷
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="port-video-url">Video MP4 File Path / Online URL *</label>
+                                    <input type="text" id="port-video-url" class="form-control" placeholder="e.g. assets/videos/solo showreel.mp4" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="port-thumb">Thumbnail Poster Image Link *</label>
+                                    <input type="text" id="port-thumb" class="form-control" placeholder="Image URL" required>
+                                </div>
+
+                                <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: flex-end;">
+                                    <button type="button" class="btn-secondary" id="port-clear-btn" style="padding: 10px 20px; font-size: 0.9rem;">Clear Form</button>
+                                    <button type="submit" class="btn-primary" style="padding: 10px 24px; font-size: 0.92rem;">Save Video Showcase</button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <div class="glass-card">
+                            <h3 style="font-size: 1.3rem; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">Showcase Video Portfolio</h3>
+                            
+                            <div class="admin-data-list-container" id="admin-portfolio-list-container">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL C.5. Testimonials & Client Reviews CRUD Manager [NEW] -->
+                <div class="dash-tab-content" id="admin-testimonials">
+                    <div class="admin-grid-layout" style="display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 32px; align-items: flex-start;">
+                        
+                        <div class="glass-card">
+                            <h3 id="testimonial-form-headline" style="font-size: 1.3rem; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">Add / Edit Client Review</h3>
+                            
+                            <form id="admin-testimonial-form">
+                                <input type="hidden" id="test-edit-id">
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="test-name">Client Name *</label>
+                                    <input type="text" id="test-name" class="form-control" placeholder="e.g. Nick Barner" required>
+                                </div>
+                                
+                                <div class="form-grid" style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 16px;">
+                                    <div class="form-group">
+                                        <label class="form-label" for="test-role">Corporate Role / Company *</label>
+                                        <input type="text" id="test-role" class="form-control" placeholder="e.g. Content Creator" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="test-rating-select">Rating Stars *</label>
+                                        <select id="test-rating-select" class="form-control" style="background-color: var(--bg-secondary); border-color: var(--border-color); cursor: pointer;" required>
+                                            <option value="5" selected>★★★★★ (5 Stars)</option>
+                                            <option value="4">★★★★☆ (4 Stars)</option>
+                                            <option value="3">★★★☆☆ (3 Stars)</option>
+                                            <option value="2">★★☆☆☆ (2 Stars)</option>
+                                            <option value="1">★☆☆☆☆ (1 Star)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="test-text">Review Text Message *</label>
+                                    <textarea id="test-text" class="form-control" rows="3" placeholder="Paste the client's detailed feedback details here..." required></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="test-avatar">Avatar Image URL (Optional)</label>
+                                    <input type="text" id="test-avatar" class="form-control" placeholder="e.g. https://images.unsplash.com/...">
+                                </div>
+
+                                <h4 style="font-size: 0.9rem; font-weight: 700; text-transform: uppercase; color: var(--accent-secondary); margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; margin-top: 20px;">Proof Links & Attachments</h4>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="test-audio">Proof Audio Link (Optional)</label>
+                                    <input type="text" id="test-audio" class="form-control" placeholder="e.g. assets/videos/proof.mp3">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="test-video">Proof Video Link / Client Showreel URL (Optional)</label>
+                                    <input type="text" id="test-video" class="form-control" placeholder="e.g. assets/videos/Social Proof.mp4">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="test-attach">Attached Resource / File URL (Optional)</label>
+                                    <input type="text" id="test-attach" class="form-control" placeholder="e.g. https://google.drive/...">
+                                </div>
+
+                                <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: flex-end;">
+                                    <button type="button" class="btn-secondary" id="test-clear-btn" style="padding: 10px 20px; font-size: 0.9rem;">Clear Form</button>
+                                    <button type="submit" class="btn-primary" style="padding: 10px 24px; font-size: 0.92rem;">Save Client Review</button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <div class="glass-card">
+                            <h3 style="font-size: 1.3rem; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">Active FZ Showcase Reviews</h3>
+                            
+                            <div class="admin-data-list-container" id="admin-testimonials-list-container">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- PANEL D. Services Package controller -->
+                <div class="dash-tab-content" id="admin-services">
+                    <div class="admin-grid-layout" style="display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 32px; align-items: flex-start;">
+                        
+                        <div class="glass-card">
+                            <h3 style="font-size: 1.3rem; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">Active Service Classes</h3>
+                            
+                            <div class="services-list-nav" id="admin-service-tabs-list" style="display: flex; flex-direction: column; gap: 12px;">
+                                <!-- Loaded dynamically -->
+                            </div>
+                        </div>
+                        
+                        <div class="glass-card" id="srv-package-editor-card">
+                            <h3 style="font-size: 1.3rem; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                                Edit Tiers: <span id="srv-editor-title-heading" class="text-gradient">Podcast Editing</span>
+                            </h3>
+                            
+                            <form id="admin-service-package-form">
+                                <input type="hidden" id="srv-edit-idx">
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="srv-edit-name">Service Class Title</label>
+                                    <input type="text" id="srv-edit-name" class="form-control" required readonly style="background: rgba(255,255,255,0.02); opacity: 0.6;">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="srv-edit-sub">Subtitle Description</label>
+                                    <textarea id="srv-edit-sub" class="form-control" required></textarea>
+                                </div>
+                                
+                                <h4 style="font-size: 1.15rem; margin-top: 32px; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">Tiers Price Configurations:</h4>
+                                
+                                <div class="tiers-pricing-sub-form-flex" style="display: flex; flex-direction: column; gap: 24px;">
+                                    
+                                    <!-- Tier 1 -->
+                                    <div style="background: rgba(255,255,255,0.01); border: 1px solid var(--border-color); padding: 18px; border-radius: var(--radius-sm);">
+                                        <h5 style="font-size: 0.95rem; margin-bottom: 12px; color: var(--accent-primary);" id="tier-0-lbl">Tier 1 (Basic)</h5>
+                                        <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+                                            <div class="form-group" style="margin-bottom: 0;">
+                                                <label class="form-label" style="font-size: 0.8rem;">Price ($)</label>
+                                                <input type="number" id="srv-t0-price" class="form-control" required>
+                                            </div>
+                                            <div class="form-group" style="margin-bottom: 0;">
+                                                <label class="form-label" style="font-size: 0.8rem;">Delivery Time</label>
+                                                <input type="text" id="srv-t0-delivery" class="form-control" required>
+                                            </div>
+                                            <div class="form-group" style="margin-bottom: 0;">
+                                                <label class="form-label" style="font-size: 0.8rem;">Revisions</label>
+                                                <input type="text" id="srv-t0-revisions" class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Tier 2 -->
+                                    <div style="background: rgba(255,255,255,0.01); border: 1px solid var(--border-color); padding: 18px; border-radius: var(--radius-sm);">
+                                        <h5 style="font-size: 0.95rem; margin-bottom: 12px; color: var(--accent-secondary);" id="tier-1-lbl">Tier 2 (Standard)</h5>
+                                        <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+                                            <div class="form-group" style="margin-bottom: 0;">
+                                                <label class="form-label" style="font-size: 0.8rem;">Price ($)</label>
+                                                <input type="number" id="srv-t1-price" class="form-control" required>
+                                            </div>
+                                            <div class="form-group" style="margin-bottom: 0;">
+                                                <label class="form-label" style="font-size: 0.8rem;">Delivery Time</label>
+                                                <input type="text" id="srv-t1-delivery" class="form-control" required>
+                                            </div>
+                                            <div class="form-group" style="margin-bottom: 0;">
+                                                <label class="form-label" style="font-size: 0.8rem;">Revisions</label>
+                                                <input type="text" id="srv-t1-revisions" class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Tier 3 -->
+                                    <div style="background: rgba(255,255,255,0.01); border: 1px solid var(--border-color); padding: 18px; border-radius: var(--radius-sm);">
+                                        <h5 style="font-size: 0.95rem; margin-bottom: 12px; color: var(--text-primary);" id="tier-2-lbl">Tier 3 (Premium)</h5>
+                                        <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+                                            <div class="form-group" style="margin-bottom: 0;">
+                                                <label class="form-label" style="font-size: 0.8rem;">Price ($)</label>
+                                                <input type="number" id="srv-t2-price" class="form-control" required>
+                                            </div>
+                                            <div class="form-group" style="margin-bottom: 0;">
+                                                <label class="form-label" style="font-size: 0.8rem;">Delivery Time</label>
+                                                <input type="text" id="srv-t2-delivery" class="form-control" required>
+                                            </div>
+                                            <div class="form-group" style="margin-bottom: 0;">
+                                                <label class="form-label" style="font-size: 0.8rem;">Revisions</label>
+                                                <input type="text" id="srv-t2-revisions" class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div style="margin-top: 32px; text-align: right;">
+                                    <button type="submit" class="btn-primary" style="padding: 12px 32px; font-size: 0.95rem;">
+                                        Save Services Package Tiers
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- PANEL E. Client Inbox & Revisions & OBS Livestream Controllers -->
+                <div class="dash-tab-content" id="admin-inbox">
+                    <div class="admin-grid-layout" style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 32px; align-items: flex-start;">
+                        
+                        <!-- Client Inquiries & Briefs Inbox -->
+                        <div class="glass-card">
+                            <h3 style="font-size: 1.3rem; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                                Inbound Briefs & Strategy Calls Inbox
+                            </h3>
+                            
+                            <div class="admin-inbox-feed" id="admin-inbox-feed">
+                                <!-- Loaded dynamically by JS -->
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column: OBS stream controllers and revisions checklists -->
+                        <div style="display: flex; flex-direction: column; gap: 32px;">
+                            
+                            <!-- OBS Livestream Editor Session panel [NEW] -->
+                            <div class="glass-card">
+                                <h3 style="font-size: 1.25rem; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">🎬 OBS Stream Control Panel</h3>
+                                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px;">Toggle livestream settings to share your active editing sessions with clients in real-time!</p>
+                                
+                                <form id="admin-obs-stream-form">
+                                    <div class="form-group">
+                                        <label class="form-label" for="obs-project-select">Select Active Client Project *</label>
+                                        <select id="obs-project-select" class="form-control" style="background-color: var(--bg-secondary); border-color: var(--border-color); cursor: pointer;" required>
+                                            <!-- Choices loaded dynamically by admin.js -->
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group" style="margin: 16px 0;">
+                                        <label style="display: inline-flex; align-items: center; gap: 10px; font-weight: 600; cursor: pointer;">
+                                            <input type="checkbox" id="obs-active-toggle" style="width: 18px; height: 18px; cursor: pointer;">
+                                            <span>Broadcast Editor Live Session</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label" for="obs-server-input">OBS RTMP Stream Server URL *</label>
+                                        <input type="text" id="obs-server-input" class="form-control" value="rtmp://live.framezonemedia.com/live" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label" for="obs-key-input">OBS Custom Stream Key *</label>
+                                        <input type="text" id="obs-key-input" class="form-control" placeholder="fz_live_clientname" required>
+                                    </div>
+
+                                    <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; margin-top: 14px;">
+                                        Sync OBS Live Credentials 📡
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- Client Revisions Checklist -->
+                            <div class="glass-card">
+                                <h3 style="font-size: 1.25rem; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                                    Client Revisions Monitor
+                                </h3>
+                                
+                                <div class="admin-revisions-monitor-feed" id="admin-revisions-monitor">
+                                    <!-- Loaded dynamically by JS -->
+                                </div>
+                            </div>
+                        </div> <!-- End of Right Column -->
+                    </div> <!-- End of admin-grid-layout -->
+
+                    <!-- 1. Client Support Chat Hub [NEW] -->
+                    <div class="glass-card" style="margin-top: 40px;">
+                        <h3 style="font-size: 1.3rem; margin-bottom: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            💬 Client Support Chat Hub
+                        </h3>
+                        <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 24px;">Direct support communication channel. Select a client from the left pane to view message logs and broadcast replies.</p>
+                        
+                        <div class="admin-chat-hub-container" style="display: grid; grid-template-columns: 280px 1fr; gap: 32px; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: rgba(0,0,0,0.1); overflow: hidden; height: 500px;">
+                            
+                            <!-- Left: Clients Sidebar -->
+                            <div style="border-right: 1px solid var(--border-color); display: flex; flex-direction: column; background: rgba(255,255,255,0.01);">
+                                <div style="padding: 16px; border-bottom: 1px solid var(--border-color); font-weight: 700; font-size: 0.9rem; text-transform: uppercase; color: var(--text-muted);">Active Dialogs</div>
+                                <div id="admin-chat-clients-list" style="overflow-y: auto; flex-grow: 1; display: flex; flex-direction: column;">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                            
+                            <!-- Right: Chat Pane -->
+                            <div style="display: flex; flex-direction: column; padding: 24px; height: 100%;">
+                                <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px; font-weight: 700;" id="admin-chat-active-title">
+                                    Select a client conversation to begin messaging...
+                                </div>
+                                <div id="admin-chat-messages" style="flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding: 16px; background: rgba(0,0,0,0.2); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                                    <div style="text-align: center; color: var(--text-muted); margin-top: 100px; font-size: 0.95rem;">
+                                        Select a conversation from the active dialogs list.
+                                    </div>
+                                </div>
+                                <form id="admin-chat-form" style="display: flex; gap: 12px; margin-top: 18px;">
+                                    <input type="text" id="admin-chat-input" class="form-control" placeholder="Select conversation first..." disabled required>
+                                    <button type="submit" class="btn-primary" id="admin-chat-send-btn" style="padding: 10px 24px; font-size: 0.9rem;" disabled>Send</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Manual Client Account Deletion Database [NEW] -->
+                    <div class="glass-card" style="margin-top: 40px; border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.01);">
+                        <h3 style="font-size: 1.3rem; margin-bottom: 8px; border-bottom: 1px solid rgba(239, 68, 68, 0.2); padding-bottom: 12px; color: #f87171;">
+                            ⚠️ Executive Client Accounts Manager (Manual Deletion)
+                        </h3>
+                        <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 24px;">Wipe specific client space directories, payment credentials, active package layers, and briefs database records from the portal server. **WARNING: Deletion is instant and irreversible!**</p>
+                        
+                        <div class="admin-data-list-container" id="admin-clients-database-list">
+                            <!-- Populated dynamically by JS with red 'Delete Client Data' buttons -->
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Shared Footer Mounting -->
+    <footer id="global-footer"></footer>
+
+    <!-- Interactive Category Tabs Modal -->
+    <div class="video-modal-overlay" id="category-modal" style="backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+        <div class="video-modal-container" style="max-width: 480px; aspect-ratio: auto; padding: 32px; background: var(--bg-secondary);">
+            <h3 style="font-size: 1.4rem; margin-bottom: 8px;">Manage Portfolio Category Tabs</h3>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 24px;">Add new video filtering tags or remove existing categories manually.</p>
+            
+            <div id="active-tabs-list-wrapper" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; max-height: 200px; overflow-y: auto;">
+                <!-- Loaded dynamically -->
+            </div>
+            
+            <form id="add-category-tag-form" style="display: flex; gap: 12px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                <input type="text" class="form-control" id="new-tag-input" placeholder="New Category (e.g. AI 2D/3D)" required>
+                <button type="submit" class="btn-primary" style="padding: 10px 18px; font-size: 0.88rem; flex-shrink: 0;">Add Tag</button>
+            </form>
+            
+            <div style="margin-top: 24px; text-align: right;">
+                <button class="btn-secondary" type="button" id="close-category-modal-btn">Close Window</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS Core & Controller -->
+    <script src="assets/js/global.js"></script>
+    <script src="assets/js/admin.js"></script>
+</body>
+</html>
