@@ -525,8 +525,8 @@
     stroke: var(--accent-primary);
     stroke-width: 4;
     stroke-linecap: round;
-    stroke-dasharray: 226; /* 2 * PI * 36 */
-    stroke-dashoffset: 226;
+    stroke-dasharray: 188; /* 2 * PI * 30 */
+    stroke-dashoffset: 188;
     filter: drop-shadow(0 0 6px var(--accent-primary-glow));
     transition: stroke-dashoffset 0.15s ease-out;
 }
