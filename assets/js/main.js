@@ -330,12 +330,57 @@ function setupCinemaModal() {
     
     if (!modal || !modalPlayer || !closeBtn) return;
 
+    // Helper to get YouTube Embed URL
+    function getYouTubeEmbedUrl(url) {
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        if (match && match[2].length === 11) {
+            return `https://www.youtube.com/embed/${match[2]}?autoplay=1&rel=0`;
+        }
+        return null;
+    }
+
     // Open function
     function openVideo(src) {
-        modalPlayer.src = src;
-        modalPlayer.load();
+        const ytEmbed = getYouTubeEmbedUrl(src);
+        let iframe = document.getElementById("video-modal-iframe");
+        
         modal.classList.add("open");
-        modalPlayer.play().catch(e => console.log("Video autoplay blocked by browser, click play manually."));
+        
+        if (ytEmbed) {
+            // Hide local HTML5 video element
+            modalPlayer.style.display = "none";
+            modalPlayer.pause();
+            modalPlayer.src = "";
+            
+            // Create or show YouTube iframe element
+            if (!iframe) {
+                iframe = document.createElement("iframe");
+                iframe.id = "video-modal-iframe";
+                iframe.className = "video-modal-player";
+                iframe.style.width = "100%";
+                iframe.style.height = "100%";
+                iframe.style.border = "none";
+                iframe.style.aspectRatio = "16/9";
+                iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                iframe.allowFullscreen = true;
+                modalPlayer.parentElement.appendChild(iframe);
+            }
+            iframe.src = ytEmbed;
+            iframe.style.display = "block";
+        } else {
+            // Hide iframe if it exists
+            if (iframe) {
+                iframe.src = "";
+                iframe.style.display = "none";
+            }
+            
+            // Show and play local HTML5 video
+            modalPlayer.style.display = "block";
+            modalPlayer.src = src;
+            modalPlayer.load();
+            modalPlayer.play().catch(e => console.log("Video autoplay blocked by browser, click play manually."));
+        }
     }
 
     // Close function
@@ -343,6 +388,11 @@ function setupCinemaModal() {
         modal.classList.remove("open");
         modalPlayer.pause();
         modalPlayer.src = "";
+        const iframe = document.getElementById("video-modal-iframe");
+        if (iframe) {
+            iframe.src = "";
+            iframe.style.display = "none";
+        }
     }
 
     // Event listener for main VSL card play button
