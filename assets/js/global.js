@@ -14,6 +14,28 @@ const DEFAULT_BRAND_DATA = {
         secondaryColorS: 90,
         secondaryColorL: 50,
         ctaLink: "contact.html",
+        theme: "default",
+        themePreset: "midnight",
+        glowIntensity: 1.0,
+        glowAnimationSpeed: 3.0,
+        cardBorderRadius: 12,
+        cardBorderThickness: 1,
+        cardGlassBlur: 16,
+        fontPreset: "minimal-slate",
+        layoutGaps: 30,
+        sectionPadding: 80,
+        headerStyle: "floating-glass",
+        // Fine-tuned background & card variables
+        customBgH: 240,
+        customBgS: 10,
+        customBgL: 3,
+        customCardL: 5,
+        customCardA: 0.4,
+        customBorderH: 240,
+        customBorderA: 0.08,
+        customGlowH: 267,
+        customGlowS: 90,
+
         adminCredentials: {
             email: "framezonem@gmail.com",
             passwordHash: "RnptZWRpYUAxMjM=" // Base64 for Fzmedia@123
@@ -393,6 +415,7 @@ function injectTheme() {
     const data = getDB();
     const s = data.settings;
     
+    // Core accent hues
     document.documentElement.style.setProperty('--accent-primary-h', s.primaryColorH);
     document.documentElement.style.setProperty('--accent-primary-s', s.primaryColorS + '%');
     document.documentElement.style.setProperty('--accent-primary-l', s.primaryColorL + '%');
@@ -400,6 +423,47 @@ function injectTheme() {
     document.documentElement.style.setProperty('--accent-secondary-h', s.secondaryColorH);
     document.documentElement.style.setProperty('--accent-secondary-s', s.secondaryColorS + '%');
     document.documentElement.style.setProperty('--accent-secondary-l', s.secondaryColorL + '%');
+
+    // Advanced design dynamic properties overrides
+    document.documentElement.style.setProperty('--glow-intensity', s.glowIntensity !== undefined ? s.glowIntensity : 1.0);
+    document.documentElement.style.setProperty('--glow-speed', (s.glowAnimationSpeed !== undefined ? s.glowAnimationSpeed : 3.0) + 's');
+    document.documentElement.style.setProperty('--radius-md', (s.cardBorderRadius !== undefined ? s.cardBorderRadius : 12) + 'px');
+    document.documentElement.style.setProperty('--radius-lg', ((s.cardBorderRadius !== undefined ? s.cardBorderRadius : 12) + 4) + 'px');
+    document.documentElement.style.setProperty('--border-thickness', (s.cardBorderThickness !== undefined ? s.cardBorderThickness : 1) + 'px');
+    document.documentElement.style.setProperty('--glass-blur', (s.cardGlassBlur !== undefined ? s.cardGlassBlur : 16) + 'px');
+    document.documentElement.style.setProperty('--grid-gap', (s.layoutGaps !== undefined ? s.layoutGaps : 30) + 'px');
+    document.documentElement.style.setProperty('--section-padding', (s.sectionPadding !== undefined ? s.sectionPadding : 80) + 'px 0');
+
+    // Advanced HSL Background & Card customization properties
+    const bgH = s.customBgH !== undefined ? s.customBgH : 240;
+    const bgS = s.customBgS !== undefined ? s.customBgS : 10;
+    const bgL = s.customBgL !== undefined ? s.customBgL : 3;
+    document.documentElement.style.setProperty('--bg-primary', `hsl(${bgH}, ${bgS}%, ${bgL}%)`);
+
+    const cardL = s.customCardL !== undefined ? s.customCardL : 5;
+    const cardA = s.customCardA !== undefined ? s.customCardA : 0.4;
+    document.documentElement.style.setProperty('--card-bg-custom', `hsla(${bgH}, ${bgS + 5}%, ${cardL}%, ${cardA})`);
+
+    const borderH = s.customBorderH !== undefined ? s.customBorderH : 240;
+    const borderA = s.customBorderA !== undefined ? s.customBorderA : 0.08;
+    document.documentElement.style.setProperty('--border-color-custom', `hsla(${borderH}, 20%, 80%, ${borderA})`);
+
+    const glowH = s.customGlowH !== undefined ? s.customGlowH : s.primaryColorH;
+    const glowS = s.customGlowS !== undefined ? s.customGlowS : 90;
+    document.documentElement.style.setProperty('--glow-color-custom', `hsla(${glowH}, ${glowS}%, 50%, 0.15)`);
+
+    // Advanced typography overrides loader
+    const fontPreset = s.fontPreset || "minimal-slate";
+    if (fontPreset === "cyberpunk") {
+        document.documentElement.style.setProperty('--font-headings', "'Courier New', Courier, monospace");
+        document.documentElement.style.setProperty('--font-body', "'Courier New', Courier, monospace");
+    } else if (fontPreset === "tech-modern") {
+        document.documentElement.style.setProperty('--font-headings', "'Roboto', sans-serif");
+        document.documentElement.style.setProperty('--font-body', "'Roboto', sans-serif");
+    } else { // minimal-slate (Outfit + Plus Jakarta)
+        document.documentElement.style.setProperty('--font-headings', "'Outfit', sans-serif");
+        document.documentElement.style.setProperty('--font-body', "'Plus Jakarta Sans', sans-serif");
+    }
 
     // Dynamic Multi-Page Layout Themes Engine [NEW]
     const activeTheme = s.theme || "default";
@@ -438,6 +502,11 @@ function injectLayouts() {
     const headerContainer = document.getElementById("global-header");
     if (headerContainer) {
         headerContainer.className = "sticky-header";
+        if (s.headerStyle === 'floating-glass') {
+            headerContainer.classList.add("header-floating-glass");
+        } else if (s.headerStyle === 'centered') {
+            headerContainer.classList.add("header-centered");
+        }
         
         let logoMarkup = "";
         if (s.logoPath) {
