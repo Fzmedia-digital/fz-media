@@ -191,7 +191,7 @@ header.sticky-header {
 
 header.sticky-header.scrolled {
     padding: 12px 0;
-    background: rgba(var(--bg-primary-h), var(--bg-primary-s), var(--bg-primary-l), 0.75);
+    background: hsla(var(--bg-primary-h), var(--bg-primary-s), var(--bg-primary-l), 0.75);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border-color);
@@ -584,7 +584,7 @@ footer.premium-footer {
 
 /* 1. 3D Liquid Glow Theme Override (Fluid Gradients & Glowing Shadows) */
 body.theme-liquid::before {
-    background-color: #030008;
+    background-color: var(--bg-primary, #030008);
     background-image: 
         radial-gradient(circle at 10% 20%, hsla(var(--accent-primary-h), var(--accent-primary-s), var(--accent-primary-l), 0.15) 0%, transparent 45%),
         radial-gradient(circle at 90% 80%, hsla(var(--accent-secondary-h), var(--accent-secondary-s), var(--accent-secondary-l), 0.15) 0%, transparent 50%),
@@ -593,25 +593,25 @@ body.theme-liquid::before {
 
 
 body.theme-liquid .glass-card {
-    border-radius: 24px;
-    background: rgba(10, 5, 20, 0.45);
-    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: var(--radius-lg, 24px);
+    background: var(--card-bg-custom, rgba(10, 5, 20, 0.45));
+    border: var(--border-thickness, 1px) solid var(--border-color-custom, rgba(255, 255, 255, 0.09));
     box-shadow: 
         0 25px 50px -12px rgba(0, 0, 0, 0.6), 
         inset 0 1px 0 rgba(255, 255, 255, 0.15), 
-        0 0 40px hsla(var(--accent-primary-h), var(--accent-primary-s), var(--accent-primary-l), 0.08);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
+        0 0 40px var(--glow-color-custom, hsla(var(--accent-primary-h), var(--accent-primary-s), var(--accent-primary-l), 0.08));
+    backdrop-filter: blur(var(--glass-blur, 30px));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 30px));
     transition: var(--transition-smooth);
 }
 
 body.theme-liquid .glass-card:hover {
     transform: translateY(-4px) scale(1.01);
-    border-color: hsla(var(--accent-secondary-h), var(--accent-secondary-s), var(--accent-secondary-l), 0.3);
+    border-color: var(--border-color-custom, hsla(var(--accent-secondary-h), var(--accent-secondary-s), var(--accent-secondary-l), 0.3));
     box-shadow: 
         0 30px 60px -10px rgba(0, 0, 0, 0.7), 
         inset 0 1px 0 rgba(255, 255, 255, 0.25), 
-        0 0 50px hsla(var(--accent-secondary-h), var(--accent-secondary-s), var(--accent-secondary-l), 0.15);
+        0 0 50px var(--glow-color-custom, hsla(var(--accent-secondary-h), var(--accent-secondary-s), var(--accent-secondary-l), 0.15));
 }
 
 body.theme-liquid .btn-primary {
@@ -664,7 +664,7 @@ body.theme-liquid .btn-secondary {
 
 /* 2. SaaS Professional Theme Override (Crisp High-Contrast Grid) */
 body.theme-saas::before {
-    background-color: #090d16;
+    background-color: var(--bg-primary, #090d16);
     background-image: 
         radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
     background-size: 24px 24px;
@@ -672,19 +672,19 @@ body.theme-saas::before {
 
 
 body.theme-saas .glass-card {
-    border-radius: 6px;
-    background: #0f172a;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-sm, 6px);
+    background: var(--card-bg-custom, #0f172a);
+    border: var(--border-thickness, 1px) solid var(--border-color-custom, rgba(255, 255, 255, 0.08));
     box-shadow: 
         0 4px 6px -1px rgba(0, 0, 0, 0.2), 
         0 2px 4px -2px rgba(0, 0, 0, 0.2);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
+    backdrop-filter: blur(var(--glass-blur, 0px));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 0px));
     transition: var(--transition-snappy);
 }
 
 body.theme-saas .glass-card:hover {
-    border-color: var(--accent-primary);
+    border-color: var(--border-color-custom, var(--accent-primary));
     box-shadow: 0 10px 20px -5px rgba(0,0,0,0.3);
 }
 
@@ -709,6 +709,47 @@ body.theme-saas .btn-secondary {
 body.theme-saas .btn-secondary:hover {
     background: rgba(255, 255, 255, 0.03);
     border-color: var(--text-secondary);
+}
+
+/* 3. Premium Gradient Blur Theme Override (Stunning Orbital Aura) */
+body.theme-gradient::before {
+    background-color: var(--bg-primary, #02000a);
+    background-image: 
+        radial-gradient(circle at 15% 15%, hsla(var(--accent-primary-h), var(--accent-primary-s), var(--accent-primary-l), 0.25) 0%, transparent 55%),
+        radial-gradient(circle at 85% 85%, hsla(var(--accent-secondary-h), var(--accent-secondary-s), var(--accent-secondary-l), 0.25) 0%, transparent 60%);
+}
+body.theme-gradient .glass-card {
+    border-radius: var(--radius-lg, 18px);
+    background: var(--card-bg-custom, rgba(15, 10, 30, 0.35));
+    border: var(--border-thickness, 1px) solid var(--border-color-custom, rgba(255, 255, 255, 0.08));
+    backdrop-filter: blur(var(--glass-blur, 16px));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 16px));
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+    transition: var(--transition-smooth);
+}
+body.theme-gradient .glass-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-color-custom, var(--accent-primary));
+    background: var(--card-bg-custom, rgba(15, 10, 30, 0.5));
+}
+
+/* 4. Solid Flat Sleek Theme Override (No backing patterns) */
+body.theme-flat::before {
+    background-color: var(--bg-primary, #050508);
+    background-image: none !important;
+}
+body.theme-flat .glass-card {
+    border-radius: var(--radius-md, 12px);
+    background: var(--card-bg-custom, rgba(20, 20, 25, 0.95));
+    border: var(--border-thickness, 1px) solid var(--border-color-custom, rgba(255, 255, 255, 0.05));
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    transition: var(--transition-snappy);
+}
+body.theme-flat .glass-card:hover {
+    background: var(--card-bg-custom, rgba(25, 25, 30, 0.98));
+    border-color: var(--border-color-custom, var(--accent-primary));
 }
 
 /* ==========================================================================
@@ -862,7 +903,7 @@ header.sticky-header.header-floating-glass {
     width: 94%;
     left: 3%;
     border-radius: var(--radius-md, 12px);
-    background: rgba(var(--bg-primary-h), var(--bg-primary-s), var(--bg-primary-l), 0.45) !important;
+    background: hsla(var(--bg-primary-h), var(--bg-primary-s), var(--bg-primary-l), 0.45) !important;
     border: var(--border-thickness, 1px) solid var(--border-color-custom, var(--border-color)) !important;
     backdrop-filter: blur(var(--glass-blur, 16px));
     -webkit-backdrop-filter: blur(var(--glass-blur, 16px));
@@ -871,7 +912,7 @@ header.sticky-header.header-floating-glass {
 }
 
 header.sticky-header.header-floating-glass.scrolled {
-    background: rgba(var(--bg-primary-h), var(--bg-primary-s), var(--bg-primary-l), 0.8) !important;
+    background: hsla(var(--bg-primary-h), var(--bg-primary-s), var(--bg-primary-l), 0.8) !important;
     top: 0;
     width: 100%;
     left: 0;
