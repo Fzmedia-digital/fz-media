@@ -74,11 +74,25 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     background-color: var(--bg-primary);
+    position: relative;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-color: var(--bg-primary);
     background-image: 
         radial-gradient(circle at 10% 20%, var(--accent-primary-glow) 0%, transparent 40%),
         radial-gradient(circle at 90% 80%, var(--accent-secondary-glow) 0%, transparent 45%);
-    background-attachment: fixed;
+    pointer-events: none;
+    transition: background 0.5s ease, background-image 0.5s ease;
 }
+
 
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
@@ -559,14 +573,14 @@ footer.premium-footer {
    ========================================================================== */
 
 /* 1. 3D Liquid Glow Theme Override (Fluid Gradients & Glowing Shadows) */
-body.theme-liquid {
+body.theme-liquid::before {
     background-color: #030008;
     background-image: 
         radial-gradient(circle at 10% 20%, rgba(var(--accent-primary-h), var(--accent-primary-s), var(--accent-primary-l), 0.15) 0%, transparent 45%),
         radial-gradient(circle at 90% 80%, rgba(var(--accent-secondary-h), var(--accent-secondary-s), var(--accent-secondary-l), 0.15) 0%, transparent 50%),
         radial-gradient(circle at 50% 50%, rgba(var(--accent-primary-h), var(--accent-primary-s), var(--accent-primary-l), 0.05) 0%, transparent 60%);
-    background-attachment: fixed;
 }
+
 
 body.theme-liquid .glass-card {
     border-radius: 24px;
@@ -639,13 +653,13 @@ body.theme-liquid .btn-secondary {
 }
 
 /* 2. SaaS Professional Theme Override (Crisp High-Contrast Grid) */
-body.theme-saas {
+body.theme-saas::before {
     background-color: #090d16;
     background-image: 
         radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
     background-size: 24px 24px;
-    background-attachment: fixed;
 }
+
 
 body.theme-saas .glass-card {
     border-radius: 6px;
@@ -701,3 +715,121 @@ body.theme-saas .btn-secondary:hover {
     opacity: 1 !important;
     transform: translateY(0) !important;
 }
+
+/* ==========================================================================
+   GLOBAL PORTFOLIO GRID & CARD SYSTEM
+   ========================================================================== */
+.portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.portfolio-card {
+    cursor: pointer;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0 !important;
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    transition: var(--transition-smooth);
+}
+
+.portfolio-thumbnail-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #000;
+    overflow: hidden;
+}
+
+.portfolio-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.65;
+    transition: var(--transition-smooth);
+}
+
+.portfolio-card:hover .portfolio-img {
+    transform: scale(1.05);
+    opacity: 0.45;
+}
+
+.portfolio-play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.85);
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    box-shadow: 0 10px 20px var(--accent-primary-glow);
+    transition: var(--transition-smooth);
+    border: none;
+    cursor: pointer;
+}
+
+.portfolio-card:hover .portfolio-play-btn {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.portfolio-card-info {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-grow: 1;
+}
+
+.portfolio-card-category {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.portfolio-card h3 {
+    font-size: 1.25rem;
+    line-height: 1.3;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-weight: 600;
+    transition: var(--transition-snappy);
+    margin: 0;
+}
+
+.portfolio-card:hover h3 {
+    color: var(--accent-primary);
+}
+
+.no-results-message {
+    grid-column: span 3;
+    text-align: center;
+    padding: 60px 0;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 991px) {
+    .portfolio-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .portfolio-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
