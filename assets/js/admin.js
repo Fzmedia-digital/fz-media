@@ -2,6 +2,47 @@
 
 let activeEditingServiceIdx = 0;
 
+// Global HSL <-> Hex Color Utilities for Advanced Visual Theme Customizers
+function hslToHex(h, s, l) {
+    l /= 100;
+    const a = s * Math.min(l, 1 - l) / 100;
+    const f = n => {
+        const k = (n + h / 30) % 12;
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+        return Math.round(255 * color).toString(16).padStart(2, '0');
+    };
+    return `#${f(0)}${f(8)}${f(4)}`;
+}
+
+function hexToHsl(hex) {
+    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    if (!result) return { h: 0, s: 0, l: 0 };
+    let r = parseInt(result[1], 16) / 255;
+    let g = parseInt(result[2], 16) / 255;
+    let b = parseInt(result[3], 16) / 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    if (max === min) {
+        h = s = 0;
+    } else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+    }
+    return {
+        h: Math.round(h * 360),
+        s: Math.round(s * 100),
+        l: Math.round(l * 100)
+    };
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     setupAdminGuard();
     setupResetAndLogout();
@@ -1373,6 +1414,22 @@ function setupVisualThemeEngine() {
         document.getElementById("theme-secondary-sat-val").textContent = `${secS}%`;
         document.getElementById("theme-secondary-light-val").textContent = `${secL}%`;
 
+        // Update hex color pickers values to match HSL sliders dynamically
+        const bgColorPicker = document.getElementById("theme-bg-color-picker");
+        if (bgColorPicker) bgColorPicker.value = hslToHex(bgH, bgS, bgL);
+
+        const cardColorPicker = document.getElementById("theme-card-color-picker");
+        if (cardColorPicker) cardColorPicker.value = hslToHex(bgH, bgS, cardL);
+
+        const priColorPicker = document.getElementById("theme-primary-color-picker");
+        if (priColorPicker) priColorPicker.value = hslToHex(priH, priS, priL);
+
+        const secColorPicker = document.getElementById("theme-secondary-color-picker");
+        if (secColorPicker) secColorPicker.value = hslToHex(secH, secS, secL);
+
+        const glowColorPicker = document.getElementById("theme-glow-color-picker");
+        if (glowColorPicker) glowColorPicker.value = hslToHex(glowH, glowS, 50);
+
         // Update preview labels in stats
         document.getElementById("preview-gap-val").textContent = `${gaps}px`;
         document.getElementById("preview-padding-val").textContent = `${padding}px`;
@@ -1466,7 +1523,7 @@ function setupVisualThemeEngine() {
         }
 
         // Layout Theme real-time injection
-        document.body.classList.remove("theme-liquid", "theme-saas");
+        document.body.classList.remove("theme-liquid", "theme-saas", "theme-gradient", "theme-flat");
         if (layoutStyle === "liquid") {
             document.body.classList.add("theme-liquid");
             if (!document.querySelector(".liquid-bg-blob")) {
@@ -1481,6 +1538,10 @@ function setupVisualThemeEngine() {
             document.querySelectorAll(".liquid-bg-blob").forEach(el => el.remove());
             if (layoutStyle === "saas") {
                 document.body.classList.add("theme-saas");
+            } else if (layoutStyle === "gradient") {
+                document.body.classList.add("theme-gradient");
+            } else if (layoutStyle === "flat") {
+                document.body.classList.add("theme-flat");
             }
         }
 
@@ -1514,6 +1575,59 @@ function setupVisualThemeEngine() {
             el.addEventListener("change", updateRealtimePreview);
         }
     });
+
+    // Setup and bind Hex color pickers to auto-convert to HSL and update sliders in real-time
+    const bgPicker = document.getElementById("theme-bg-color-picker");
+    if (bgPicker) {
+        bgPicker.addEventListener("input", () => {
+            const hsl = hexToHsl(bgPicker.value);
+            document.getElementById("theme-bg-hue").value = hsl.h;
+            document.getElementById("theme-bg-sat").value = hsl.s > 25 ? 25 : hsl.s; // Cap saturation at 25% like body HSL slider
+            document.getElementById("theme-bg-light").value = hsl.l > 20 ? 20 : (hsl.l < 1 ? 1 : hsl.l); // Cap/floor like slider
+            updateRealtimePreview();
+        });
+    }
+
+    const cardPicker = document.getElementById("theme-card-color-picker");
+    if (cardPicker) {
+        cardPicker.addEventListener("input", () => {
+            const hsl = hexToHsl(cardPicker.value);
+            document.getElementById("theme-card-light").value = hsl.l > 28 ? 28 : (hsl.l < 2 ? 2 : hsl.l); // Cap/floor like slider
+            updateRealtimePreview();
+        });
+    }
+
+    const priPicker = document.getElementById("theme-primary-color-picker");
+    if (priPicker) {
+        priPicker.addEventListener("input", () => {
+            const hsl = hexToHsl(priPicker.value);
+            document.getElementById("theme-primary-hue").value = hsl.h;
+            document.getElementById("theme-primary-sat").value = hsl.s;
+            document.getElementById("theme-primary-light").value = hsl.l > 90 ? 90 : (hsl.l < 10 ? 10 : hsl.l); // Cap/floor like slider
+            updateRealtimePreview();
+        });
+    }
+
+    const secPicker = document.getElementById("theme-secondary-color-picker");
+    if (secPicker) {
+        secPicker.addEventListener("input", () => {
+            const hsl = hexToHsl(secPicker.value);
+            document.getElementById("theme-secondary-hue").value = hsl.h;
+            document.getElementById("theme-secondary-sat").value = hsl.s;
+            document.getElementById("theme-secondary-light").value = hsl.l > 90 ? 90 : (hsl.l < 10 ? 10 : hsl.l); // Cap/floor like slider
+            updateRealtimePreview();
+        });
+    }
+
+    const glowPicker = document.getElementById("theme-glow-color-picker");
+    if (glowPicker) {
+        glowPicker.addEventListener("input", () => {
+            const hsl = hexToHsl(glowPicker.value);
+            document.getElementById("theme-glow-hue").value = hsl.h;
+            document.getElementById("theme-glow-sat").value = hsl.s > 100 ? 100 : (hsl.s < 20 ? 20 : hsl.s); // Cap/floor like slider
+            updateRealtimePreview();
+        });
+    }
 
     // SaaS Templates preset click triggers
     const presetCards = document.querySelectorAll(".template-preset-card");
@@ -1825,5 +1939,21 @@ function populateVisualThemeEngineFields() {
     if (previewBody) {
         previewBody.style.background = `hsl(${bgH}, ${bgS}%, ${bgL + 1}%)`;
     }
+
+    // Synchronize direct color pickers values with loaded database parameters on boot
+    const bgColorPicker = document.getElementById("theme-bg-color-picker");
+    if (bgColorPicker) bgColorPicker.value = hslToHex(bgH, bgS, bgL);
+
+    const cardColorPicker = document.getElementById("theme-card-color-picker");
+    if (cardColorPicker) cardColorPicker.value = hslToHex(bgH, bgS, cardL);
+
+    const priColorPicker = document.getElementById("theme-primary-color-picker");
+    if (priColorPicker) priColorPicker.value = hslToHex(priH, priS, priL);
+
+    const secColorPicker = document.getElementById("theme-secondary-color-picker");
+    if (secColorPicker) secColorPicker.value = hslToHex(secH, secS, secL);
+
+    const glowColorPicker = document.getElementById("theme-glow-color-picker");
+    if (glowColorPicker) glowColorPicker.value = hslToHex(glowH, glowS, 50);
 }
 
