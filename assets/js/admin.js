@@ -1390,6 +1390,15 @@ function setupVisualThemeEngine() {
         const secS = parseInt(document.getElementById("theme-secondary-sat").value, 10);
         const secL = parseInt(document.getElementById("theme-secondary-light").value, 10);
 
+        // Set dynamic text colors [NEW]
+        const textPri = document.getElementById("theme-text-primary").value;
+        const textSec = document.getElementById("theme-text-secondary").value;
+        const textMuted = document.getElementById("theme-text-muted").value;
+
+        document.documentElement.style.setProperty('--text-primary', textPri);
+        document.documentElement.style.setProperty('--text-secondary', textSec);
+        document.documentElement.style.setProperty('--text-muted', textMuted);
+
         // Update labels text
         document.getElementById("theme-radius-val").textContent = `${radius}px`;
         document.getElementById("theme-border-thickness-val").textContent = `${thickness}px`;
@@ -1566,7 +1575,8 @@ function setupVisualThemeEngine() {
         "theme-card-light", "theme-card-opacity", "theme-border-opacity",
         "theme-glow-hue", "theme-glow-sat",
         "theme-primary-hue", "theme-primary-sat", "theme-primary-light",
-        "theme-secondary-hue", "theme-secondary-sat", "theme-secondary-light"
+        "theme-secondary-hue", "theme-secondary-sat", "theme-secondary-light",
+        "theme-text-primary", "theme-text-secondary", "theme-text-muted"
     ];
     
     controlsList.forEach(id => {
@@ -1789,6 +1799,10 @@ function setupVisualThemeEngine() {
         db.settings.secondaryColorS = parseInt(document.getElementById("theme-secondary-sat").value, 10);
         db.settings.secondaryColorL = parseInt(document.getElementById("theme-secondary-light").value, 10);
         
+        db.settings.textColorPrimary = document.getElementById("theme-text-primary").value;
+        db.settings.textColorSecondary = document.getElementById("theme-text-secondary").value;
+        db.settings.textColorMuted = document.getElementById("theme-text-muted").value;
+        
         saveDB(db);
         injectTheme();
         injectLayouts();
@@ -1831,6 +1845,10 @@ function populateVisualThemeEngineFields() {
     document.getElementById("theme-secondary-hue").value = s.secondaryColorH !== undefined ? s.secondaryColorH : 185;
     document.getElementById("theme-secondary-sat").value = s.secondaryColorS !== undefined ? s.secondaryColorS : 90;
     document.getElementById("theme-secondary-light").value = s.secondaryColorL !== undefined ? s.secondaryColorL : 50;
+
+    document.getElementById("theme-text-primary").value = s.textColorPrimary || "#f8fafc";
+    document.getElementById("theme-text-secondary").value = s.textColorSecondary || "#94a3b8";
+    document.getElementById("theme-text-muted").value = s.textColorMuted || "#64748b";
 
     // Trigger visual sync by invoking the helper
     const radius = parseInt(document.getElementById("theme-radius").value, 10);
