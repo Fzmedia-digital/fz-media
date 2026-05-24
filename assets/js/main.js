@@ -585,8 +585,14 @@ function loadHeroVSLData() {
     if (vslTitle && s.heroVideo.title) {
         vslTitle.textContent = s.heroVideo.title;
     }
-    if (vslThumbnail && s.heroVideo.thumbnailUrl) {
-        vslThumbnail.src = s.heroVideo.thumbnailUrl;
+    if (vslThumbnail) {
+        if (s.heroVideo.thumbnailUrl) {
+            vslThumbnail.src = s.heroVideo.thumbnailUrl;
+            vslThumbnail.style.display = "block";
+        } else {
+            vslThumbnail.src = "";
+            vslThumbnail.style.display = "none";
+        }
     }
     if (vslDesc && s.heroVideo.description) {
         vslDesc.textContent = s.heroVideo.description;
