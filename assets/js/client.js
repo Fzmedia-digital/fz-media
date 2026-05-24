@@ -666,7 +666,6 @@ function renderActiveDeliverables(client) {
 
     startProcessingLoops();
 }
-}
 
 // Copy OBS fields trigger
 window.copyOBSValue = function(id, btn) {
