@@ -60,6 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setupPasswordToggles();
     setupVSLAndCalculatorForm();
     setupVisualThemeEngine();
+    setupTeamProjectAssignment();
 });
 
 // 1. Admin Authorization guard
@@ -67,44 +68,47 @@ function setupAdminGuard() {
     const authPanel = document.getElementById("admin-auth-panel");
     const workspace = document.getElementById("admin-workspace");
     const loginForm = document.getElementById("admin-login-form");
-    const errorAlert = document.getElementById("admin-auth-error");
+    const errorDiv = document.getElementById("admin-auth-error");
 
-    if (!authPanel || !workspace || !loginForm) return;
-
-    const sessionActive = sessionStorage.getItem("fzmedia_admin_session");
-    if (sessionActive === "active") {
-        authPanel.style.display = "none";
-        workspace.style.display = "block";
+    const isLogged = sessionStorage.getItem("fzmedia_admin_logged");
+    if (isLogged === "true") {
+        if (authPanel) authPanel.style.display = "none";
+        if (workspace) workspace.style.display = "block";
         initializeAdminWorkspace();
+    } else {
+        if (authPanel) authPanel.style.display = "block";
+        if (workspace) workspace.style.display = "none";
     }
 
-    loginForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        
-        const email = document.getElementById("admin-email").value.trim();
-        const pass = document.getElementById("admin-pass").value.trim();
-        const db = getDB();
+    if (loginForm) {
+        loginForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const email = document.getElementById("admin-email").value.trim();
+            const pass = document.getElementById("admin-pass").value.trim();
 
-        // 3. Obscured Base64 validation security (Fzmedia@123 -> RnptZWRpYUAxMjM=)
-        if (email === db.settings.adminCredentials.email && btoa(pass) === db.settings.adminCredentials.passwordHash) {
-            sessionStorage.setItem("fzmedia_admin_session", "active");
-            errorAlert.style.display = "none";
-            authPanel.style.display = "none";
-            workspace.style.display = "block";
-            initializeAdminWorkspace();
-        } else {
-            errorAlert.textContent = "Incorrect executive credentials. Verify authorization and try again.";
-            errorAlert.style.display = "block";
-        }
-    });
+            if (email === "admin" && pass === "admin") {
+                sessionStorage.setItem("fzmedia_admin_logged", "true");
+                if (errorDiv) errorDiv.style.display = "none";
+                window.location.reload();
+            } else {
+                if (errorDiv) {
+                    errorDiv.textContent = "Invalid credentials! Use 'admin' / 'admin' to authorize.";
+                    errorDiv.style.display = "block";
+                }
+            }
+        });
+    }
 }
 
 function setupResetAndLogout() {
     const logoutBtn = document.getElementById("admin-logout-btn");
     if (logoutBtn) {
+        logoutBtn.style.display = "inline-flex"; // Re-enable display
         logoutBtn.addEventListener("click", () => {
-            sessionStorage.removeItem("fzmedia_admin_session");
-            window.location.reload();
+            if (confirm("Are you sure you want to exit your Admin session?")) {
+                sessionStorage.removeItem("fzmedia_admin_logged");
+                window.location.reload();
+            }
         });
     }
 
@@ -114,6 +118,7 @@ function setupResetAndLogout() {
             if (confirm("WARNING: This will wipe all custom revisions, briefs, colors, and roster additions and restore the original seeded FZ Media content. Are you sure?")) {
                 localStorage.removeItem("fzmedia_db");
                 sessionStorage.removeItem("fzmedia_logged_client");
+                sessionStorage.removeItem("fzmedia_admin_logged");
                 alert("Database reset successfully!");
                 window.location.reload();
             }
@@ -160,21 +165,32 @@ function initializeAdminWorkspace() {
         });
     });
 
-    populateBrandingFields();
-    populateColorSliders();
-    populateVSLAndCalculatorFields();
-    populateVisualThemeEngineFields();
-    renderRosterList();
-    populateCategoryDropdowns();
-    renderPortfolioList();
-    renderAdminTestimonialsList();
-    renderServiceTiersNavigation();
-    loadServiceIntoEditor(0, true);
-    calculateAnalytics();
-    populateOBSProjectDropdown();
-    renderInboxes();
-    renderAdminChatClientsSidebar();
-    renderClientsDatabaseList();
+    const initTasks = [
+        { name: "populateBrandingFields", fn: populateBrandingFields },
+        { name: "populateColorSliders", fn: populateColorSliders },
+        { name: "populateVSLAndCalculatorFields", fn: populateVSLAndCalculatorFields },
+        { name: "populateVisualThemeEngineFields", fn: populateVisualThemeEngineFields },
+        { name: "renderRosterList", fn: renderRosterList },
+        { name: "populateCategoryDropdowns", fn: populateCategoryDropdowns },
+        { name: "renderPortfolioList", fn: renderPortfolioList },
+        { name: "renderAdminTestimonialsList", fn: renderAdminTestimonialsList },
+        { name: "renderServiceTiersNavigation", fn: renderServiceTiersNavigation },
+        { name: "loadServiceIntoEditor", fn: () => loadServiceIntoEditor(0, true) },
+        { name: "calculateAnalytics", fn: calculateAnalytics },
+        { name: "populateOBSProjectDropdown", fn: populateOBSProjectDropdown },
+        { name: "renderInboxes", fn: renderInboxes },
+        { name: "renderAdminChatClientsSidebar", fn: renderAdminChatClientsSidebar },
+        { name: "renderClientsDatabaseList", fn: renderClientsDatabaseList },
+        { name: "populateRosterAssignmentDropdowns", fn: populateRosterAssignmentDropdowns }
+    ];
+
+    initTasks.forEach(task => {
+        try {
+            task.fn();
+        } catch (e) {
+            console.error(`[Admin Initialization Error] failed to run ${task.name}:`, e);
+        }
+    });
 }
 
 // 3. Dynamic Analytics calculations
@@ -191,9 +207,10 @@ function calculateAnalytics() {
     let totalRevenue = 0;
 
     db.clients.forEach(client => {
-        activeProjectsCount += client.projects.length;
+        const clientProjects = client.projects || [];
+        activeProjectsCount += clientProjects.length;
         
-        client.projects.forEach(proj => {
+        clientProjects.forEach(proj => {
             if (proj.revisions) {
                 pendingRevisionsCount += proj.revisions.filter(r => !r.resolved).length;
             }
@@ -439,8 +456,89 @@ window.deleteTeamMember = function(id) {
         saveDB(db);
         renderRosterList();
         clearTeamForm();
+        try {
+            populateRosterAssignmentDropdowns();
+        } catch(e) {}
     }
 };
+
+// [NEW] Setup Team Roster Project Assignment
+function setupTeamProjectAssignment() {
+    const form = document.getElementById("admin-roster-assignment-form");
+    if (!form) return;
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const projId = document.getElementById("assign-project-select").value;
+        const memberId = document.getElementById("assign-member-select").value;
+
+        if (!projId || !memberId) {
+            alert("Please select both a client project and a roster member!");
+            return;
+        }
+
+        const db = getDB();
+        const member = db.team.find(m => m.id === memberId);
+        if (!member) {
+            alert("Roster member not found!");
+            return;
+        }
+
+        let assignedSuccessfully = false;
+
+        db.clients.forEach(client => {
+            const clientProjects = client.projects || [];
+            const proj = clientProjects.find(p => p.id === projId);
+            if (proj) {
+                proj.assignedMember = {
+                    id: member.id,
+                    name: member.name,
+                    role: member.role,
+                    image: member.image || "",
+                    skills: member.skills || ""
+                };
+                assignedSuccessfully = true;
+            }
+        });
+
+        if (assignedSuccessfully) {
+            saveDB(db);
+            alert(`Success! ${member.name} has been successfully assigned to oversee the deliverables of this project.`);
+            populateRosterAssignmentDropdowns();
+        } else {
+            alert("Error: Active project not found in database!");
+        }
+    });
+}
+
+function populateRosterAssignmentDropdowns() {
+    const projSelect = document.getElementById("assign-project-select");
+    const memberSelect = document.getElementById("assign-member-select");
+
+    if (!projSelect || !memberSelect) return;
+
+    const db = getDB();
+
+    // 1. Populate Projects Dropdown
+    let projOptions = '<option value="">-- Choose active client project --</option>';
+    (db.clients || []).forEach(client => {
+        const clientProjects = client.projects || [];
+        clientProjects.forEach(proj => {
+            const assignedText = proj.assignedMember ? ` (Assigned: ${proj.assignedMember.name})` : " (Unassigned)";
+            projOptions += `<option value="${proj.id}">${client.name || client.email} - ${proj.title}${assignedText}</option>`;
+        });
+    });
+    projSelect.innerHTML = projOptions;
+
+    // 2. Populate Roster Members Dropdown
+    let memberOptions = '<option value="">-- Choose roster member --</option>';
+    (db.team || []).forEach(member => {
+        memberOptions += `<option value="${member.id}">${member.name} - ${member.role}</option>`;
+    });
+    memberSelect.innerHTML = memberOptions;
+}
+
 
 // 7. Portfolio Showcase Video CRUD Manager
 function setupPortfolioCRUD() {
@@ -449,18 +547,129 @@ function setupPortfolioCRUD() {
 
     if (!form) return;
 
+    // Helper: Parse YouTube ID and return thumbnail URL
+    function getYouTubeThumbnail(url) {
+        if (!url) return null;
+        url = url.trim();
+        let ytId = null;
+        if (url.includes("/shorts/")) {
+            const parts = url.split("/shorts/");
+            if (parts[1]) ytId = parts[1].split(/[?#&]/)[0];
+        } else {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            if (match && match[2].length === 11) ytId = match[2];
+        }
+        if (!ytId && (url.includes("youtube.com") || url.includes("youtu.be"))) {
+            try {
+                const urlObj = new URL(url);
+                if (urlObj.searchParams.has("v")) {
+                    ytId = urlObj.searchParams.get("v");
+                } else {
+                    const pathname = urlObj.pathname;
+                    const pathParts = pathname.split("/");
+                    const lastPart = pathParts[pathParts.length - 1];
+                    if (lastPart && lastPart.length === 11) ytId = lastPart;
+                }
+            } catch(e) {}
+        }
+        return ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : null;
+    }
+
+    // Helper: Generate thumbnail from local/direct MP4 video link seeking to 1.0s
+    function generateDirectVideoThumbnail(videoUrl, callback) {
+        const video = document.createElement("video");
+        video.src = videoUrl;
+        video.crossOrigin = "anonymous";
+        video.currentTime = 1.0;
+        video.muted = true;
+        video.playsInline = true;
+        
+        video.addEventListener("seeked", () => {
+            try {
+                const canvas = document.createElement("canvas");
+                canvas.width = video.videoWidth || 640;
+                canvas.height = video.videoHeight || 360;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const dataUrl = canvas.toDataURL("image/jpeg");
+                callback(dataUrl);
+            } catch(e) {
+                console.error("Canvas draw failed, falling back", e);
+                callback("https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?auto=format&fit=crop&w=600&q=80");
+            }
+        });
+        
+        video.addEventListener("error", () => {
+            console.error("Video load error, falling back");
+            callback("https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?auto=format&fit=crop&w=600&q=80");
+        });
+    }
+
+    // Input listener to auto-populate YouTube thumbnail when video link is typed/pasted
+    const videoUrlInput = document.getElementById("port-video-url");
+    if (videoUrlInput) {
+        videoUrlInput.addEventListener("input", () => {
+            const videoUrl = videoUrlInput.value.trim();
+            const thumbInput = document.getElementById("port-thumb");
+            if (!thumbInput.value) {
+                const ytThumb = getYouTubeThumbnail(videoUrl);
+                if (ytThumb) {
+                    thumbInput.value = ytThumb;
+                }
+            }
+        });
+    }
+
+    // Auto-Generate button click handler
+    const autoThumbBtn = document.getElementById("port-auto-thumb-btn");
+    if (autoThumbBtn) {
+        autoThumbBtn.addEventListener("click", () => {
+            const videoUrl = document.getElementById("port-video-url").value.trim();
+            if (!videoUrl) {
+                alert("Please enter a video MP4 File Path or Online URL first!");
+                return;
+            }
+            
+            const ytThumb = getYouTubeThumbnail(videoUrl);
+            const thumbInput = document.getElementById("port-thumb");
+            
+            if (ytThumb) {
+                thumbInput.value = ytThumb;
+                alert("YouTube thumbnail extracted successfully!");
+            } else {
+                autoThumbBtn.textContent = "⌛ Capturing...";
+                autoThumbBtn.disabled = true;
+                generateDirectVideoThumbnail(videoUrl, (dataUrl) => {
+                    thumbInput.value = dataUrl;
+                    autoThumbBtn.textContent = "📸 Auto-Gen";
+                    autoThumbBtn.disabled = false;
+                    alert("Local/Direct video thumbnail frame captured successfully at 1.0s!");
+                });
+            }
+        });
+    }
+
     form.addEventListener("submit", (e) => {
         e.preventDefault();
 
         const db = getDB();
         const editId = document.getElementById("port-edit-id").value;
+        const videoUrlVal = document.getElementById("port-video-url").value.trim();
+        let thumbUrlVal = document.getElementById("port-thumb").value.trim();
+
+        // Assign automatic YouTube or high-res generic fallback if thumbnail is left blank
+        if (!thumbUrlVal) {
+            const ytThumb = getYouTubeThumbnail(videoUrlVal);
+            thumbUrlVal = ytThumb || "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?auto=format&fit=crop&w=600&q=80";
+        }
 
         const portData = {
             id: editId || "port-" + Date.now(),
             title: document.getElementById("port-title").value.trim(),
             category: document.getElementById("port-category-select").value,
-            videoUrl: document.getElementById("port-video-url").value.trim(),
-            thumbnail: document.getElementById("port-thumb").value.trim(),
+            videoUrl: videoUrlVal,
+            thumbnail: thumbUrlVal,
             likes: parseInt(document.getElementById("port-likes").value, 10) || 0
         };
 
@@ -728,11 +937,12 @@ function setupOBSStreamController() {
         const db = getDB();
         // Locate project across clients
         db.clients.forEach(client => {
-            const proj = client.projects.find(p => p.id === val);
+            const clientProjects = client.projects || [];
+            const proj = clientProjects.find(p => p.id === val);
             if (proj) {
                 toggle.checked = proj.obsStream ? proj.obsStream.active : false;
                 serverInput.value = proj.obsStream ? proj.obsStream.server : "rtmp://live.framezonemedia.com/live";
-                keyInput.value = proj.obsStream ? proj.obsStream.key : "fz_live_" + client.name.replace(/\s+/g, '_').toLowerCase();
+                keyInput.value = proj.obsStream ? proj.obsStream.key : "fz_live_" + (client.name || 'client').replace(/\s+/g, '_').toLowerCase();
             }
         });
     });
@@ -750,7 +960,8 @@ function setupOBSStreamController() {
         let projectFound = false;
 
         db.clients.forEach(client => {
-            const proj = client.projects.find(p => p.id === projId);
+            const clientProjects = client.projects || [];
+            const proj = clientProjects.find(p => p.id === projId);
             if (proj) {
                 proj.obsStream = {
                     active: activeState,
@@ -778,8 +989,9 @@ function populateOBSProjectDropdown() {
     let optionsMarkup = '<option value="">-- Choose active client project --</option>';
 
     db.clients.forEach(client => {
-        client.projects.forEach(proj => {
-            optionsMarkup += `<option value="${proj.id}">${client.name} - ${proj.title}</option>`;
+        const clientProjects = client.projects || [];
+        clientProjects.forEach(proj => {
+            optionsMarkup += `<option value="${proj.id}">${client.name || client.email} - ${proj.title}</option>`;
         });
     });
 
@@ -827,12 +1039,13 @@ function renderInboxes() {
         let allRevisions = [];
 
         db.clients.forEach((client, cIdx) => {
-            client.projects.forEach((proj, pIdx) => {
+            const clientProjects = client.projects || [];
+            clientProjects.forEach((proj, pIdx) => {
                 if (proj.revisions && proj.revisions.length > 0) {
                     proj.revisions.forEach((rev, rIdx) => {
                         allRevisions.push({
                             clientEmail: client.email,
-                            clientName: client.name,
+                            clientName: client.name || client.email,
                             projId: proj.id,
                             projTitle: proj.title,
                             revIndex: rIdx,
@@ -885,7 +1098,8 @@ window.toggleResolveRevision = function(clientEmail, projId, revIndex) {
     const client = db.clients.find(c => c.email === clientEmail);
     if (!client) return;
 
-    const proj = client.projects.find(p => p.id === projId);
+    const clientProjects = client.projects || [];
+    const proj = clientProjects.find(p => p.id === projId);
     if (proj && proj.revisions && proj.revisions[revIndex]) {
         proj.revisions[revIndex].resolved = !proj.revisions[revIndex].resolved;
         
@@ -1199,11 +1413,11 @@ function renderClientsDatabaseList() {
         return `
             <div class="admin-data-row" style="border-color: rgba(255,255,255,0.05); background: rgba(0,0,0,0.1);">
                 <div class="admin-data-details" style="flex-grow: 1;">
-                    <div class="admin-row-avatar-placeholder">${c.name.charAt(0)}</div>
+                    <div class="admin-row-avatar-placeholder">${(c.name ? c.name.charAt(0) : c.email.charAt(0)).toUpperCase()}</div>
                     <div class="admin-row-meta">
-                        <h4 style="font-weight: 700; font-size: 1.05rem;">${c.name} <span style="font-size: 0.8rem; font-weight: 400; color: var(--text-secondary);">(${c.email})</span></h4>
+                        <h4 style="font-weight: 700; font-size: 1.05rem;">${c.name || c.email} <span style="font-size: 0.8rem; font-weight: 400; color: var(--text-secondary);">(${c.email})</span></h4>
                         <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 3px;">
-                            Brand Name: <strong>${c.company}</strong> | Monthly Suite: <span style="color: var(--accent-primary); font-weight: 700;">${activeSub}</span> | Deliverables: <strong>${projectsCount} projects</strong>
+                            Brand Name: <strong>${c.company || 'No Company'}</strong> | Monthly Suite: <span style="color: var(--accent-primary); font-weight: 700;">${activeSub}</span> | Deliverables: <strong>${projectsCount} projects</strong>
                         </p>
                     </div>
                 </div>
@@ -1359,6 +1573,55 @@ function setupVisualThemeEngine() {
     const form = document.getElementById("admin-theme-form");
     if (!form) return;
 
+    // Helper: Save all visual customizer states directly to localStorage fzmedia_db
+    function saveThemeSettingsToDB() {
+        const db = getDB();
+        
+        const themeRadius = document.getElementById("theme-radius");
+        if (!themeRadius) return;
+        
+        db.settings.cardBorderRadius = parseInt(themeRadius.value, 10);
+        db.settings.cardBorderThickness = parseInt(document.getElementById("theme-border-thickness").value, 10);
+        db.settings.cardGlassBlur = parseInt(document.getElementById("theme-blur").value, 10);
+        db.settings.glowIntensity = parseInt(document.getElementById("theme-glow-intensity").value, 10) * 0.1;
+        db.settings.glowAnimationSpeed = parseInt(document.getElementById("theme-glow-speed").value, 10);
+        db.settings.layoutGaps = parseInt(document.getElementById("theme-gaps").value, 10);
+        db.settings.sectionPadding = parseInt(document.getElementById("theme-padding").value, 10);
+        db.settings.headerStyle = document.getElementById("theme-header-style").value;
+        db.settings.fontPreset = document.getElementById("theme-fonts").value;
+        db.settings.theme = document.getElementById("theme-layout-style").value;
+
+        db.settings.customBgH = parseInt(document.getElementById("theme-bg-hue").value, 10);
+        db.settings.customBgS = parseInt(document.getElementById("theme-bg-sat").value, 10);
+        db.settings.customBgL = parseInt(document.getElementById("theme-bg-light").value, 10);
+        db.settings.customCardL = parseInt(document.getElementById("theme-card-light").value, 10);
+        db.settings.customCardA = parseInt(document.getElementById("theme-card-opacity").value, 10) * 0.01;
+        db.settings.customBorderA = parseInt(document.getElementById("theme-border-opacity").value, 10) * 0.01;
+        db.settings.customGlowH = parseInt(document.getElementById("theme-glow-hue").value, 10);
+        db.settings.customGlowS = parseInt(document.getElementById("theme-glow-sat").value, 10);
+        db.settings.glowSpread = parseInt(document.getElementById("theme-glow-spread").value, 10);
+
+        // Dynamically sync base accents for global pages
+        db.settings.primaryColorH = parseInt(document.getElementById("theme-primary-hue").value, 10);
+        db.settings.primaryColorS = parseInt(document.getElementById("theme-primary-sat").value, 10);
+        db.settings.primaryColorL = parseInt(document.getElementById("theme-primary-light").value, 10);
+        
+        db.settings.secondaryColorH = parseInt(document.getElementById("theme-secondary-hue").value, 10);
+        db.settings.secondaryColorS = parseInt(document.getElementById("theme-secondary-sat").value, 10);
+        db.settings.secondaryColorL = parseInt(document.getElementById("theme-secondary-light").value, 10);
+        
+        db.settings.textColorPrimary = document.getElementById("theme-text-primary").value;
+        db.settings.textColorSecondary = document.getElementById("theme-text-secondary").value;
+        db.settings.textColorMuted = document.getElementById("theme-text-muted").value;
+        
+        const activePresetCard = document.querySelector(".template-preset-card.active");
+        if (activePresetCard) {
+            db.settings.themePreset = activePresetCard.getAttribute("data-preset");
+        }
+        
+        saveDB(db);
+    }
+
     // Realtime update triggers helper
     function updateRealtimePreview() {
         const radius = parseInt(document.getElementById("theme-radius").value, 10);
@@ -1381,6 +1644,7 @@ function setupVisualThemeEngine() {
         const borderA = parseInt(document.getElementById("theme-border-opacity").value, 10) * 0.01;
         const glowH = parseInt(document.getElementById("theme-glow-hue").value, 10);
         const glowS = parseInt(document.getElementById("theme-glow-sat").value, 10);
+        const glowSpread = parseInt(document.getElementById("theme-glow-spread").value, 10);
 
         // Accent Colors
         const priH = parseInt(document.getElementById("theme-primary-hue").value, 10);
@@ -1416,6 +1680,7 @@ function setupVisualThemeEngine() {
         document.getElementById("theme-border-opacity-val").textContent = `${borderA.toFixed(2)}`;
         document.getElementById("theme-glow-hue-val").textContent = `${glowH}°`;
         document.getElementById("theme-glow-sat-val").textContent = `${glowS}%`;
+        document.getElementById("theme-glow-spread-val").textContent = `${glowSpread}px`;
 
         document.getElementById("theme-primary-hue-val").textContent = `${priH}°`;
         document.getElementById("theme-primary-sat-val").textContent = `${priS}%`;
@@ -1453,7 +1718,14 @@ function setupVisualThemeEngine() {
             mockCard.style.webkitBackdropFilter = `blur(${blurVal}px)`;
             mockCard.style.background = `hsla(${bgH}, ${bgS + 5}%, ${cardL}%, ${cardA})`;
             mockCard.style.borderColor = `hsla(${bgH}, 20%, 80%, ${borderA})`;
-            mockCard.style.boxShadow = `0 10px 35px rgba(0,0,0,0.4), 0 0 ${16 * glowMult}px hsla(${glowH}, ${glowS}%, 50%, 0.15)`;
+            mockCard.style.boxShadow = `0 10px 35px rgba(0,0,0,0.4), 0 0 ${glowSpread}px hsla(${glowH}, ${glowS}%, 50%, ${0.15 * glowMult})`;
+        }
+
+        // Bouncy interaction invitation popup trigger on Accept Presets button
+        const acceptBtn = document.getElementById("preview-accept-presets");
+        if (acceptBtn) {
+            acceptBtn.style.transform = "scale(1.08)";
+            acceptBtn.classList.add("invite-pulse");
         }
 
         // Apply font styling preview to mock title
@@ -1573,7 +1845,7 @@ function setupVisualThemeEngine() {
         "theme-glow-speed", "theme-gaps", "theme-padding", "theme-header-style",
         "theme-fonts", "theme-layout-style", "theme-bg-hue", "theme-bg-sat", "theme-bg-light",
         "theme-card-light", "theme-card-opacity", "theme-border-opacity",
-        "theme-glow-hue", "theme-glow-sat",
+        "theme-glow-hue", "theme-glow-sat", "theme-glow-spread",
         "theme-primary-hue", "theme-primary-sat", "theme-primary-light",
         "theme-secondary-hue", "theme-secondary-sat", "theme-secondary-light",
         "theme-text-primary", "theme-text-secondary", "theme-text-muted"
@@ -1583,7 +1855,10 @@ function setupVisualThemeEngine() {
         const el = document.getElementById(id);
         if (el) {
             el.addEventListener("input", updateRealtimePreview);
-            el.addEventListener("change", updateRealtimePreview);
+            el.addEventListener("change", () => {
+                updateRealtimePreview();
+                saveThemeSettingsToDB();
+            });
         }
     });
 
@@ -1597,6 +1872,7 @@ function setupVisualThemeEngine() {
             document.getElementById("theme-bg-light").value = hsl.l > 20 ? 20 : (hsl.l < 1 ? 1 : hsl.l); // Cap/floor like slider
             updateRealtimePreview();
         });
+        bgPicker.addEventListener("change", saveThemeSettingsToDB);
     }
 
     const cardPicker = document.getElementById("theme-card-color-picker");
@@ -1606,6 +1882,7 @@ function setupVisualThemeEngine() {
             document.getElementById("theme-card-light").value = hsl.l > 28 ? 28 : (hsl.l < 2 ? 2 : hsl.l); // Cap/floor like slider
             updateRealtimePreview();
         });
+        cardPicker.addEventListener("change", saveThemeSettingsToDB);
     }
 
     const priPicker = document.getElementById("theme-primary-color-picker");
@@ -1617,6 +1894,7 @@ function setupVisualThemeEngine() {
             document.getElementById("theme-primary-light").value = hsl.l > 90 ? 90 : (hsl.l < 10 ? 10 : hsl.l); // Cap/floor like slider
             updateRealtimePreview();
         });
+        priPicker.addEventListener("change", saveThemeSettingsToDB);
     }
 
     const secPicker = document.getElementById("theme-secondary-color-picker");
@@ -1628,6 +1906,7 @@ function setupVisualThemeEngine() {
             document.getElementById("theme-secondary-light").value = hsl.l > 90 ? 90 : (hsl.l < 10 ? 10 : hsl.l); // Cap/floor like slider
             updateRealtimePreview();
         });
+        secPicker.addEventListener("change", saveThemeSettingsToDB);
     }
 
     const glowPicker = document.getElementById("theme-glow-color-picker");
@@ -1638,9 +1917,10 @@ function setupVisualThemeEngine() {
             document.getElementById("theme-glow-sat").value = hsl.s > 100 ? 100 : (hsl.s < 20 ? 20 : hsl.s); // Cap/floor like slider
             updateRealtimePreview();
         });
+        glowPicker.addEventListener("change", saveThemeSettingsToDB);
     }
 
-    // SaaS Templates preset click triggers
+    // SaaS & Premium Templates preset click triggers
     const presetCards = document.querySelectorAll(".template-preset-card");
     presetCards.forEach(card => {
         card.addEventListener("click", () => {
@@ -1650,7 +1930,119 @@ function setupVisualThemeEngine() {
             card.classList.add("active");
 
             // Apply templates parameters into forms inputs without resetting database
-            if (presetName === 'midnight') {
+            if (presetName === 'preset-neon-saas') {
+                document.getElementById("theme-radius").value = 24;
+                document.getElementById("theme-border-thickness").value = 1;
+                document.getElementById("theme-blur").value = 20;
+                document.getElementById("theme-glow-intensity").value = 15; // 1.5x
+                document.getElementById("theme-glow-speed").value = 3;
+                document.getElementById("theme-gaps").value = 30;
+                document.getElementById("theme-padding").value = 80;
+                document.getElementById("theme-header-style").value = "floating-glass";
+                document.getElementById("theme-fonts").value = "minimal-slate";
+                document.getElementById("theme-layout-style").value = "liquid";
+
+                document.getElementById("theme-bg-hue").value = 267;
+                document.getElementById("theme-bg-sat").value = 15;
+                document.getElementById("theme-bg-light").value = 3;
+                document.getElementById("theme-card-light").value = 6;
+                document.getElementById("theme-card-opacity").value = 25; 
+                document.getElementById("theme-border-opacity").value = 10; 
+                document.getElementById("theme-glow-hue").value = 267;
+                document.getElementById("theme-glow-sat").value = 90;
+                document.getElementById("theme-glow-spread").value = 25;
+
+                document.getElementById("theme-primary-hue").value = 267;
+                document.getElementById("theme-primary-sat").value = 90;
+                document.getElementById("theme-primary-light").value = 61;
+                document.getElementById("theme-secondary-hue").value = 185;
+                document.getElementById("theme-secondary-sat").value = 90;
+                document.getElementById("theme-secondary-light").value = 50;
+            } else if (presetName === 'preset-cyber-command') {
+                document.getElementById("theme-radius").value = 0;
+                document.getElementById("theme-border-thickness").value = 2;
+                document.getElementById("theme-blur").value = 0;
+                document.getElementById("theme-glow-intensity").value = 18; // 1.8x
+                document.getElementById("theme-glow-speed").value = 2;
+                document.getElementById("theme-gaps").value = 24;
+                document.getElementById("theme-padding").value = 60;
+                document.getElementById("theme-header-style").value = "sticky-solid";
+                document.getElementById("theme-fonts").value = "cyberpunk";
+                document.getElementById("theme-layout-style").value = "saas";
+
+                document.getElementById("theme-bg-hue").value = 150;
+                document.getElementById("theme-bg-sat").value = 10;
+                document.getElementById("theme-bg-light").value = 2;
+                document.getElementById("theme-card-light").value = 4;
+                document.getElementById("theme-card-opacity").value = 80; 
+                document.getElementById("theme-border-opacity").value = 20; 
+                document.getElementById("theme-glow-hue").value = 150;
+                document.getElementById("theme-glow-sat").value = 95;
+                document.getElementById("theme-glow-spread").value = 35;
+
+                document.getElementById("theme-primary-hue").value = 150;
+                document.getElementById("theme-primary-sat").value = 95;
+                document.getElementById("theme-primary-light").value = 50;
+                document.getElementById("theme-secondary-hue").value = 120;
+                document.getElementById("theme-secondary-sat").value = 95;
+                document.getElementById("theme-secondary-light").value = 50;
+            } else if (presetName === 'preset-luxury-gold') {
+                document.getElementById("theme-radius").value = 16;
+                document.getElementById("theme-border-thickness").value = 1;
+                document.getElementById("theme-blur").value = 24;
+                document.getElementById("theme-glow-intensity").value = 12; // 1.2x
+                document.getElementById("theme-glow-speed").value = 4;
+                document.getElementById("theme-gaps").value = 32;
+                document.getElementById("theme-padding").value = 85;
+                document.getElementById("theme-header-style").value = "centered";
+                document.getElementById("theme-fonts").value = "minimal-slate";
+                document.getElementById("theme-layout-style").value = "gradient";
+
+                document.getElementById("theme-bg-hue").value = 280;
+                document.getElementById("theme-bg-sat").value = 8;
+                document.getElementById("theme-bg-light").value = 3;
+                document.getElementById("theme-card-light").value = 5;
+                document.getElementById("theme-card-opacity").value = 30; 
+                document.getElementById("theme-border-opacity").value = 15; 
+                document.getElementById("theme-glow-hue").value = 45; // Gold!
+                document.getElementById("theme-glow-sat").value = 85;
+                document.getElementById("theme-glow-spread").value = 30;
+
+                document.getElementById("theme-primary-hue").value = 45; // Gold!
+                document.getElementById("theme-primary-sat").value = 85;
+                document.getElementById("theme-primary-light").value = 55;
+                document.getElementById("theme-secondary-hue").value = 35;
+                document.getElementById("theme-secondary-sat").value = 80;
+                document.getElementById("theme-secondary-light").value = 50;
+            } else if (presetName === 'preset-aurora-liquid') {
+                document.getElementById("theme-radius").value = 28;
+                document.getElementById("theme-border-thickness").value = 2;
+                document.getElementById("theme-blur").value = 28;
+                document.getElementById("theme-glow-intensity").value = 16; // 1.6x
+                document.getElementById("theme-glow-speed").value = 4;
+                document.getElementById("theme-gaps").value = 28;
+                document.getElementById("theme-padding").value = 80;
+                document.getElementById("theme-header-style").value = "floating-glass";
+                document.getElementById("theme-fonts").value = "tech-modern";
+                document.getElementById("theme-layout-style").value = "liquid";
+
+                document.getElementById("theme-bg-hue").value = 310;
+                document.getElementById("theme-bg-sat").value = 15;
+                document.getElementById("theme-bg-light").value = 4;
+                document.getElementById("theme-card-light").value = 8;
+                document.getElementById("theme-card-opacity").value = 40; 
+                document.getElementById("theme-border-opacity").value = 12; 
+                document.getElementById("theme-glow-hue").value = 310;
+                document.getElementById("theme-glow-sat").value = 90;
+                document.getElementById("theme-glow-spread").value = 35;
+
+                document.getElementById("theme-primary-hue").value = 310;
+                document.getElementById("theme-primary-sat").value = 90;
+                document.getElementById("theme-primary-light").value = 60;
+                document.getElementById("theme-secondary-hue").value = 195;
+                document.getElementById("theme-secondary-sat").value = 90;
+                document.getElementById("theme-secondary-light").value = 50;
+            } else if (presetName === 'midnight') {
                 document.getElementById("theme-radius").value = 8;
                 document.getElementById("theme-border-thickness").value = 1;
                 document.getElementById("theme-blur").value = 16;
@@ -1666,10 +2058,11 @@ function setupVisualThemeEngine() {
                 document.getElementById("theme-bg-sat").value = 10;
                 document.getElementById("theme-bg-light").value = 3;
                 document.getElementById("theme-card-light").value = 5;
-                document.getElementById("theme-card-opacity").value = 40; // 0.40
-                document.getElementById("theme-border-opacity").value = 8; // 0.08
+                document.getElementById("theme-card-opacity").value = 40; 
+                document.getElementById("theme-border-opacity").value = 8; 
                 document.getElementById("theme-glow-hue").value = 267;
                 document.getElementById("theme-glow-sat").value = 90;
+                document.getElementById("theme-glow-spread").value = 15;
 
                 document.getElementById("theme-primary-hue").value = 267;
                 document.getElementById("theme-primary-sat").value = 90;
@@ -1693,43 +2086,17 @@ function setupVisualThemeEngine() {
                 document.getElementById("theme-bg-sat").value = 15;
                 document.getElementById("theme-bg-light").value = 4;
                 document.getElementById("theme-card-light").value = 8;
-                document.getElementById("theme-card-opacity").value = 30; // 0.30
-                document.getElementById("theme-border-opacity").value = 12; // 0.12
+                document.getElementById("theme-card-opacity").value = 30; 
+                document.getElementById("theme-border-opacity").value = 12; 
                 document.getElementById("theme-glow-hue").value = 185;
                 document.getElementById("theme-glow-sat").value = 90;
+                document.getElementById("theme-glow-spread").value = 25;
 
                 document.getElementById("theme-primary-hue").value = 310;
                 document.getElementById("theme-primary-sat").value = 90;
                 document.getElementById("theme-primary-light").value = 60;
                 document.getElementById("theme-secondary-hue").value = 185;
                 document.getElementById("theme-secondary-sat").value = 90;
-                document.getElementById("theme-secondary-light").value = 50;
-            } else if (presetName === 'cyberpunk') {
-                document.getElementById("theme-radius").value = 0;
-                document.getElementById("theme-border-thickness").value = 2;
-                document.getElementById("theme-blur").value = 0;
-                document.getElementById("theme-glow-intensity").value = 18; // 1.8x
-                document.getElementById("theme-glow-speed").value = 2;
-                document.getElementById("theme-gaps").value = 24;
-                document.getElementById("theme-padding").value = 60;
-                document.getElementById("theme-header-style").value = "sticky-solid";
-                document.getElementById("theme-fonts").value = "cyberpunk";
-                document.getElementById("theme-layout-style").value = "default";
-
-                document.getElementById("theme-bg-hue").value = 55;
-                document.getElementById("theme-bg-sat").value = 25;
-                document.getElementById("theme-bg-light").value = 2;
-                document.getElementById("theme-card-light").value = 4;
-                document.getElementById("theme-card-opacity").value = 75; // 0.75
-                document.getElementById("theme-border-opacity").value = 25; // 0.25
-                document.getElementById("theme-glow-hue").value = 320;
-                document.getElementById("theme-glow-sat").value = 95;
-
-                document.getElementById("theme-primary-hue").value = 320;
-                document.getElementById("theme-primary-sat").value = 95;
-                document.getElementById("theme-primary-light").value = 50;
-                document.getElementById("theme-secondary-hue").value = 55;
-                document.getElementById("theme-secondary-sat").value = 95;
                 document.getElementById("theme-secondary-light").value = 50;
             } else if (presetName === 'minimal') {
                 document.getElementById("theme-radius").value = 12;
@@ -1747,10 +2114,11 @@ function setupVisualThemeEngine() {
                 document.getElementById("theme-bg-sat").value = 5;
                 document.getElementById("theme-bg-light").value = 4;
                 document.getElementById("theme-card-light").value = 6;
-                document.getElementById("theme-card-opacity").value = 25; // 0.25
-                document.getElementById("theme-border-opacity").value = 6; // 0.06
+                document.getElementById("theme-card-opacity").value = 25; 
+                document.getElementById("theme-border-opacity").value = 6; 
                 document.getElementById("theme-glow-hue").value = 200;
                 document.getElementById("theme-glow-sat").value = 50;
+                document.getElementById("theme-glow-spread").value = 10;
 
                 document.getElementById("theme-primary-hue").value = 200;
                 document.getElementById("theme-primary-sat").value = 50;
@@ -1762,48 +2130,177 @@ function setupVisualThemeEngine() {
 
             // Sync visual preview instantly
             updateRealtimePreview();
+            saveThemeSettingsToDB();
         });
     });
+
+    // Setup micro-success checkmark animation for Accept Presets
+    const acceptBtn = document.getElementById("preview-accept-presets");
+    if (acceptBtn) {
+        acceptBtn.addEventListener("click", () => {
+            const mockCard = document.getElementById("preview-card-mock");
+            if (!mockCard) return;
+            
+            // Check if there's already an active checkmark
+            const existing = mockCard.querySelector(".preview-success-overlay");
+            if (existing) existing.remove();
+            
+            // Create overlay
+            const overlay = document.createElement("div");
+            overlay.className = "preview-success-overlay";
+            overlay.style.position = "absolute";
+            overlay.style.inset = "0";
+            overlay.style.background = "rgba(16, 185, 129, 0.12)";
+            overlay.style.backdropFilter = "blur(4px)";
+            overlay.style.webkitBackdropFilter = "blur(4px)";
+            overlay.style.display = "flex";
+            overlay.style.flexDirection = "column";
+            overlay.style.justifyContent = "center";
+            overlay.style.alignItems = "center";
+            overlay.style.borderRadius = mockCard.style.borderRadius || "12px";
+            overlay.style.border = "2px solid #10b981";
+            overlay.style.zIndex = "10";
+            overlay.style.transition = "opacity 0.4s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
+            overlay.style.transform = "scale(0.8)";
+            overlay.style.opacity = "0";
+            
+            overlay.innerHTML = `
+                <div style="font-size: 3rem; transform: scale(0.5); animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;">✅</div>
+                <div style="color: #10b981; font-weight: 800; font-size: 0.9rem; margin-top: 8px; text-transform: uppercase; letter-spacing: 0.05em;">Preset Accepted!</div>
+            `;
+            
+            const originalPosition = mockCard.style.position;
+            mockCard.style.position = "relative";
+            mockCard.appendChild(overlay);
+            
+            setTimeout(() => {
+                overlay.style.transform = "scale(1)";
+                overlay.style.opacity = "1";
+            }, 10);
+            
+            setTimeout(() => {
+                overlay.style.opacity = "0";
+                overlay.style.transform = "scale(1.1)";
+                setTimeout(() => {
+                    overlay.remove();
+                    mockCard.style.position = originalPosition;
+                }, 400);
+            }, 1500);
+            
+            acceptBtn.style.transform = "scale(1)";
+            acceptBtn.classList.remove("invite-pulse");
+        });
+    }
+
+    // Setup viewport tester cycle width changes
+    const secBtn = document.getElementById("preview-secondary-option");
+    const wrapper = document.getElementById("preview-viewport-wrapper");
+    if (secBtn && wrapper) {
+        let currentViewport = "desktop";
+        secBtn.addEventListener("click", () => {
+            if (currentViewport === "desktop") {
+                currentViewport = "tablet";
+                wrapper.style.width = "480px";
+                secBtn.innerHTML = "Tablet Viewport 📱";
+                secBtn.style.color = "var(--accent-secondary)";
+            } else if (currentViewport === "tablet") {
+                currentViewport = "mobile";
+                wrapper.style.width = "320px";
+                secBtn.innerHTML = "Mobile Viewport 📞";
+                secBtn.style.color = "var(--accent-primary)";
+            } else {
+                currentViewport = "desktop";
+                wrapper.style.width = "100%";
+                secBtn.innerHTML = "Desktop Viewport 🖥️";
+                secBtn.style.color = "var(--text-secondary)";
+            }
+        });
+    }
+
+    // Setup quick color swatches chips listeners
+    const btnPrem = document.getElementById("preset-swatch-premium-gradient");
+    const btnFour = document.getElementById("preset-swatch-4color-gradient");
+    const btnSaas = document.getElementById("preset-swatch-saas");
+    
+    if (btnPrem) {
+        btnPrem.addEventListener("click", () => {
+            document.getElementById("theme-primary-hue").value = 267;
+            document.getElementById("theme-primary-sat").value = 90;
+            document.getElementById("theme-primary-light").value = 61;
+            document.getElementById("theme-secondary-hue").value = 185;
+            document.getElementById("theme-secondary-sat").value = 90;
+            document.getElementById("theme-secondary-light").value = 50;
+            document.getElementById("theme-glow-hue").value = 267;
+            document.getElementById("theme-glow-sat").value = 90;
+            document.getElementById("theme-glow-spread").value = 25;
+            document.getElementById("theme-glow-intensity").value = 14; 
+            document.getElementById("theme-bg-hue").value = 250;
+            document.getElementById("theme-bg-sat").value = 15;
+            document.getElementById("theme-bg-light").value = 4;
+            document.getElementById("theme-card-light").value = 6;
+            
+            updateRealtimePreview();
+            saveThemeSettingsToDB();
+            
+            const event = new Event("click");
+            if (acceptBtn) acceptBtn.dispatchEvent(event);
+        });
+    }
+    
+    if (btnFour) {
+        btnFour.addEventListener("click", () => {
+            document.getElementById("theme-primary-hue").value = 328; 
+            document.getElementById("theme-primary-sat").value = 95;
+            document.getElementById("theme-primary-light").value = 60;
+            document.getElementById("theme-secondary-hue").value = 150; 
+            document.getElementById("theme-secondary-sat").value = 85;
+            document.getElementById("theme-secondary-light").value = 50;
+            document.getElementById("theme-glow-hue").value = 328;
+            document.getElementById("theme-glow-sat").value = 95;
+            document.getElementById("theme-glow-spread").value = 35;
+            document.getElementById("theme-glow-intensity").value = 18; 
+            document.getElementById("theme-bg-hue").value = 280;
+            document.getElementById("theme-bg-sat").value = 18;
+            document.getElementById("theme-bg-light").value = 3;
+            document.getElementById("theme-card-light").value = 8;
+            
+            updateRealtimePreview();
+            saveThemeSettingsToDB();
+            
+            const event = new Event("click");
+            if (acceptBtn) acceptBtn.dispatchEvent(event);
+        });
+    }
+    
+    if (btnSaas) {
+        btnSaas.addEventListener("click", () => {
+            document.getElementById("theme-primary-hue").value = 217; 
+            document.getElementById("theme-primary-sat").value = 30;
+            document.getElementById("theme-primary-light").value = 45;
+            document.getElementById("theme-secondary-hue").value = 210; 
+            document.getElementById("theme-secondary-sat").value = 25;
+            document.getElementById("theme-secondary-light").value = 60;
+            document.getElementById("theme-glow-hue").value = 217;
+            document.getElementById("theme-glow-sat").value = 20;
+            document.getElementById("theme-glow-spread").value = 10;
+            document.getElementById("theme-glow-intensity").value = 5; 
+            document.getElementById("theme-bg-hue").value = 222;
+            document.getElementById("theme-bg-sat").value = 12;
+            document.getElementById("theme-bg-light").value = 6;
+            document.getElementById("theme-card-light").value = 6;
+            
+            updateRealtimePreview();
+            saveThemeSettingsToDB();
+            
+            const event = new Event("click");
+            if (acceptBtn) acceptBtn.dispatchEvent(event);
+        });
+    }
 
     form.addEventListener("submit", (e) => {
         e.preventDefault();
         
-        const db = getDB();
-        
-        db.settings.cardBorderRadius = parseInt(document.getElementById("theme-radius").value, 10);
-        db.settings.cardBorderThickness = parseInt(document.getElementById("theme-border-thickness").value, 10);
-        db.settings.cardGlassBlur = parseInt(document.getElementById("theme-blur").value, 10);
-        db.settings.glowIntensity = parseInt(document.getElementById("theme-glow-intensity").value, 10) * 0.1;
-        db.settings.glowAnimationSpeed = parseInt(document.getElementById("theme-glow-speed").value, 10);
-        db.settings.layoutGaps = parseInt(document.getElementById("theme-gaps").value, 10);
-        db.settings.sectionPadding = parseInt(document.getElementById("theme-padding").value, 10);
-        db.settings.headerStyle = document.getElementById("theme-header-style").value;
-        db.settings.fontPreset = document.getElementById("theme-fonts").value;
-        db.settings.theme = document.getElementById("theme-layout-style").value;
-
-        db.settings.customBgH = parseInt(document.getElementById("theme-bg-hue").value, 10);
-        db.settings.customBgS = parseInt(document.getElementById("theme-bg-sat").value, 10);
-        db.settings.customBgL = parseInt(document.getElementById("theme-bg-light").value, 10);
-        db.settings.customCardL = parseInt(document.getElementById("theme-card-light").value, 10);
-        db.settings.customCardA = parseInt(document.getElementById("theme-card-opacity").value, 10) * 0.01;
-        db.settings.customBorderA = parseInt(document.getElementById("theme-border-opacity").value, 10) * 0.01;
-        db.settings.customGlowH = parseInt(document.getElementById("theme-glow-hue").value, 10);
-        db.settings.customGlowS = parseInt(document.getElementById("theme-glow-sat").value, 10);
-
-        // Dynamically sync base accents for global pages
-        db.settings.primaryColorH = parseInt(document.getElementById("theme-primary-hue").value, 10);
-        db.settings.primaryColorS = parseInt(document.getElementById("theme-primary-sat").value, 10);
-        db.settings.primaryColorL = parseInt(document.getElementById("theme-primary-light").value, 10);
-        
-        db.settings.secondaryColorH = parseInt(document.getElementById("theme-secondary-hue").value, 10);
-        db.settings.secondaryColorS = parseInt(document.getElementById("theme-secondary-sat").value, 10);
-        db.settings.secondaryColorL = parseInt(document.getElementById("theme-secondary-light").value, 10);
-        
-        db.settings.textColorPrimary = document.getElementById("theme-text-primary").value;
-        db.settings.textColorSecondary = document.getElementById("theme-text-secondary").value;
-        db.settings.textColorMuted = document.getElementById("theme-text-muted").value;
-        
-        saveDB(db);
+        saveThemeSettingsToDB();
         injectTheme();
         injectLayouts();
         
@@ -1836,6 +2333,7 @@ function populateVisualThemeEngineFields() {
     document.getElementById("theme-border-opacity").value = s.customBorderA !== undefined ? Math.round(s.customBorderA * 100) : 8;
     document.getElementById("theme-glow-hue").value = s.customGlowH !== undefined ? s.customGlowH : 267;
     document.getElementById("theme-glow-sat").value = s.customGlowS !== undefined ? s.customGlowS : 90;
+    document.getElementById("theme-glow-spread").value = s.glowSpread !== undefined ? s.glowSpread : 15;
 
     // Accent Colors population
     document.getElementById("theme-primary-hue").value = s.primaryColorH !== undefined ? s.primaryColorH : 267;
@@ -1871,6 +2369,7 @@ function populateVisualThemeEngineFields() {
     const borderA = parseInt(document.getElementById("theme-border-opacity").value, 10) * 0.01;
     const glowH = parseInt(document.getElementById("theme-glow-hue").value, 10);
     const glowS = parseInt(document.getElementById("theme-glow-sat").value, 10);
+    const glowSpread = parseInt(document.getElementById("theme-glow-spread").value, 10);
 
     const priH = parseInt(document.getElementById("theme-primary-hue").value, 10);
     const priS = parseInt(document.getElementById("theme-primary-sat").value, 10);
@@ -1896,6 +2395,7 @@ function populateVisualThemeEngineFields() {
     document.getElementById("theme-border-opacity-val").textContent = `${borderA.toFixed(2)}`;
     document.getElementById("theme-glow-hue-val").textContent = `${glowH}°`;
     document.getElementById("theme-glow-sat-val").textContent = `${glowS}%`;
+    document.getElementById("theme-glow-spread-val").textContent = `${glowSpread}px`;
 
     document.getElementById("theme-primary-hue-val").textContent = `${priH}°`;
     document.getElementById("theme-primary-sat-val").textContent = `${priS}%`;

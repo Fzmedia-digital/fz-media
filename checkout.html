@@ -411,7 +411,7 @@
                     <div class="glass-card" style="padding: 40px;">
                         
                         <!-- Client Onboarding credentials form first -->
-                        <h3 style="font-size: 1.4rem; margin-bottom: 18px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                        <h3 id="checkout-reg-form-heading" style="font-size: 1.4rem; margin-bottom: 18px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
                             1. Create Your Client Workspace Account
                         </h3>
                         <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 24px;">This account allows you to track progress, upload footage, and leave frame-by-frame edits inside your dashboard.</p>
@@ -579,7 +579,34 @@
             setupPaymentTabs();
             setupFormSync();
             setupTransactions();
+            checkActiveSession();
         });
+
+        // Helper: Check active client session and pre-fill sign-up credentials
+        function checkActiveSession() {
+            const savedEmail = sessionStorage.getItem("fzmedia_logged_client");
+            if (savedEmail) {
+                const db = getDB();
+                const loggedClient = db.clients.find(c => c.email.toLowerCase() === savedEmail.toLowerCase());
+                if (loggedClient) {
+                    const regName = document.getElementById("reg-name");
+                    const regCompany = document.getElementById("reg-company");
+                    const regEmail = document.getElementById("reg-email");
+                    const regPass = document.getElementById("reg-pass");
+                    
+                    if (regName) regName.value = loggedClient.name || "";
+                    if (regCompany) regCompany.value = loggedClient.company || "";
+                    if (regEmail) regEmail.value = loggedClient.email || "";
+                    if (regPass) regPass.value = loggedClient.password || "";
+                    
+                    // Visually badge the form header
+                    const sectionHeader = document.querySelector("#checkout-reg-form-heading");
+                    if (sectionHeader) {
+                        sectionHeader.innerHTML = `Create Your Client Workspace Account <span style="font-size: 0.8rem; color: var(--accent-secondary); margin-left: 6px; text-transform: none;">(Logged In)</span>`;
+                    }
+                }
+            }
+        }
 
         // 1. Parse service and package parameters
         function parseParameters() {
@@ -777,37 +804,60 @@
                     // Update Database State!
                     const db = getDB();
                     
-                    // Check if client already exists, delete if duplicate email to override during tests
-                    db.clients = db.clients.filter(c => c.email !== email);
-
-                    // Add new onboarding client profile
-                    const newClient = {
-                        email: email,
-                        password: pass,
-                        name: name,
-                        company: company,
-                        activeSub: `${selectedPackage} ${selectedService}`,
-                        packageLimits: `0 of 4 Video Drafts remaining this month`,
-                        projects: [
-                            {
-                                id: "cp-" + Date.now(),
-                                title: `${company} - ${selectedService} Onboarding Draft`,
-                                status: "In Queue",
-                                progress: 0,
-                                deliveryDate: new Date(Date.now() + 4*24*60*60*1000).toLocaleDateString(), // 4 days delivery
-                                videoUrl: "assets/videos/solo showreel.mp4",
-                                revisions: [],
-                                obsStream: {
-                                    active: false,
-                                    server: "rtmp://live.framezonemedia.com/live",
-                                    key: "fz_live_" + name.replace(/\s+/g, '_').toLowerCase()
-                                }
+                    // Check if client already exists to prevent resetting their database data
+                    const existingClient = db.clients.find(c => c.email.toLowerCase() === email.toLowerCase());
+                    
+                    if (existingClient) {
+                        // Update active packages while preserving their account history, chat messages, and briefs
+                        existingClient.name = name;
+                        existingClient.company = company;
+                        existingClient.activeSub = `${selectedPackage} ${selectedService}`;
+                        existingClient.packageLimits = `0 of 4 Video Drafts remaining this month`;
+                        
+                        // Append the new onboarding video project
+                        existingClient.projects.push({
+                            id: "cp-" + Date.now(),
+                            title: `${company} - ${selectedService} Onboarding Draft`,
+                            status: "In Queue",
+                            progress: 0,
+                            deliveryDate: new Date(Date.now() + 4*24*60*60*1000).toLocaleDateString(), // 4 days delivery
+                            videoUrl: "assets/videos/solo showreel.mp4",
+                            revisions: [],
+                            obsStream: {
+                                active: false,
+                                server: "rtmp://live.framezonemedia.com/live",
+                                key: "fz_live_" + name.replace(/\s+/g, '_').toLowerCase()
                             }
-                        ],
-                        briefs: []
-                    };
-
-                    db.clients.push(newClient);
+                        });
+                    } else {
+                        // Add new onboarding client profile
+                        const newClient = {
+                            email: email,
+                            password: pass,
+                            name: name,
+                            company: company,
+                            activeSub: `${selectedPackage} ${selectedService}`,
+                            packageLimits: `0 of 4 Video Drafts remaining this month`,
+                            projects: [
+                                {
+                                    id: "cp-" + Date.now(),
+                                    title: `${company} - ${selectedService} Onboarding Draft`,
+                                    status: "In Queue",
+                                    progress: 0,
+                                    deliveryDate: new Date(Date.now() + 4*24*60*60*1000).toLocaleDateString(), // 4 days delivery
+                                    videoUrl: "assets/videos/solo showreel.mp4",
+                                    revisions: [],
+                                    obsStream: {
+                                        active: false,
+                                        server: "rtmp://live.framezonemedia.com/live",
+                                        key: "fz_live_" + name.replace(/\s+/g, '_').toLowerCase()
+                                    }
+                                }
+                            ],
+                            briefs: []
+                        };
+                        db.clients.push(newClient);
+                    }
                     
                     // Log in central Admin Inbox brief queue
                     db.inbox.push({

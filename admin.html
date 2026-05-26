@@ -20,8 +20,8 @@
 
     <main style="padding-top: 80px; min-height: 100vh;">
 
-        <!-- 1. Admin Login Panel (Hidden after authentication) -->
-        <section class="admin-auth-section" id="admin-auth-panel">
+        <!-- 1. Admin Login Panel -->
+        <section class="admin-auth-section" id="admin-auth-panel" style="display: block;">
             <div class="admin-glow-top"></div>
             <div class="container" style="max-width: 440px;">
                 <div class="glass-card auth-card" style="text-align: center;">
@@ -29,12 +29,12 @@
                     <h2 style="font-size: 1.8rem; margin-bottom: 10px;">Executive Sign-In</h2>
                     <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 28px;">Authorize credentials to access FZ Media state managers and configuration control panels.</p>
                     
-                    <div id="admin-auth-error" class="auth-error-alert" style="display: none;"></div>
-
+                    <div id="admin-auth-error" class="auth-error-alert" style="display: none; background: rgba(239,68,68,0.1); border: 1px solid var(--accent-primary); padding: 10px 14px; border-radius: var(--radius-sm); color: #f87171; font-size: 0.88rem; margin-bottom: 20px; font-weight: 600;"></div>
+ 
                     <form id="admin-login-form" style="text-align: left;">
                         <div class="form-group">
                             <label class="form-label" for="admin-email">Admin Email Address</label>
-                            <input type="email" id="admin-email" class="form-control" placeholder="Enter admin email address" required>
+                            <input type="text" id="admin-email" class="form-control" placeholder="Enter admin email address (e.g. admin)" required>
                         </div>
                         
                         <div class="form-group" style="margin-bottom: 24px;">
@@ -47,7 +47,7 @@
                                 </button>
                             </div>
                         </div>
-
+ 
                         <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; font-size: 1rem;">
                             Authorize & Unlock Dashboard
                         </button>
@@ -55,8 +55,8 @@
                 </div>
             </div>
         </section>
-
-        <!-- 2. Main Admin Dashboard Workspace (Mounted after sign-in) -->
+ 
+        <!-- 2. Main Admin Dashboard Workspace -->
         <section class="admin-workspace-section" id="admin-workspace" style="display: none; padding: 40px 0;">
             <div class="container">
                 
@@ -109,12 +109,12 @@
                                     <input type="text" id="cfg-agency-fullname" class="form-control" required>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label" for="cfg-logo-path">Navbar Logo File Path / Image Link</label>
-                                    <input type="text" id="cfg-logo-path" class="form-control" placeholder="e.g. assets/img/logo/FZ logo.png" required>
+                                    <label class="form-label" for="cfg-logo-path">Navbar Logo File Path / Image Link <span style="font-size: 0.72rem; color: var(--text-muted); text-transform: none;">(Optional)</span></label>
+                                    <input type="text" id="cfg-logo-path" class="form-control" placeholder="e.g. assets/img/logo/FZ logo.png">
                                 </div>
                                 <div class="form-group">
-                                     <label class="form-label" for="cfg-logo-icon">Navbar Logo Icon (Tiny Profile Icon) *</label>
-                                     <input type="text" id="cfg-logo-icon" class="form-control" placeholder="e.g. assets/img/logo/FZ logo 1.png" required>
+                                     <label class="form-label" for="cfg-logo-icon">Navbar Logo Icon (Tiny Profile Icon) <span style="font-size: 0.72rem; color: var(--text-muted); text-transform: none;">(Optional)</span></label>
+                                     <input type="text" id="cfg-logo-icon" class="form-control" placeholder="e.g. assets/img/logo/FZ logo 1.png">
                                  </div>
                                  
                                  <div class="form-group" style="margin-bottom: 20px;">
@@ -234,8 +234,8 @@
                                             <input type="text" id="vsl-desc-input" class="form-control" placeholder="e.g. Targeted VSL templates..." required>
                                         </div>
                                         <div class="form-group">
-                                            <label class="form-label" for="vsl-video-url-input">Hero Video File Path / Streaming Link</label>
-                                            <input type="text" id="vsl-video-url-input" class="form-control" placeholder="e.g. assets/videos/solo showreel.mp4" required>
+                                            <label class="form-label" for="vsl-video-url-input">Hero Video File Path / Streaming Link <span style="font-size: 0.72rem; color: var(--text-muted); text-transform: none;">(Optional)</span></label>
+                                            <input type="text" id="vsl-video-url-input" class="form-control" placeholder="e.g. assets/videos/solo showreel.mp4">
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label" for="vsl-thumb-url-input">Hero Video Thumbnail Image Link <span style="font-size: 0.72rem; color: var(--text-muted); text-transform: none;">(Optional)</span></label>
@@ -372,40 +372,60 @@
 
                 <!-- PANEL A.5. Premium Visual Theme Engine & SAAS Templates Customizer -->
                 <div class="dash-tab-content" id="admin-theme-engine">
-                    <h2 style="font-size: 1.6rem; color: var(--accent-primary); margin-bottom: 8px;">🎨 Ultimate Visual Theme Engine</h2>
-                    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 32px;">Load dynamic SaaS templates, custom tweak background HSL layers, glass blur factors, border thickness, card radius and glowing breath animation metrics.</p>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 32px;">Load dynamic templates, custom tweak background HSL layers, glass blur factors, border thickness, card radius, glowing shadow spread, and text accessibility colors globally.</p>
 
                     <!-- 1. Clickable SaaS Design Templates Presets -->
                     <div style="margin-bottom: 40px;">
                         <h3 style="font-size: 1.15rem; margin-bottom: 16px; color: var(--text-primary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">1. One-Click SaaS Design Templates</h3>
-                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px;">
                             
-                            <!-- Template 1 -->
-                            <div class="glass-card template-preset-card active" data-preset="midnight" style="cursor: pointer; padding: 20px; text-align: center; border: 1px solid var(--border-color); transition: var(--transition-smooth); border-radius: var(--radius-md);">
-                                <span style="font-size: 2rem; display: block; margin-bottom: 10px;">🌌</span>
-                                <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; color: var(--accent-primary);">Midnight SaaS Grid</h4>
-                                <span style="font-size: 0.75rem; color: var(--text-muted);">Obsidian & Neon Cyan Accents</span>
+                            <!-- Template 1: Wix Neon-SaaS -->
+                            <div class="glass-card template-preset-card" data-preset="preset-neon-saas" style="cursor: pointer; padding: 16px; text-align: center; border: 1px solid var(--border-color); transition: var(--transition-smooth); border-radius: var(--radius-md); position: relative; overflow: hidden;">
+                                <span style="font-size: 1.8rem; display: block; margin-bottom: 6px;">📐</span>
+                                <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 2px; color: var(--accent-primary);">1. Wix Neon-SaaS</h4>
+                                <span style="font-size: 0.72rem; color: var(--text-muted);">Floating rounded shapes, bouncy spring transitions, neon glowing borders</span>
                             </div>
-                            
-                            <!-- Template 2 -->
-                            <div class="glass-card template-preset-card" data-preset="aurora" style="cursor: pointer; padding: 20px; text-align: center; border: 1px solid var(--border-color); transition: var(--transition-smooth); border-radius: var(--radius-md);">
-                                <span style="font-size: 2rem; display: block; margin-bottom: 10px;">💧</span>
-                                <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; color: var(--accent-secondary);">Aurora Liquid Glow</h4>
-                                <span style="font-size: 0.75rem; color: var(--text-muted);">High-Radius Glass & Magenta Glow</span>
+
+                            <!-- Template 2: Shopify Cyber-Command -->
+                            <div class="glass-card template-preset-card" data-preset="preset-cyber-command" style="cursor: pointer; padding: 16px; text-align: center; border: 1px solid var(--border-color); transition: var(--transition-smooth); border-radius: var(--radius-md);">
+                                <span style="font-size: 1.8rem; display: block; margin-bottom: 6px;">🌀</span>
+                                <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 2px; color: var(--accent-secondary);">2. Shopify Cyber-Command</h4>
+                                <span style="font-size: 0.72rem; color: var(--text-muted);">Technical grid lines, flat monospace typography, cyber glitch buttons</span>
                             </div>
-                            
-                            <!-- Template 3 -->
-                            <div class="glass-card template-preset-card" data-preset="cyberpunk" style="cursor: pointer; padding: 20px; text-align: center; border: 1px solid var(--border-color); transition: var(--transition-smooth); border-radius: var(--radius-md);">
-                                <span style="font-size: 2rem; display: block; margin-bottom: 10px;">⚡</span>
-                                <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; color: #facc15;">Retro Cyber-Punk</h4>
-                                <span style="font-size: 0.75rem; color: var(--text-muted);">Sharp Solid Corners & Monospace Hues</span>
+
+                            <!-- Template 3: Luxury Gold Studio -->
+                            <div class="glass-card template-preset-card" data-preset="preset-luxury-gold" style="cursor: pointer; padding: 16px; text-align: center; border: 1px solid var(--border-color); transition: var(--transition-smooth); border-radius: var(--radius-md);">
+                                <span style="font-size: 1.8rem; display: block; margin-bottom: 6px;">✨</span>
+                                <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 2px; color: #fbbf24;">3. Luxury Gold Studio</h4>
+                                <span style="font-size: 0.72rem; color: var(--text-muted);">Obsidian & luxury gold accents, elegant serif, floating star dust particles</span>
                             </div>
-                            
-                            <!-- Template 4 -->
-                            <div class="glass-card template-preset-card" data-preset="minimal" style="cursor: pointer; padding: 20px; text-align: center; border: 1px solid var(--border-color); transition: var(--transition-smooth); border-radius: var(--radius-md);">
-                                <span style="font-size: 2rem; display: block; margin-bottom: 10px;">💻</span>
-                                <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; color: var(--text-primary);">Clean Tech Minimal</h4>
-                                <span style="font-size: 0.75rem; color: var(--text-muted);">Sophisticated Slate & Subtle Outlines</span>
+
+                            <!-- Template 4: Aurora Liquid Creative -->
+                            <div class="glass-card template-preset-card" data-preset="preset-aurora-liquid" style="cursor: pointer; padding: 16px; text-align: center; border: 1px solid var(--border-color); transition: var(--transition-smooth); border-radius: var(--radius-md);">
+                                <span style="font-size: 1.8rem; display: block; margin-bottom: 6px;">🏃‍♂️</span>
+                                <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 2px; color: #10b981;">4. Aurora Liquid Creative</h4>
+                                <span style="font-size: 0.72rem; color: var(--text-muted);">Animating liquid gradients, springy cards scale, pulsing active glows</span>
+                            </div>
+
+                            <!-- Template 6: Midnight SaaS -->
+                            <div class="glass-card template-preset-card active" data-preset="midnight" style="cursor: pointer; padding: 16px; text-align: center; border: 1px solid var(--border-color); transition: var(--transition-smooth); border-radius: var(--radius-md);">
+                                <span style="font-size: 1.8rem; display: block; margin-bottom: 6px;">🌌</span>
+                                <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 2px; color: var(--text-primary);">6. Midnight SaaS</h4>
+                                <span style="font-size: 0.72rem; color: var(--text-muted);">Default obsidian dark glass & cyan highlights</span>
+                            </div>
+
+                            <!-- Template 7: Aurora Liquid -->
+                            <div class="glass-card template-preset-card" data-preset="aurora" style="cursor: pointer; padding: 16px; text-align: center; border: 1px solid var(--border-color); transition: var(--transition-smooth); border-radius: var(--radius-md);">
+                                <span style="font-size: 1.8rem; display: block; margin-bottom: 6px;">💧</span>
+                                <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 2px; color: var(--accent-secondary);">7. Aurora Liquid</h4>
+                                <span style="font-size: 0.72rem; color: var(--text-muted);">Moving liquid blobs & magenta HSL shadow glows</span>
+                            </div>
+
+                            <!-- Template 8: Tech Minimal -->
+                            <div class="glass-card template-preset-card" data-preset="minimal" style="cursor: pointer; padding: 16px; text-align: center; border: 1px solid var(--border-color); transition: var(--transition-smooth); border-radius: var(--radius-md);">
+                                <span style="font-size: 1.8rem; display: block; margin-bottom: 6px;">💻</span>
+                                <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 2px; color: var(--text-primary);">8. Tech Minimal</h4>
+                                <span style="font-size: 0.72rem; color: var(--text-muted);">Slate borders & flat subtle clean typography layout</span>
                             </div>
                             
                         </div>
@@ -585,6 +605,34 @@
                                             <span id="theme-glow-sat-val" style="font-size: 0.8rem; color: var(--accent-secondary); font-weight: 700; margin-top: 2px;">90%</span>
                                         </div>
                                     </div>
+
+                                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px;">
+                                        <div class="form-group">
+                                            <label class="form-label" for="theme-glow-spread">Card Shadow Glow Spread</label>
+                                            <input type="range" id="theme-glow-spread" min="0" max="60" value="15" class="hue-slider-input">
+                                            <span id="theme-glow-spread-val" style="font-size: 0.8rem; color: var(--accent-secondary); font-weight: 700; margin-top: 2px;">15px</span>
+                                        </div>
+                                        <div class="form-group" style="opacity: 0; pointer-events: none;"></div>
+                                    </div>
+
+                                    <!-- Studio Swatches Color Presets -->
+                                    <div style="margin-top: 20px; margin-bottom: 8px; padding: 16px; background: rgba(255,255,255,0.02); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
+                                        <h5 style="font-size: 0.82rem; font-weight: 700; color: var(--accent-secondary); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; text-align: center;">💎 Premium Studio Color Swatch Presets</h5>
+                                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                                            <button type="button" class="btn-secondary" id="preset-swatch-premium-gradient" style="font-size: 0.76rem; padding: 6px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s; justify-content: center; width: 100%;">
+                                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: linear-gradient(135deg, #a855f7, #06b6d4);"></span>
+                                                Premium Gradients (Neon Purple & Cyan Aura)
+                                            </button>
+                                            <button type="button" class="btn-secondary" id="preset-swatch-4color-gradient" style="font-size: 0.76rem; padding: 6px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s; justify-content: center; width: 100%;">
+                                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: linear-gradient(135deg, #ec4899, #f43f5e, #3b82f6, #10b981);"></span>
+                                                4-Color Gradients (High-Density Aura Mesh)
+                                            </button>
+                                            <button type="button" class="btn-secondary" id="preset-swatch-saas" style="font-size: 0.76rem; padding: 6px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s; justify-content: center; width: 100%;">
+                                                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: linear-gradient(135deg, #0f172a, #334155);"></span>
+                                                SaaS Colors (Modern Obsidian & Slate Borders)
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                                 
                                 <!-- Section 3: Brand Accent HSL Customizers -->
@@ -683,33 +731,37 @@
                             <div class="glass-card" style="position: sticky; top: 120px; display: flex; flex-direction: column; gap: 24px; align-items: stretch; border: 1px solid var(--border-color);" id="theme-preview-body">
                                 <h3 style="font-size: 1.1rem; text-align: center; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 8px;">Interactive Real-Time Preview Panel</h3>
                                 
-                                <!-- Floating Header Nav Mock -->
-                                <div id="preview-header-mock" style="padding: 10px; border-radius: 12px; border: 1px solid var(--border-color); text-align: center; font-size: 0.82rem; font-weight: 700; transition: var(--transition-smooth);" class="glow-breath-highlight">
-                                    <span>🌐 Navbar Navigation Style Preview</span>
-                                </div>
-                                
-                                <!-- Mock Glass Card Dynamic -->
-                                <div id="preview-card-mock" style="padding: 28px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); transition: var(--transition-smooth); background: rgba(255,255,255,0.03);" class="glow-breath-highlight">
-                                    <span class="portfolio-card-category" style="font-size: 0.72rem; color: var(--accent-secondary); font-weight: 800;">Visual Category</span>
-                                    <h4 id="preview-title-mock" style="font-size: 1.3rem; margin-top: 8px; font-weight: 700; transition: var(--transition-smooth); margin-bottom: 12px;">Premium Theme Styling Showcase Card</h4>
-                                    <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.45; margin-bottom: 20px;">
-                                        This card previews your customized typography presets, border thicknesses, border radiuses, box-glow shadows, and glassmorphic backing blurs in real time as you adjust the sliders.
-                                    </p>
-                                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                                        <button class="btn-primary" type="button" style="padding: 6px 12px; font-size: 0.75rem;">Accept Presets</button>
-                                        <button class="btn-secondary" type="button" style="padding: 6px 12px; font-size: 0.75rem;">Secondary Option</button>
+                                <!-- Viewport Wrapper for Responsive Sizing -->
+                                <div id="preview-viewport-wrapper" style="width: 100%; transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1); margin: 0 auto; display: flex; flex-direction: column; gap: 24px;">
+                                    
+                                    <!-- Floating Header Nav Mock -->
+                                    <div id="preview-header-mock" style="padding: 10px; border-radius: 12px; border: 1px solid var(--border-color); text-align: center; font-size: 0.82rem; font-weight: 700; transition: var(--transition-smooth);" class="glow-breath-highlight">
+                                        <span>🌐 Navbar Navigation Style Preview</span>
                                     </div>
-                                </div>
-                                
-                                <!-- Preview Stats Grid -->
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;" id="preview-gap-mock">
-                                    <div style="padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center; background: rgba(255,255,255,0.01);">
-                                        <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Spacings Gap</span>
-                                        <span style="font-size: 1.15rem; font-weight: 700; color: var(--accent-primary);" id="preview-gap-val">30px</span>
+                                    
+                                    <!-- Mock Glass Card Dynamic -->
+                                    <div id="preview-card-mock" style="padding: 28px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); transition: var(--transition-smooth); background: rgba(255,255,255,0.03);" class="glow-breath-highlight">
+                                        <span class="portfolio-card-category" style="font-size: 0.72rem; color: var(--accent-secondary); font-weight: 800;">Visual Category</span>
+                                        <h4 id="preview-title-mock" style="font-size: 1.3rem; margin-top: 8px; font-weight: 700; transition: var(--transition-smooth); margin-bottom: 12px;">Premium Theme Styling Showcase Card</h4>
+                                        <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.45; margin-bottom: 20px;">
+                                            This card previews your customized typography presets, border thicknesses, border radiuses, box-glow shadows, and glassmorphic backing blurs in real time as you adjust the sliders.
+                                        </p>
+                                        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                                            <button class="btn-primary" type="button" id="preview-accept-presets" style="padding: 6px 12px; font-size: 0.75rem; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">Accept Presets</button>
+                                            <button class="btn-secondary" type="button" id="preview-secondary-option" style="padding: 6px 12px; font-size: 0.75rem; color: var(--text-secondary); transition: all 0.3s ease;">Desktop Viewport 🖥️</button>
+                                        </div>
                                     </div>
-                                    <div style="padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center; background: rgba(255,255,255,0.01);">
-                                        <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Layout padding</span>
-                                        <span style="font-size: 1.15rem; font-weight: 700; color: var(--accent-secondary);" id="preview-padding-val">80px</span>
+                                    
+                                    <!-- Preview Stats Grid -->
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;" id="preview-gap-mock">
+                                        <div style="padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center; background: rgba(255,255,255,0.01);">
+                                            <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Spacings Gap</span>
+                                            <span style="font-size: 1.15rem; font-weight: 700; color: var(--accent-primary);" id="preview-gap-val">30px</span>
+                                        </div>
+                                        <div style="padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center; background: rgba(255,255,255,0.01);">
+                                            <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Layout padding</span>
+                                            <span style="font-size: 1.15rem; font-weight: 700; color: var(--accent-secondary);" id="preview-padding-val">80px</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -769,15 +821,43 @@
                         
                         <div class="glass-card">
                             <h3 style="font-size: 1.3rem; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">Active FZ Media Team Roster</h3>
-                            
                             <div class="admin-data-list-container" id="admin-roster-list-container">
                                 <!-- Populated dynamically -->
                             </div>
                         </div>
 
                     </div>
-                </div>
 
+                    <!-- [NEW] Assign Team Member to Client Project Card -->
+                    <div class="glass-card" style="margin-top: 40px;">
+                        <h3 style="font-size: 1.3rem; margin-bottom: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            🤝 Assign Team Member to Client Project
+                        </h3>
+                        <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 24px;">Dynamically link a visual editor/artist to an active client project so they can oversee production and progress revisions.</p>
+                        
+                        <form id="admin-roster-assignment-form" style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 20px; align-items: flex-end;">
+                            <div class="form-group">
+                                <label class="form-label" for="assign-project-select">Select Active Client Project *</label>
+                                <select id="assign-project-select" class="form-control" style="background-color: var(--bg-secondary); border-color: var(--border-color); cursor: pointer;" required>
+                                    <option value="">-- Choose client project --</option>
+                                    <!-- Populated by JS -->
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="assign-member-select">Select Team Roster Member *</label>
+                                <select id="assign-member-select" class="form-control" style="background-color: var(--bg-secondary); border-color: var(--border-color); cursor: pointer;" required>
+                                    <option value="">-- Choose roster member --</option>
+                                    <!-- Populated by JS -->
+                                </select>
+                            </div>
+                            
+                            <button type="submit" class="btn-primary" style="padding: 12px 28px; font-weight: 700; height: 42px; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+                                Confirm Team Assignment 🤝
+                            </button>
+                        </form>
+                    </div>
+                </div>
                 <!-- PANEL C. Portfolio and Video CRUD Manager -->
                 <div class="dash-tab-content" id="admin-portfolio">
                     <div class="admin-grid-layout" style="display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 32px; align-items: flex-start;">
@@ -808,13 +888,18 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="form-label" for="port-video-url">Video MP4 File Path / Online URL *</label>
-                                    <input type="text" id="port-video-url" class="form-control" placeholder="e.g. assets/videos/solo showreel.mp4" required>
+                                    <label class="form-label" for="port-video-url">Video MP4 File Path / Online URL <span style="font-size: 0.72rem; color: var(--text-muted); text-transform: none;">(Optional)</span></label>
+                                    <input type="text" id="port-video-url" class="form-control" placeholder="e.g. assets/videos/solo showreel.mp4">
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="form-label" for="port-thumb">Thumbnail Poster Image Link *</label>
-                                    <input type="text" id="port-thumb" class="form-control" placeholder="Image URL" required>
+                                    <label class="form-label" for="port-thumb">Thumbnail Poster Image Link <span style="font-size: 0.72rem; color: var(--text-muted); text-transform: none;">(Optional)</span></label>
+                                    <div style="display: flex; gap: 10px;">
+                                        <input type="text" id="port-thumb" class="form-control" placeholder="Image URL (Leave blank to auto-generate)">
+                                        <button type="button" class="btn-secondary" id="port-auto-thumb-btn" style="padding: 10px 14px; font-size: 0.8rem; white-space: nowrap; flex-shrink: 0; display: flex; align-items: center; gap: 6px;">
+                                            📸 Auto-Gen
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div class="form-group">

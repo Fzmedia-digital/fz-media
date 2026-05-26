@@ -937,11 +937,260 @@ header.sticky-header.header-centered .nav-menu-links {
 
 @keyframes glowBreathAnimation {
     0% {
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3), 0 0 5px var(--glow-color-custom, var(--accent-primary-glow));
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3), 0 0 calc(var(--card-glow-spread, 15px) * 0.4) var(--glow-color-custom, var(--accent-primary-glow));
     }
     100% {
-        box-shadow: 0 10px 30px rgba(0,0,0,0.4), 0 0 calc(18px * var(--glow-intensity, 1)) var(--glow-color-custom, var(--accent-primary-glow));
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4), 0 0 calc(var(--card-glow-spread, 15px) * var(--glow-intensity, 1)) var(--glow-color-custom, var(--accent-primary-glow));
     }
+}
+
+/* Base Card Shadow overrides to support dynamically customized Glow Spread */
+.glass-card {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 var(--card-glow-spread, 15px) var(--glow-color-custom, rgba(var(--accent-primary-h), var(--accent-primary-s), var(--accent-primary-l), 0.05));
+}
+.glass-card:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25), 0 0 calc(var(--card-glow-spread, 15px) * 1.5) var(--glow-color-custom, rgba(var(--accent-primary-h), var(--accent-primary-s), var(--accent-primary-l), 0.15));
+}
+
+/* ==========================================================================
+   4 PREMIUM WEBSITE-WIDE PRE-MADE DESIGN TEMPLATES (Wix, Shopify, Boutique)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. WIX-STYLE: NEON-SAAS ELITE CREATIVE TEMPLATE
+   -------------------------------------------------------------------------- */
+body.theme-preset-preset-neon-saas {
+    background: radial-gradient(circle at top left, hsla(var(--accent-primary-h), var(--accent-primary-s), var(--accent-primary-l), 0.08) 0%, transparent 40%),
+                radial-gradient(circle at bottom right, hsla(var(--accent-secondary-h), var(--accent-secondary-s), var(--accent-secondary-l), 0.08) 0%, transparent 45%),
+                #050508 !important;
+    font-family: 'Outfit', sans-serif !important;
+}
+body.theme-preset-preset-neon-saas h1,
+body.theme-preset-preset-neon-saas h2,
+body.theme-preset-preset-neon-saas h3,
+body.theme-preset-preset-neon-saas h4 {
+    font-family: 'Outfit', sans-serif !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.02em;
+}
+body.theme-preset-preset-neon-saas .glass-card,
+body.theme-preset-preset-neon-saas .client-project-card,
+body.theme-preset-preset-neon-saas .portfolio-card {
+    border-radius: 24px !important;
+    background: rgba(255, 255, 255, 0.02) !important;
+    border: 1px solid hsla(var(--accent-primary-h), var(--accent-primary-s), var(--accent-primary-l), 0.12) !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 15px hsla(var(--accent-primary-h), var(--accent-primary-s), var(--accent-primary-l), 0.05) !important;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease !important;
+}
+body.theme-preset-preset-neon-saas .glass-card:hover,
+body.theme-preset-preset-neon-saas .client-project-card:hover,
+body.theme-preset-preset-neon-saas .portfolio-card:hover {
+    transform: scale(1.03) translateY(-4px) !important;
+    border-color: hsla(var(--accent-primary-h), var(--accent-primary-s), var(--accent-primary-l), 0.35) !important;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45), 0 0 35px hsla(var(--accent-primary-h), var(--accent-primary-s), var(--accent-primary-l), 0.2) !important;
+}
+body.theme-preset-preset-neon-saas .btn-primary {
+    border-radius: 50px !important;
+    padding: 12px 28px !important;
+    font-weight: 700 !important;
+    box-shadow: 0 0 15px hsla(var(--accent-primary-h), var(--accent-primary-s), var(--accent-primary-l), 0.3) !important;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+body.theme-preset-preset-neon-saas .btn-primary:hover {
+    transform: scale(1.08) !important;
+    box-shadow: 0 0 25px hsla(var(--accent-primary-h), var(--accent-primary-s), var(--accent-primary-l), 0.6) !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. SHOPIFY-STYLE: CYBER-COMMAND TECH STORE TEMPLATE
+   -------------------------------------------------------------------------- */
+body.theme-preset-preset-cyber-command {
+    background-color: #020204 !important;
+    background-image: 
+        linear-gradient(rgba(0, 255, 204, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 204, 0.015) 1px, transparent 1px) !important;
+    background-size: 30px 30px !important;
+    font-family: 'Courier New', Courier, monospace !important;
+}
+body.theme-preset-preset-cyber-command h1,
+body.theme-preset-preset-cyber-command h2,
+body.theme-preset-preset-cyber-command h3,
+body.theme-preset-preset-cyber-command h4,
+body.theme-preset-preset-cyber-command p,
+body.theme-preset-preset-cyber-command span,
+body.theme-preset-preset-cyber-command button,
+body.theme-preset-preset-cyber-command a,
+body.theme-preset-preset-cyber-command div,
+body.theme-preset-preset-cyber-command input,
+body.theme-preset-preset-cyber-command select {
+    font-family: 'Courier New', Courier, monospace !important;
+}
+body.theme-preset-preset-cyber-command .glass-card,
+body.theme-preset-preset-cyber-command .client-project-card,
+body.theme-preset-preset-cyber-command .portfolio-card {
+    border-radius: 0px !important;
+    background: #040407 !important;
+    border: 2px solid #00ffcc !important;
+    box-shadow: 4px 4px 0px rgba(0, 255, 204, 0.15) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
+}
+body.theme-preset-preset-cyber-command .glass-card:hover,
+body.theme-preset-preset-cyber-command .client-project-card:hover,
+body.theme-preset-preset-cyber-command .portfolio-card:hover {
+    transform: translate(-3px, -3px) !important;
+    border-color: #ff0055 !important;
+    box-shadow: 7px 7px 0px rgba(255, 0, 85, 0.3) !important;
+}
+body.theme-preset-preset-cyber-command .btn-primary {
+    border-radius: 0px !important;
+    background: #ff0055 !important;
+    border: 2px solid #ff0055 !important;
+    color: #fff !important;
+    font-weight: 900 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    box-shadow: 4px 4px 0px #00ffcc !important;
+    transition: all 0.2s ease !important;
+}
+body.theme-preset-preset-cyber-command .btn-primary:hover {
+    background: #00ffcc !important;
+    border-color: #00ffcc !important;
+    color: #020204 !important;
+    box-shadow: -4px -4px 0px #ff0055 !important;
+    transform: translate(2px, 2px) !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. BOUTIQUE: LUXURY GOLD STUDIO THEME TEMPLATE
+   -------------------------------------------------------------------------- */
+body.theme-preset-preset-luxury-gold {
+    background: radial-gradient(circle at 50% 30%, #15111d 0%, #060509 100%) !important;
+    font-family: 'Outfit', sans-serif !important;
+}
+body.theme-preset-preset-luxury-gold h1,
+body.theme-preset-preset-luxury-gold h2,
+body.theme-preset-preset-luxury-gold h3,
+body.theme-preset-preset-luxury-gold h4 {
+    font-family: 'Playfair Display', 'Georgia', serif !important;
+    color: #d4af37 !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em;
+}
+body.theme-preset-preset-luxury-gold .glass-card,
+body.theme-preset-preset-luxury-gold .client-project-card,
+body.theme-preset-preset-luxury-gold .portfolio-card {
+    border-radius: 12px !important;
+    background: rgba(10, 8, 15, 0.45) !important;
+    border: 1px solid #d4af37 !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(212, 175, 55, 0.08) !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+body.theme-preset-preset-luxury-gold .glass-card:hover,
+body.theme-preset-preset-luxury-gold .client-project-card:hover,
+body.theme-preset-preset-luxury-gold .portfolio-card:hover {
+    transform: translateY(-5px) !important;
+    border-color: #f3e5ab !important;
+    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.65), 0 0 30px rgba(212, 175, 55, 0.2) !important;
+}
+body.theme-preset-preset-luxury-gold .btn-primary {
+    border-radius: 4px !important;
+    background: linear-gradient(135deg, #d4af37, #aa7c11) !important;
+    border: 1px solid #d4af37 !important;
+    color: #060509 !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15) !important;
+    transition: all 0.3s ease !important;
+}
+body.theme-preset-preset-luxury-gold .btn-primary:hover {
+    background: linear-gradient(135deg, #f3e5ab, #d4af37) !important;
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.35) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Luxury floating dust particles */
+.luxury-dust-particle {
+    position: fixed;
+    width: 3px;
+    height: 3px;
+    background: #d4af37;
+    border-radius: 50%;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: -1;
+    animation: luxury-float 15s infinite linear;
+}
+@keyframes luxury-float {
+    0% { transform: translateY(105vh) translateX(0) scale(0.8); opacity: 0; }
+    50% { opacity: 0.4; }
+    100% { transform: translateY(-5vh) translateX(100px) scale(1.2); opacity: 0; }
+}
+
+/* --------------------------------------------------------------------------
+   4. AURORA-LIQUID THEME TEMPLATE
+   -------------------------------------------------------------------------- */
+body.theme-preset-preset-aurora-liquid {
+    background: linear-gradient(135deg, #100a20, #04020a, #1a0826) !important;
+    background-size: 400% 400% !important;
+    animation: aurora-liquid-bg-anim 20s infinite ease alternate !important;
+    font-family: 'Outfit', sans-serif !important;
+}
+@keyframes aurora-liquid-bg-anim {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+body.theme-preset-preset-aurora-liquid .glass-card,
+body.theme-preset-preset-aurora-liquid .client-project-card,
+body.theme-preset-preset-aurora-liquid .portfolio-card {
+    border-radius: 28px !important;
+    background: rgba(10, 8, 20, 0.35) !important;
+    backdrop-filter: blur(28px) !important;
+    -webkit-backdrop-filter: blur(28px) !important;
+    border: 1.5px solid hsla(var(--accent-primary-h), var(--accent-primary-s), var(--accent-primary-l), 0.15) !important;
+    transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1), box-shadow 0.3s ease !important;
+}
+body.theme-preset-preset-aurora-liquid .glass-card:hover,
+body.theme-preset-preset-aurora-liquid .client-project-card:hover,
+body.theme-preset-preset-aurora-liquid .portfolio-card:hover {
+    transform: scale(1.02) !important;
+    border-color: hsla(var(--accent-secondary-h), var(--accent-secondary-s), var(--accent-secondary-l), 0.35) !important;
+    box-shadow: 0 0 45px hsla(var(--accent-secondary-h), var(--accent-secondary-s), var(--accent-secondary-l), 0.2) !important;
+}
+
+/* Micro-animations and utility animations */
+.invite-pulse {
+    animation: invite-pulse-anim 1.5s infinite cubic-bezier(0.66, 0, 0, 1) !important;
+    border: 1.5px solid #00ffcc !important;
+}
+@keyframes invite-pulse-anim {
+    0% { transform: scale(1.08); box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.4); }
+    70% { transform: scale(1.12); box-shadow: 0 0 0 12px rgba(6, 182, 212, 0); }
+    100% { transform: scale(1.08); box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+    70% { transform: scale(0.9); opacity: 0.9; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* slowly breathing active deliverables loop */
+@keyframes progress-breathe {
+    0% { 
+        transform: scale(1); 
+        box-shadow: inset 0 0 12px rgba(255,255,255,0.01);
+    }
+    100% { 
+        transform: scale(1.015); 
+        box-shadow: inset 0 0 16px rgba(var(--accent-primary-h), var(--accent-primary-s), var(--accent-primary-l), 0.05), 0 0 25px rgba(var(--accent-primary-h), var(--accent-primary-s), var(--accent-primary-l), 0.2);
+        border-color: var(--accent-primary);
+    }
+}
+.progress-complete-pulse {
+    animation: progress-breathe 2.5s infinite alternate ease-in-out;
 }
 
 

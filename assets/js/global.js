@@ -35,10 +35,13 @@ const DEFAULT_BRAND_DATA = {
         customBorderA: 0.08,
         customGlowH: 267,
         customGlowS: 90,
+        textColorPrimary: "#f8fafc",
+        textColorSecondary: "#94a3b8",
+        textColorMuted: "#64748b",
 
         adminCredentials: {
-            email: "framezonem@gmail.com",
-            passwordHash: "RnptZWRpYUAxMjM=" // Base64 for Fzmedia@123
+            email: "admin",
+            passwordHash: "YWRtaW4=" // Base64 for admin
         },
         socialLinks: {
             facebook: "https://www.facebook.com/FZoneM",
@@ -427,6 +430,7 @@ function injectTheme() {
     // Advanced design dynamic properties overrides
     document.documentElement.style.setProperty('--glow-intensity', s.glowIntensity !== undefined ? s.glowIntensity : 1.0);
     document.documentElement.style.setProperty('--glow-speed', (s.glowAnimationSpeed !== undefined ? s.glowAnimationSpeed : 3.0) + 's');
+    document.documentElement.style.setProperty('--card-glow-spread', (s.glowSpread !== undefined ? s.glowSpread : 15) + 'px');
     document.documentElement.style.setProperty('--radius-md', (s.cardBorderRadius !== undefined ? s.cardBorderRadius : 12) + 'px');
     document.documentElement.style.setProperty('--radius-lg', ((s.cardBorderRadius !== undefined ? s.cardBorderRadius : 12) + 4) + 'px');
     document.documentElement.style.setProperty('--border-thickness', (s.cardBorderThickness !== undefined ? s.cardBorderThickness : 1) + 'px');
@@ -451,6 +455,11 @@ function injectTheme() {
     const glowH = s.customGlowH !== undefined ? s.customGlowH : s.primaryColorH;
     const glowS = s.customGlowS !== undefined ? s.customGlowS : 90;
     document.documentElement.style.setProperty('--glow-color-custom', `hsla(${glowH}, ${glowS}%, 50%, 0.15)`);
+
+    // Set dynamic text colors [NEW]
+    document.documentElement.style.setProperty('--text-primary', s.textColorPrimary || '#f8fafc');
+    document.documentElement.style.setProperty('--text-secondary', s.textColorSecondary || '#94a3b8');
+    document.documentElement.style.setProperty('--text-muted', s.textColorMuted || '#64748b');
 
     // Advanced typography overrides loader
     const fontPreset = s.fontPreset || "minimal-slate";
@@ -495,6 +504,92 @@ function injectTheme() {
             document.body.classList.add("theme-flat");
         }
     }
+
+    // Apply Active Global Theme Preset classes
+    const preset = s.themePreset || "midnight";
+    document.body.classList.remove(
+        "theme-preset-preset-3d", 
+        "theme-preset-preset-3d-anim", 
+        "theme-preset-preset-glass-glow", 
+        "theme-preset-preset-motion", 
+        "theme-preset-preset-cyberpunk",
+        "theme-preset-preset-neon-saas",
+        "theme-preset-preset-cyber-command",
+        "theme-preset-preset-luxury-gold",
+        "theme-preset-preset-aurora-liquid",
+        "theme-preset-midnight",
+        "theme-preset-aurora",
+        "theme-preset-minimal"
+    );
+    document.body.classList.add(`theme-preset-${preset}`);
+
+    // Dynamic theme assets clean up & injection
+    document.querySelectorAll(".kinetic-orbs-container, .cyberpunk-scanline-overlay, .motion-marquee-bar, .luxury-dust-particle").forEach(el => el.remove());
+
+    if (preset === "preset-neon-saas") {
+        // Wix-style Neon SaaS gets the floating background orbs mesh AND 3D Mouse card tilt!
+        const orbsContainer = document.createElement("div");
+        orbsContainer.className = "kinetic-orbs-container";
+        orbsContainer.innerHTML = `
+            <div class="kinetic-orb orb-1"></div>
+            <div class="kinetic-orb orb-2"></div>
+            <div class="kinetic-orb orb-3"></div>
+        `;
+        document.body.appendChild(orbsContainer);
+        setTimeout(init3DCardTiltListener, 100);
+    } else if (preset === "preset-cyber-command") {
+        // Shopify-style Cyber Command gets digital scanlines and sharp neomorphic highlights
+        const scanline = document.createElement("div");
+        scanline.className = "cyberpunk-scanline-overlay";
+        document.body.appendChild(scanline);
+    } else if (preset === "preset-luxury-gold") {
+        // Boutique Gold gets 50 luxury gold star dust particles floating upwards!
+        for (let i = 0; i < 40; i++) {
+            const p = document.createElement("div");
+            p.className = "luxury-dust-particle";
+            p.style.left = Math.random() * 100 + "vw";
+            p.style.animationDelay = Math.random() * 15 + "s";
+            p.style.animationDuration = (Math.random() * 10 + 10) + "s";
+            p.style.transform = `scale(${Math.random() * 0.6 + 0.4})`;
+            document.body.appendChild(p);
+        }
+    } else if (preset === "preset-aurora-liquid") {
+        // Aurora gets typography scrolling marquees and smooth spring animations
+        const marquee = document.createElement("div");
+        marquee.className = "motion-marquee-bar";
+        marquee.innerHTML = `
+            <div class="marquee-track">
+                <span>⚡ HIGH-RETENTION CREATIVE VIDEO PRODUCTION ⚡ EXTREME DESIGN SPEED ⚡ SEAMLESS MOTION RENDERS ⚡ INSTANT STYLE CODES ⚡ OBS LIVE EDITING SESSIONS ⚡</span>
+                <span>⚡ HIGH-RETENTION CREATIVE VIDEO PRODUCTION ⚡ EXTREME DESIGN SPEED ⚡ SEAMLESS MOTION RENDERS ⚡ INSTANT STYLE CODES ⚡ OBS LIVE EDITING SESSIONS ⚡</span>
+            </div>
+        `;
+        document.body.insertBefore(marquee, document.body.firstChild);
+    }
+}
+
+// Helper: 3D Mouse Card Tilt Parallax effect
+function init3DCardTiltListener() {
+    const cards = document.querySelectorAll(".glass-card, .client-project-card, .portfolio-card");
+    cards.forEach(card => {
+        card.addEventListener("mousemove", e => {
+            if (!document.body.classList.contains("theme-preset-preset-neon-saas")) {
+                card.style.transform = "";
+                return;
+            }
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = ((centerY - y) / centerY) * 8; // max 8 degrees tilt
+            const rotateY = ((x - centerX) / centerX) * 8;
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
+        });
+        
+        card.addEventListener("mouseleave", () => {
+            card.style.transform = "";
+        });
+    });
 }
 
 // 4. Inject Shared Navigation & Footer
@@ -519,6 +614,15 @@ function injectLayouts() {
             logoMarkup = `<span class="brand-name">${s.agencyName}</span>`;
         }
 
+        const isAdminLogged = sessionStorage.getItem("fzmedia_admin_logged") === "true";
+        let adminButtonMarkup = `<li><a href="admin.html" class="btn-primary" style="padding: 8px 16px; font-size: 0.88rem;">Admin</a></li>`;
+        if (isAdminLogged) {
+            adminButtonMarkup = `
+                <li><a href="admin.html" class="btn-primary" style="padding: 8px 16px; font-size: 0.88rem;">Admin</a></li>
+                <li><a href="#" id="global-admin-logout" class="btn-secondary" style="padding: 8px 16px; font-size: 0.88rem; border-color: rgba(239, 68, 68, 0.4); color: #f87171;">Logout</a></li>
+            `;
+        }
+
         let navLinksMarkup = db.navLinks.map(link => {
             let isActive = window.location.pathname.endsWith(link.url) ? "active" : "";
             if (window.location.pathname === "/" && link.url === "index.html") isActive = "active";
@@ -536,7 +640,7 @@ function injectLayouts() {
                         <ul class="nav-menu-links" id="nav-menu-links">
                             ${navLinksMarkup}
                             <li><a href="client.html" class="btn-secondary" style="padding: 8px 16px; font-size: 0.88rem;">Client Portal</a></li>
-                            <li><a href="admin.html" class="btn-primary" style="padding: 8px 16px; font-size: 0.88rem;">Admin</a></li>
+                            ${adminButtonMarkup}
                         </ul>
                     </nav>
 
@@ -548,6 +652,18 @@ function injectLayouts() {
                 </div>
             </div>
         `;
+
+        // Global Admin Logout Event
+        const globalLogoutBtn = document.getElementById("global-admin-logout");
+        if (globalLogoutBtn) {
+            globalLogoutBtn.addEventListener("click", (e) => {
+                e.preventDefault();
+                if (confirm("Are you sure you want to exit your Admin session?")) {
+                    sessionStorage.removeItem("fzmedia_admin_logged");
+                    window.location.href = "index.html";
+                }
+            });
+        }
 
         // Scroll sticky nav
         window.addEventListener("scroll", () => {

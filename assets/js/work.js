@@ -136,7 +136,7 @@ function setupCinemaPlayer() {
             }
         }
         if (ytId && ytId.length === 11) {
-            return `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0`;
+            return `https://www.youtube.com/embed/${ytId}?autoplay=1&enablejsapi=1&origin=${window.location.origin}&rel=0`;
         }
         
         // 2. Vimeo Parsing
@@ -170,7 +170,7 @@ function setupCinemaPlayer() {
                 iframe.style.height = "100%";
                 iframe.style.border = "none";
                 iframe.style.aspectRatio = "16/9";
-                iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
                 iframe.allowFullscreen = true;
                 modalPlayer.parentElement.appendChild(iframe);
             }

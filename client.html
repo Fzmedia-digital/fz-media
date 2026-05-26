@@ -206,13 +206,85 @@
                                 <span class="project-badge status-review" style="padding: 4px 12px; border-radius: 100px; font-size: 0.75rem; font-weight: 700;">Awaiting Review</span>
                             </div>
                             
+                            <!-- Cinematic Player Navigation Tabs -->
+                            <div class="revision-player-tabs" style="display: flex; gap: 12px; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                                <button type="button" class="dash-tab active" id="tab-review-draft" style="background: transparent; border: none; color: var(--text-primary); font-weight: 600; padding: 6px 12px; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; transition: var(--transition-snappy);">
+                                    <span>📁</span> Review Video Draft
+                                </button>
+                                <button type="button" class="dash-tab" id="tab-live-broadcast" style="background: transparent; border: none; color: var(--text-secondary); font-weight: 500; padding: 6px 12px; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; transition: var(--transition-snappy); position: relative;">
+                                    <span>🔴</span> Live Broadcast Room
+                                    <span class="live-ping-dot" style="display: none; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; position: absolute; top: 0; right: 0; animation: pulse-badge 1.5s infinite;"></span>
+                                </button>
+                            </div>
+                            
                             <!-- Custom HTML5 video draft player -->
-                            <div class="draft-video-player-container">
-                                <video id="draft-video-player" class="draft-video-player" controls>
+                            <div class="draft-video-player-container" style="transition: var(--transition-smooth); width: 100%;">
+                                <video id="draft-video-player" class="draft-video-player" controls style="width: 100%; border-radius: 8px; border: 1px solid var(--border-color); aspect-ratio: 16/9; background: #000;">
                                     <source src="assets/videos/VID 1.mp4" type="video/mp4">
                                     Your browser does not support HTML5 video previewing.
                                 </video>
                             </div>
+
+                            <!-- Paired OBS Livestream Receiver View Container -->
+                            <div id="live-broadcast-container" style="display: none; position: relative; border-radius: 8px; overflow: hidden; background: #0b0c10; aspect-ratio: 16/9; width: 100%; border: 1px solid var(--border-color); transition: var(--transition-smooth);">
+                                <!-- Offline view -->
+                                <div id="live-offline-view" style="width: 100%; height: 100%; position: relative;">
+                                    <canvas id="offline-shutter-canvas" style="width: 100%; height: 100%; display: block;"></canvas>
+                                    <div class="offline-overlay" style="position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.65); pointer-events: none; text-align: center; padding: 20px;">
+                                        <div style="font-size: 2.8rem; margin-bottom: 12px; filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.4));">📡</div>
+                                        <h4 style="font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 6px; font-family: var(--font-headings);">Broadcast Room Offline</h4>
+                                        <p style="font-size: 0.85rem; color: var(--text-muted); max-width: 380px; line-height: 1.45;">Your editor is currently crafting your next masterpiece. Move your cursor over the active radar scanner above to interact!</p>
+                                    </div>
+                                </div>
+                                <!-- Online view -->
+                                <div id="live-online-view" style="width: 100%; height: 100%; position: relative; display: none; overflow: hidden;">
+                                    <!-- Livestream simulated background feed -->
+                                    <div style="position: absolute; inset: 0; background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat; filter: brightness(0.6);"></div>
+                                    <div class="cyberpunk-scanlines" style="position: absolute; inset: 0; pointer-events: none; opacity: 0.15; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%); background-size: 100% 4px;"></div>
+                                    
+                                    <!-- Stream Overlays -->
+                                    <div style="position: absolute; top: 16px; left: 16px; display: inline-flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.7); padding: 6px 14px; border-radius: 6px; border: 1px solid rgba(239, 68, 68, 0.4); box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+                                         <span style="width: 8px; height: 8px; background: #ef4444; border-radius: 50%; display: inline-block; animation: pulse-badge 1.5s infinite;"></span>
+                                         <span style="font-size: 0.72rem; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.05em; font-family: monospace;">LIVE EDIT SESSION</span>
+                                     </div>
+                                     <div id="stream-timecode" style="position: absolute; top: 16px; right: 16px; font-family: monospace; font-size: 0.8rem; color: #10b981; background: rgba(0,0,0,0.7); padding: 6px 14px; border-radius: 6px; border: 1px solid rgba(16, 185, 129, 0.4); box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+                                         TC 00:00:00:00
+                                     </div>
+                                     
+                                     <!-- Mock Editor Livestream Console HUD -->
+                                     <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.95) 70%); padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+                                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                                             <div>
+                                                 <h5 style="color: #fff; font-size: 0.95rem; margin-bottom: 2px; font-weight: 700; font-family: var(--font-headings);" id="online-stream-project-title">Apex Podcast Editing Onboarding</h5>
+                                                 <span style="font-size: 0.72rem; color: #10b981; font-family: monospace;" id="online-stream-credentials">Server: rtmp://live.framezonemedia.com/live | Key: fz_live_apex</span>
+                                             </div>
+                                             <div style="display: inline-flex; align-items: center; gap: 12px;">
+                                                 <span style="font-size: 0.72rem; color: var(--text-muted);">BITRATE: <span style="color: var(--accent-secondary); font-family: monospace; font-weight: 700;">5840 kbps</span></span>
+                                                 <span style="font-size: 0.72rem; color: var(--text-muted);">FPS: <span style="color: var(--accent-secondary); font-family: monospace; font-weight: 700;">60.00</span></span>
+                                             </div>
+                                         </div>
+                                         <!-- Dynamic HSL VU meters -->
+                                         <div style="display: flex; flex-direction: column; gap: 4px;">
+                                             <div style="display: flex; align-items: center; gap: 8px;">
+                                                 <span style="font-size: 0.65rem; color: var(--text-muted); font-family: monospace; width: 12px;">L</span>
+                                                 <div style="flex: 1; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; display: flex;">
+                                                     <div id="vu-left-green" style="width: 70%; background: #10b981; height: 100%; transition: width 0.08s ease;"></div>
+                                                     <div id="vu-left-yellow" style="width: 15%; background: #fbbf24; height: 100%; transition: width 0.08s ease;"></div>
+                                                     <div id="vu-left-red" style="width: 5%; background: #ef4444; height: 100%; transition: width 0.08s ease;"></div>
+                                                 </div>
+                                             </div>
+                                             <div style="display: flex; align-items: center; gap: 8px;">
+                                                 <span style="font-size: 0.65rem; color: var(--text-muted); font-family: monospace; width: 12px;">R</span>
+                                                 <div style="flex: 1; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; display: flex;">
+                                                     <div id="vu-right-green" style="width: 68%; background: #10b981; height: 100%; transition: width 0.08s ease;"></div>
+                                                     <div id="vu-right-yellow" style="width: 12%; background: #fbbf24; height: 100%; transition: width 0.08s ease;"></div>
+                                                     <div id="vu-right-red" style="width: 3%; background: #ef4444; height: 100%; transition: width 0.08s ease;"></div>
+                                                 </div>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
                             
                             <!-- Timestamped Feedback Form -->
                             <form id="timestamp-feedback-form" style="margin-top: 24px; border-top: 1px solid var(--border-color); padding-top: 20px;">
