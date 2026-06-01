@@ -64,7 +64,13 @@ const DEFAULT_BRAND_DATA = {
             standardMultiplier: 20,
             premiumLabel: "Premium AE & Grading",
             premiumMultiplier: 50
-        }
+        },
+        bgType: "preset",
+        bgImageUrl: "",
+        bgEffect: "kinetic-orbs",
+        characterEnabled: true,
+        characterAvatar: "rifat-cinematic",
+        characterPos: "right-bottom"
     },
     navLinks: [
         { text: "Home", url: "index.html" },
@@ -526,35 +532,8 @@ function injectTheme() {
     // Dynamic theme assets clean up & injection
     document.querySelectorAll(".kinetic-orbs-container, .cyberpunk-scanline-overlay, .motion-marquee-bar, .luxury-dust-particle").forEach(el => el.remove());
 
-    if (preset === "preset-neon-saas") {
-        // Wix-style Neon SaaS gets the floating background orbs mesh AND 3D Mouse card tilt!
-        const orbsContainer = document.createElement("div");
-        orbsContainer.className = "kinetic-orbs-container";
-        orbsContainer.innerHTML = `
-            <div class="kinetic-orb orb-1"></div>
-            <div class="kinetic-orb orb-2"></div>
-            <div class="kinetic-orb orb-3"></div>
-        `;
-        document.body.appendChild(orbsContainer);
-        setTimeout(init3DCardTiltListener, 100);
-    } else if (preset === "preset-cyber-command") {
-        // Shopify-style Cyber Command gets digital scanlines and sharp neomorphic highlights
-        const scanline = document.createElement("div");
-        scanline.className = "cyberpunk-scanline-overlay";
-        document.body.appendChild(scanline);
-    } else if (preset === "preset-luxury-gold") {
-        // Boutique Gold gets 50 luxury gold star dust particles floating upwards!
-        for (let i = 0; i < 40; i++) {
-            const p = document.createElement("div");
-            p.className = "luxury-dust-particle";
-            p.style.left = Math.random() * 100 + "vw";
-            p.style.animationDelay = Math.random() * 15 + "s";
-            p.style.animationDuration = (Math.random() * 10 + 10) + "s";
-            p.style.transform = `scale(${Math.random() * 0.6 + 0.4})`;
-            document.body.appendChild(p);
-        }
-    } else if (preset === "preset-aurora-liquid") {
-        // Aurora gets typography scrolling marquees and smooth spring animations
+    // Inject marquee bar for preset-aurora-liquid globally
+    if (preset === "preset-aurora-liquid") {
         const marquee = document.createElement("div");
         marquee.className = "motion-marquee-bar";
         marquee.innerHTML = `
@@ -564,6 +543,131 @@ function injectTheme() {
             </div>
         `;
         document.body.insertBefore(marquee, document.body.firstChild);
+    }
+
+    // Custom Background System & Link Sharing Engine [NEW]
+    document.body.classList.remove("custom-image-bg-active");
+    document.body.style.backgroundImage = "";
+
+    if (s.bgType === "image" && s.bgImageUrl) {
+        document.body.classList.add("custom-image-bg-active");
+        document.body.style.backgroundImage = `url('${encodeURI(s.bgImageUrl)}')`;
+    } else if (s.bgType === "animation") {
+        const effect = s.bgEffect || "kinetic-orbs";
+        if (effect === "kinetic-orbs") {
+            const orbsContainer = document.createElement("div");
+            orbsContainer.className = "kinetic-orbs-container";
+            orbsContainer.innerHTML = `
+                <div class="kinetic-orb orb-1"></div>
+                <div class="kinetic-orb orb-2"></div>
+                <div class="kinetic-orb orb-3"></div>
+            `;
+            document.body.appendChild(orbsContainer);
+            setTimeout(init3DCardTiltListener, 100);
+        } else if (effect === "digital-scanlines") {
+            const scanline = document.createElement("div");
+            scanline.className = "cyberpunk-scanline-overlay";
+            document.body.appendChild(scanline);
+        } else if (effect === "luxury-dust") {
+            for (let i = 0; i < 40; i++) {
+                const p = document.createElement("div");
+                p.className = "luxury-dust-particle";
+                p.style.left = Math.random() * 100 + "vw";
+                p.style.animationDelay = Math.random() * 15 + "s";
+                p.style.animationDuration = (Math.random() * 10 + 10) + "s";
+                p.style.transform = `scale(${Math.random() * 0.6 + 0.4})`;
+                document.body.appendChild(p);
+            }
+        }
+    } else {
+        // Fallback: Apply Active Global Theme Preset standard assets
+        if (preset === "preset-neon-saas") {
+            const orbsContainer = document.createElement("div");
+            orbsContainer.className = "kinetic-orbs-container";
+            orbsContainer.innerHTML = `
+                <div class="kinetic-orb orb-1"></div>
+                <div class="kinetic-orb orb-2"></div>
+                <div class="kinetic-orb orb-3"></div>
+            `;
+            document.body.appendChild(orbsContainer);
+            setTimeout(init3DCardTiltListener, 100);
+        } else if (preset === "preset-cyber-command") {
+            const scanline = document.createElement("div");
+            scanline.className = "cyberpunk-scanline-overlay";
+            document.body.appendChild(scanline);
+        } else if (preset === "preset-luxury-gold") {
+            for (let i = 0; i < 40; i++) {
+                const p = document.createElement("div");
+                p.className = "luxury-dust-particle";
+                p.style.left = Math.random() * 100 + "vw";
+                p.style.animationDelay = Math.random() * 15 + "s";
+                p.style.animationDuration = (Math.random() * 10 + 10) + "s";
+                p.style.transform = `scale(${Math.random() * 0.6 + 0.4})`;
+                document.body.appendChild(p);
+            }
+        }
+    }
+
+    // Interactive Character Injector [NEW]
+    const characterContainerId = "fz-interactive-editor-character";
+    let existingCharacter = document.getElementById(characterContainerId);
+    if (s.characterEnabled) {
+        const avatar = s.characterAvatar || "rifat-cinematic";
+        const position = s.characterPos || "left-bottom";
+
+        let headColor = "#090514";
+        let visorColor = "var(--accent-primary)";
+        let headphonesColor = "var(--accent-primary)";
+        let handColor = "var(--accent-secondary)";
+
+        if (avatar === "protik-motion") {
+            visorColor = "var(--accent-secondary)";
+            headphonesColor = "var(--accent-secondary)";
+            handColor = "var(--accent-primary)";
+        } else if (avatar === "neon-cyber") {
+            visorColor = "#00ffcc";
+            headphonesColor = "#ff007f";
+            handColor = "#00ffcc";
+        }
+
+        if (!existingCharacter) {
+            existingCharacter = document.createElement("div");
+            existingCharacter.id = characterContainerId;
+            document.body.appendChild(existingCharacter);
+        }
+
+        existingCharacter.className = position;
+        existingCharacter.innerHTML = `
+            <div class="editor-speech-bubble" id="char-speech-bubble">Hello! Let's build something beautiful today! 🎬</div>
+            <svg class="editor-svg" viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+                <path class="editor-torso" d="M30 240 C30 180, 170 180, 170 240 Z" />
+                <path class="editor-left-arm" d="M30 200 Q15 220, 10 240" stroke-width="8" stroke="var(--border-color-custom, rgba(255,255,255,0.15))" fill="none" />
+                <g class="editor-right-arm-group">
+                    <path class="editor-right-arm" d="M170 200 Q185 210, 180 230" stroke-width="10" stroke="${headphonesColor}" fill="none" />
+                    <circle class="editor-hand" cx="180" cy="230" r="10" fill="${handColor}" />
+                    <path class="editor-glowing-mouse" d="M175 225 L185 235" stroke-width="4" />
+                </g>
+                <rect class="editor-neck" x="90" y="145" width="20" height="20" rx="5" />
+                <g class="editor-head-group">
+                    <circle class="editor-head" cx="100" cy="100" r="50" fill="${headColor}" />
+                    <path class="editor-headphones" d="M46 100 A54 54 0 0 1 154 100" stroke-width="12" stroke="${headphonesColor}" fill="none" />
+                    <rect class="editor-headphone-ear cup-left" x="42" y="85" width="12" height="30" rx="6" fill="${headColor}" stroke="${headphonesColor}" stroke-width="1.5" />
+                    <rect class="editor-headphone-ear cup-right" x="146" y="85" width="12" height="30" rx="6" fill="${headColor}" stroke="${headphonesColor}" stroke-width="1.5" />
+                    <path class="editor-visor" d="M60 85 H140 V105 H60 Z" rx="10" stroke="${visorColor}" />
+                    <g class="editor-eyes">
+                        <ellipse class="editor-eye-outer eye-left" cx="80" cy="95" rx="12" ry="6" />
+                        <circle class="editor-pupil pupil-left" cx="80" cy="95" r="4" />
+                        <ellipse class="editor-eye-outer eye-right" cx="120" cy="95" rx="12" ry="6" />
+                        <circle class="editor-pupil pupil-right" cx="120" cy="95" r="4" />
+                    </g>
+                    <path class="editor-mouth" d="M85 125 Q100 135, 115 125" fill="none" stroke-width="3" />
+                </g>
+            </svg>
+        `;
+    } else {
+        if (existingCharacter) {
+            existingCharacter.remove();
+        }
     }
 }
 
@@ -975,14 +1079,14 @@ function injectChatbot() {
         
         <div class="chatbot-drawer" id="fz-chatbot-drawer">
             <div class="chatbot-header">
-                <h3><span class="chatbot-status-dot"></span> FZ Virtual Director</h3>
+                <h3><span class="chatbot-status-dot"></span> Orin Support Team</h3>
                 <button class="chatbot-close-btn" id="fz-chatbot-close">&times;</button>
             </div>
             
             <div class="chatbot-body" id="fz-chatbot-body">
                 <div class="chat-bubble bot">
-                    Hello! I am your <strong>FZ Virtual Director</strong>. 🎬<br><br>
-                    I am here to guide you to the perfect package and help you onboarding. What is your brand's niche/industry?
+                    Hello! I am <strong>Orin</strong>, your dedicated <strong>Support Team Intelligence Agent</strong>. 🤖🎬<br><br>
+                    I am here to help you engineer the perfect video production pipeline, onboard you seamlessly, and get your project started. What is your brand's niche/industry?
                     
                     <div class="chat-options-flex">
                         <button class="chat-option-btn" onclick="botSelectNiche('YouTube Creator')">🎥 YouTube Content Creator</button>
@@ -994,7 +1098,7 @@ function injectChatbot() {
             </div>
             
             <div class="chatbot-footer">
-                <input type="text" class="chatbot-input" id="fz-chatbot-input" placeholder="Type a message (e.g. deadline, price)...">
+                <input type="text" class="chatbot-input" id="fz-chatbot-input" placeholder="Type a message (e.g. options, package, pricing)...">
                 <button class="chatbot-send-btn" id="fz-chatbot-send">Send</button>
             </div>
         </div>
@@ -1043,30 +1147,56 @@ window.botSelectNiche = function(niche) {
     botState.niche = niche;
     appendUserBubble(niche);
     
+    let compliment = "";
+    if (niche.includes("YouTube")) {
+        compliment = `Excellent choice! For digital video platforms, high-retention hook dynamics (especially within the first 5 seconds) are the absolute key to scaling reach and organic traffic. Our editing systems are engineered around kinetic visual text pacing, retention-optimized transitions, and precise sound editing to keep viewers hooked to their screens from start to finish. Let's make your channel stand out!`;
+    } else if (niche.includes("SaaS") || niche.includes("Corporate")) {
+        compliment = `Incredible! B2B and SaaS brands require clean, high-production explainer videos. Ingesting smooth product mockups, keyframed zoom effects, and premium motion graphics has been shown to increase platform sign-ups and sales landing page conversions by over 80%. We ensure your dashboard and brand identity look highly premium, sleek, and polished.`;
+    } else if (niche.includes("Real Estate")) {
+        compliment = `Outstanding niche! High-end cinematic property tours depend on crystal-clear aerial sequences, seamless speed ramps, and professional color grading. We treat every single listing as an architectural work of art, applying precise property-line highlights and location tracking to ensure listings generate high-intent inquiries immediately.`;
+    } else if (niche.includes("Podcast")) {
+        compliment = `Fantastic space! The secret to a premium podcast isn't just voice clarity; it's tight conversational pacing, professional voice leveling, and extracting high-interest social media micro-clips (9:16 vertical reels) to capture organic audience loops across multiple platforms. We make sure your authority sounds completely flawless!`;
+    }
+
     setTimeout(() => {
-        appendBotBubble(`Awesome! A <strong>${niche}</strong> setup. What kind of raw footage assets do you typically work with?
+        appendBotBubble(`🤖 <strong>Orin Consultation Agent:</strong><br><br>
+            <strong>${compliment}</strong><br><br>
+            To customize our creative pipeline to your exact workflow, what primary raw footage assets do you typically produce?
             <div class="chat-options-flex">
                 <button class="chat-option-btn" onclick="botSelectAssets('4K Camera A-Roll')">📸 High-Res Camera A-Roll</button>
                 <button class="chat-option-btn" onclick="botSelectAssets('Drone raw clips')">🚁 Drone / Aerial Footage</button>
-                <button class="chat-option-btn" onclick="botSelectAssets('Multi-mic audio files')">🎙 Multi-mic Podcast Audio</button>
-                <button class="chat-option-btn" onclick="botSelectAssets('Screen-records & Mockups')">🖥 Screen Recordings & Mockups</button>
+                <button class="chat-option-btn" onclick="botSelectAssets('Multi-mic audio files')">🎙️ Multi-mic Podcast Audio</button>
+                <button class="chat-option-btn" onclick="botSelectAssets('Screen-records & Mockups')">🖥️ Screen Recordings & Mockups</button>
             </div>
         `);
-    }, 600);
+    }, 800);
 };
 
 window.botSelectAssets = function(assets) {
     botState.assets = assets;
     appendUserBubble(assets);
 
+    let feedback = "";
+    if (assets.includes("A-Roll")) {
+        feedback = "High-Res camera files are ideal for establishing personal authority. Our professional editing system applies three-way cinematic color grading, advanced background noise filtering, and speaker volume balance to deliver an elite final master.";
+    } else if (assets.includes("Drone")) {
+        feedback = "Incredible asset choice! We apply professional software warp stabilization, custom boundaries outlining, and high-precision 3D location-marker pins to draw viewer eyes to key property highlights.";
+    } else if (assets.includes("Audio")) {
+        feedback = "Podcast audio requires pristine phase alignment and loudness mastering. We'll strip hums, pops, and ambient background noises, then build custom animated waveforms that make your audio extremely engaging.";
+    } else if (assets.includes("Screen")) {
+        feedback = "SaaS product walks are highly effective! We clean up mouse cursors, add smooth dynamic zooms, customized UI pans, and elegant 3D canvas wraps to make your dashboard look absolutely stunning.";
+    }
+
     setTimeout(() => {
-        appendBotBubble(`Understood. Raw files are mainly <strong>${assets}</strong>. What is your preferred project deadline?
+        appendBotBubble(`🤖 <strong>Orin Consultation Agent:</strong><br><br>
+            <strong>${feedback}</strong><br><br>
+            What is your preferred project deadline? We prioritize and lock our calendar schedules to ensure rapid, high-quality turnarounds.
             <div class="chat-options-flex">
-                <button class="chat-option-btn" onclick="botSelectDeadline('ASAP 2-Day delivery')">⚡ Urgent (2-Day Delivery)</button>
-                <button class="chat-option-btn" onclick="botSelectDeadline('Standard 4-Day delivery')">📅 Standard (4-Day Delivery)</button>
+                <button class="chat-option-btn" onclick="botSelectDeadline('Express Delivery (2-3 Days)')">⚡ Urgent Express (2-3 Days)</button>
+                <button class="chat-option-btn" onclick="botSelectDeadline('Standard Campaign (4-5 Days)')">📅 Standard Elite (4-5 Days)</button>
             </div>
         `);
-    }, 600);
+    }, 800);
 };
 
 window.botSelectDeadline = function(deadline) {
@@ -1074,14 +1204,16 @@ window.botSelectDeadline = function(deadline) {
     appendUserBubble(deadline);
 
     setTimeout(() => {
-        appendBotBubble(`Got it, targeting <strong>${deadline}</strong>. Lastly, what is your estimated budget per video project?
+        appendBotBubble(`🤖 <strong>Orin Consultation Agent:</strong><br><br>
+            Got it! We'll prioritize our editing queues to meet a <strong>${deadline}</strong> turnaround with absolute precision. Every frame is supervised directly by our senior creative directors and lead motion designers to guarantee elite performance.<br><br>
+            To match you with the ultimate package tier, what is your targeted investment level for this creative video project?
             <div class="chat-options-flex">
-                <button class="chat-option-btn" onclick="botSelectBudget('Under $50')">💵 Under $50</button>
-                <button class="chat-option-btn" onclick="botSelectBudget('$50 to $100')">💳 $50 to $100</button>
-                <button class="chat-option-btn" onclick="botSelectBudget('$100+')">🔥 $100+ (High-End Production)</button>
+                <button class="chat-option-btn" onclick="botSelectBudget('Standard Creative ($100 - $250)')">💵 Standard Creative ($100 - $250)</button>
+                <button class="chat-option-btn" onclick="botSelectBudget('Premium Scaler ($250 - $500)')">💳 Premium Scaler ($250 - $500)</button>
+                <button class="chat-option-btn" onclick="botSelectBudget('Elite Growth Partner ($500+)')">🔥 Elite Growth Partner ($500+)</button>
             </div>
         `);
-    }, 600);
+    }, 800);
 };
 
 window.botSelectBudget = function(budget) {
@@ -1091,39 +1223,55 @@ window.botSelectBudget = function(budget) {
     setTimeout(() => {
         // Run diagnosis recommendation
         let recommendedService = "Cinematic Video Editing";
-        let recommendedPackage = "Standard+";
+        let recommendedPackage = "Premium";
         let srvIndex = 1; // Default
         
         if (botState.niche.includes("Podcast") || botState.assets.includes("Podcast")) {
             recommendedService = "Podcast Editing";
-            recommendedPackage = botState.budget.includes("Under") ? "Basic" : (botState.budget.includes("50") ? "Advanced" : "Premium Growth");
+            recommendedPackage = botState.budget.includes("Standard") ? "Advanced" : "Premium Growth";
             srvIndex = 0;
         } else if (botState.assets.includes("Drone")) {
             recommendedService = "Real Estate Drone Editing";
-            recommendedPackage = botState.budget.includes("Under") ? "Basic" : (botState.budget.includes("50") ? "Standard" : "Premium");
+            recommendedPackage = botState.budget.includes("Standard") ? "Standard" : "Premium";
             srvIndex = 3;
-        } else if (botState.niche.includes("SaaS") || botState.budget.includes("100")) {
+        } else if (botState.niche.includes("SaaS") || botState.budget.includes("500") || botState.budget.includes("250")) {
             recommendedService = "Motion Graphics (AE)";
-            recommendedPackage = botState.budget.includes("Under") ? "Short Video" : (botState.budget.includes("50") ? "Medium Length" : "Long Video");
+            recommendedPackage = botState.budget.includes("Standard") ? "Medium Length" : "Long Video";
             srvIndex = 2;
         } else {
             recommendedService = "Cinematic Video Editing";
-            recommendedPackage = botState.budget.includes("Under") ? "Basic" : (botState.budget.includes("50") ? "Standard+" : "Premium");
+            recommendedPackage = botState.budget.includes("Standard") ? "Standard+" : "Premium";
             srvIndex = 1;
         }
 
         const db = getDB();
         const srv = db.services[srvIndex];
         const pkg = srv.packages.find(p => p.name === recommendedPackage || p.name.includes(recommendedPackage));
-        const price = pkg ? pkg.price : 70;
+        const price = pkg ? pkg.price : 150;
 
-        appendBotBubble(`🎉 Diagnosis Complete! Based on your parameters, we highly recommend our **${recommendedService} (${recommendedPackage} Tier)**. <br><br>
-            <strong>Price:</strong> $${price}<br>
-            <strong>Delivery:</strong> ${pkg ? pkg.delivery : '4-Day'}<br>
-            <strong>Features:</strong> ${pkg ? pkg.features.slice(0, 3).join(', ') + '...' : 'Premium Grade Editing'}<br><br>
-            You can proceed straight to our interactive Checkout to secure this slot immediately!<br><br>
-            <a href="checkout.html?service=${encodeURIComponent(recommendedService)}&package=${encodeURIComponent(recommendedPackage)}&price=${price}" class="btn-primary" style="display: block; text-align: center; font-size: 0.85rem; padding: 10px;">Proceed to Checkout ➔</a>
-        `);
+        if (botState.budget.includes("$500+")) {
+            appendBotBubble(`🤖 <strong>Orin Consultation Agent:</strong><br><br>
+                🎉 <strong>Onboarding Diagnosis Complete!</strong><br><br>
+                Based on your premium vision, we highly recommend our custom **Elite Growth Retainer Suite**.<br><br>
+                As an <strong>Elite Growth Partner</strong>, you gain:<br>
+                🌟 VIP Priority Queue directly with our Senior Directors and Lead Editors<br>
+                🚀 High-End Custom Motion graphics, dynamic audio designs, and color-graded cinematic masters<br>
+                🔄 Unlimited revisions handled in our high-end timestamp Frame-by-Frame Revision Hub<br><br>
+                Let's secure your project slot or book a direct premium consultation right now to get started!<br><br>
+                <a href="checkout.html?service=${encodeURIComponent(recommendedService)}&package=${encodeURIComponent(recommendedPackage)}&price=${price}" class="btn-primary" style="display: block; text-align: center; font-size: 0.85rem; padding: 10px; margin-bottom: 10px;">Proceed to Elite Checkout ➔</a>
+                <a href="contact.html" class="btn-secondary" style="display: block; text-align: center; font-size: 0.85rem; padding: 10px;">Book VIP Discovery Call 📞</a>
+            `);
+        } else {
+            appendBotBubble(`🤖 <strong>Orin Consultation Agent:</strong><br><br>
+                🎉 <strong>Onboarding Diagnosis Complete!</strong><br><br>
+                Based on your parameters, we highly recommend our premium **${recommendedService} (${recommendedPackage} Tier)**.<br><br>
+                🔹 <strong>Tier Level:</strong> ${recommendedPackage} Production Suite<br>
+                🔹 <strong>Target Price:</strong> $${price}<br>
+                🔹 <strong>Features Included:</strong> ${pkg ? pkg.features.slice(0, 4).join(', ') + '...' : 'Premium Grade Editing, Cinematic Color Grading'}<br><br>
+                This package ensures your visual brand is positioned flawlessly to justify premium scaling. Secure your creative slot below immediately to initiate production!<br><br>
+                <a href="checkout.html?service=${encodeURIComponent(recommendedService)}&package=${encodeURIComponent(recommendedPackage)}&price=${price}" class="btn-primary" style="display: block; text-align: center; font-size: 0.85rem; padding: 10px;">Secure Slot & Checkout ➔</a>
+            `);
+        }
     }, 850);
 };
 
@@ -1138,23 +1286,23 @@ function handleChatbotInputSubmit() {
 
     setTimeout(() => {
         if (query.includes("niche") || query.includes("industry")) {
-            appendBotBubble("I can optimize for multiple niches! YouTube, podcasts, real estate drone tracking, and SaaS promos are our core categories. Choose your niche in our diagnosis to get packages details!");
-        } else if (query.includes("budget") || query.includes("price") || query.includes("cost")) {
-            appendBotBubble("Our standard packages range from $25 for Basic Video edits up to $150 for Premium. Motion animations start at $30. You can view all structures on our <a href='services.html' style='color: var(--accent-primary); font-weight: 700;'>Services Page</a>!");
-        } else if (query.includes("deadline") || query.includes("time") || query.includes("fast")) {
-            appendBotBubble("Speed is our key metric! Most standard packages deliver in 2-3 days, while our advanced pricing tiers include expedited turnarounds. We focus on transparent pacing.");
+            appendBotBubble("🤖 <strong>Orin Support Agent:</strong> We tailor advanced creative workflows for elite niches! Our production pipelines are highly optimized for YouTube Creators, SaaS/Corporate Brands, Real Estate Brokers, and Podcast Hosts. Each category has dedicated technical guidelines for premium, high-retention results.");
+        } else if (query.includes("budget") || query.includes("price") || query.includes("cost") || query.includes("rate") || query.includes("package")) {
+            appendBotBubble("🤖 <strong>Orin Support Agent:</strong> To deliver premium, ROI-driven quality, our standard edit suites range from $40 up to $150. For elite campaigns or enterprise After Effects motion graphics, custom monthly retainers range from $300 to $500+. Check out our full tiered details on the <a href='services.html' style='color: var(--accent-primary); font-weight: 700;'>Services Page</a>!");
+        } else if (query.includes("deadline") || query.includes("time") || query.includes("fast") || query.includes("turnaround")) {
+            appendBotBubble("🤖 <strong>Orin Support Agent:</strong> Speed is key! Standard turnarounds are 3-4 days, while our Express option delivers in 2-3 days. Every project is edit-locked and rendered with multi-point quality checks to ensure no drop in resolution or pacing.");
         } else if (query.includes("revision") || query.includes("change") || query.includes("edit")) {
-            appendBotBubble("Yes! Clients get up to 3 revisions. With our high-end <strong>Frame-by-Frame Revision Hub</strong> inside the Client Portal, you can pause video drafts at exact timestamps and submit checklist requests directly to Rifat and Protik!");
-        } else if (query.includes("social") || query.includes("linkedin") || query.includes("fiverr") || query.includes("upwork")) {
-            appendBotBubble(`Follow our active portfolios and creative feeds:<br><br>
+            appendBotBubble("🤖 <strong>Orin Support Agent:</strong> We are committed to creative perfection! Standard packages include up to 3 revisions. Best of all, clients get access to our **Frame-by-Frame Revision Hub** in the Client Portal, allowing you to pause drafts at the exact millisecond and leave pinpoint instructions directly for our creative editors!");
+        } else if (query.includes("social") || query.includes("linkedin") || query.includes("fiverr") || query.includes("upwork") || query.includes("whatsapp")) {
+            appendBotBubble(`🤖 <strong>Orin Support Agent:</strong> Connect with our directors and follow our active portfolios:<br><br>
                 🔗 <a href="https://www.linkedin.com/in/fz-media/" target="_blank" style="color: var(--accent-primary);">LinkedIn Profile</a><br>
                 🔗 <a href="https://www.facebook.com/FZoneM" target="_blank" style="color: var(--accent-primary);">Facebook Page</a><br>
                 🔗 <a href="https://www.instagram.com/frame.zone.media/" target="_blank" style="color: var(--accent-primary);">Instagram Feed</a><br>
-                🟢 <a href="https://www.fiverr.com/fz_media" target="_blank" style="color: var(--accent-secondary);">Fiverr Gig</a><br>
-                🟢 <a href="https://www.upwork.com/freelancers/~0142030ef402084057?mp_source=share" target="_blank" style="color: var(--accent-secondary);">Upwork Agency</a>
+                🟢 <a href="https://www.fiverr.com/fz_media" target="_blank" style="color: var(--accent-secondary);">Fiverr Creative Gig</a><br>
+                🟢 <a href="https://www.upwork.com/freelancers/~0142030ef402084057?mp_source=share" target="_blank" style="color: var(--accent-secondary);">Upwork Agency Slot</a>
             `);
         } else {
-            appendBotBubble("I am happy to help you with that! For custom briefs, raw footage links, and onboarding, please book a direct 15-minute call on our <a href='contact.html' style='color: var(--accent-primary); font-weight: 700;'>Booking Calendar</a> or drop a WhatsApp message to +8801635-333356.");
+            appendBotBubble("🤖 <strong>Orin Support Agent:</strong> We'd love to consult with you on this and launch your video project! For custom edits, raw footage submissions, or custom briefs, you can book a direct 15-minute call on our <a href='contact.html' style='color: var(--accent-primary); font-weight: 700;'>Booking Calendar</a> or chat immediately on WhatsApp at +8801635-333356.");
         }
     }, 600);
 }
@@ -1183,9 +1331,140 @@ function appendBotBubble(htmlContent) {
     body.scrollTop = body.scrollHeight;
 }
 
+// Global Interactive mouse coordinate tracking and pose updates [NEW]
+let characterMouseListenerInitialized = false;
+
+function initCharacterMouseTracking() {
+    if (characterMouseListenerInitialized) return;
+    characterMouseListenerInitialized = true;
+
+    // Initial Hello Wave
+    const character = document.getElementById("fz-interactive-editor-character");
+    if (character) {
+        character.classList.add("editor-waving");
+        setTimeout(() => {
+            character.classList.remove("editor-waving");
+        }, 1800);
+    }
+
+    window.addEventListener("mousemove", (e) => {
+        const char = document.getElementById("fz-interactive-editor-character");
+        if (!char) return;
+
+        const rect = char.getBoundingClientRect();
+        const charCenterX = rect.left + rect.width / 2;
+        const charCenterY = rect.top + rect.height / 2;
+
+        const angle = Math.atan2(e.clientY - charCenterY, e.clientX - charCenterX);
+        const angleDeg = angle * (180 / Math.PI);
+
+        // Limit pupil displacement
+        const maxDisplacement = 5;
+        const dispX = Math.cos(angle) * maxDisplacement;
+        const dispY = Math.sin(angle) * maxDisplacement;
+
+        // Set eye pupil styles dynamically
+        const pupils = char.querySelectorAll(".editor-pupil");
+        pupils.forEach(pupil => {
+            pupil.style.transform = `translate(${dispX}px, ${dispY}px)`;
+        });
+
+        // Rotate right arm group to point or align with cursor
+        const armGroup = char.querySelector(".editor-right-arm-group");
+        if (armGroup) {
+            let armAngle = angleDeg - 90;
+            if (armAngle > 180) armAngle -= 360;
+            if (armAngle < -180) armAngle += 360;
+            armAngle = Math.max(-35, Math.min(35, armAngle));
+            
+            armGroup.style.transform = `rotate(${armAngle}deg)`;
+            armGroup.style.transformOrigin = "170px 200px";
+        }
+    });
+
+    // Poses Contextual triggers
+    document.addEventListener("mouseover", (e) => {
+        const char = document.getElementById("fz-interactive-editor-character");
+        if (!char) return;
+
+        const target = e.target.closest("a, button, .btn-primary, .btn-secondary, .chat-option-btn, .client-project-card, .glass-card, .portfolio-card");
+        if (target) {
+            if (target.closest(".glass-card, .client-project-card, .portfolio-card")) {
+                char.classList.add("editor-pointing");
+                char.classList.remove("editor-smiling", "editor-focusing");
+            } else {
+                char.classList.add("editor-smiling");
+                char.classList.remove("editor-pointing", "editor-focusing");
+            }
+        }
+    });
+
+    document.addEventListener("mouseout", (e) => {
+        const char = document.getElementById("fz-interactive-editor-character");
+        if (!char) return;
+        
+        const target = e.target.closest("a, button, .btn-primary, .btn-secondary, .chat-option-btn, .client-project-card, .glass-card, .portfolio-card");
+        if (target) {
+            char.classList.remove("editor-pointing", "editor-smiling");
+        }
+    });
+
+    document.addEventListener("focusin", (e) => {
+        const char = document.getElementById("fz-interactive-editor-character");
+        if (!char) return;
+        if (e.target.closest("input, textarea, select")) {
+            char.classList.add("editor-focusing", "editor-typing");
+            char.classList.remove("editor-pointing", "editor-smiling");
+        }
+    });
+
+    document.addEventListener("focusout", (e) => {
+        const char = document.getElementById("fz-interactive-editor-character");
+        if (!char) return;
+        char.classList.remove("editor-focusing", "editor-typing");
+    });
+
+    // Clicking Character SVG interactive quote triggers
+    document.addEventListener("click", (e) => {
+        const char = document.getElementById("fz-interactive-editor-character");
+        if (!char) return;
+
+        const svg = e.target.closest(".editor-svg");
+        if (svg) {
+            char.classList.add("editor-waving", "editor-smiling");
+            setTimeout(() => {
+                char.classList.remove("editor-waving", "editor-smiling");
+            }, 1800);
+
+            const quotes = [
+                "Let's build an absolute masterpiece today! 🎬",
+                "Our edit roster is ready to scale your visual brand! 🚀",
+                "Ready to capture maximum audience retention? Let's go!",
+                "Secure a pricing package to activate your edit queue immediately! ⚡",
+                "Our advanced frame-by-frame revision pipelines are fully synced!",
+                "Need high-impact kinetic motions? We've got you covered!"
+            ];
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            
+            const bubble = document.getElementById("char-speech-bubble");
+            if (bubble) {
+                bubble.textContent = randomQuote;
+                bubble.classList.add("active");
+                
+                if (window.speechBubbleTimeout) clearTimeout(window.speechBubbleTimeout);
+                
+                window.speechBubbleTimeout = setTimeout(() => {
+                    bubble.classList.remove("active");
+                }, 3800);
+            }
+        }
+    });
+}
+
 // 6. Initial Run
 document.addEventListener("DOMContentLoaded", () => {
     injectTheme();
     injectLayouts();
     injectChatbot();
+    initCharacterMouseTracking();
 });

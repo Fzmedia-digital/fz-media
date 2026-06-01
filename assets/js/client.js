@@ -599,6 +599,20 @@ function renderActiveDeliverables(client) {
     const container = document.getElementById("active-projects-container");
     if (!container) return;
 
+    if (!client.activeSub || client.activeSub.trim() === "" || client.activeSub.toLowerCase().includes("no active package")) {
+        container.innerHTML = `
+            <div class="glass-card" style="grid-column: span 2; text-align: center; padding: 50px 30px; border-color: rgba(239, 68, 68, 0.2); background: rgba(239, 68, 68, 0.02); margin: 20px auto; max-width: 700px; border-radius: var(--radius-lg);">
+                <div style="font-size: 3.5rem; margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(239,68,68,0.3));">🔒</div>
+                <h3 style="font-size: 1.5rem; color: var(--text-primary); font-family: var(--font-headings); margin-bottom: 12px;">Creative Production Roster Locked</h3>
+                <p style="color: var(--text-secondary); font-size: 0.95rem; max-width: 500px; margin: 0 auto 28px auto; line-height: 1.6;">Your active production timeline and edit queues are currently locked because you do not have an active package subscription. Activate a premium creative package below to secure your slots and launch production briefs!</p>
+                <a href="services.html" class="btn-primary" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none;">
+                    <span>⚡</span> View Roster Pricing & Packages
+                </a>
+            </div>
+        `;
+        return;
+    }
+
     if (client.projects.length === 0) {
         container.innerHTML = `
             <div class="glass-card" style="grid-column: span 2; text-align: center; padding: 40px;">
@@ -1231,6 +1245,7 @@ function setupBriefForm() {
         const title = document.getElementById("brief-title").value.trim();
         const platform = document.getElementById("brief-platform").value;
         const pacing = document.getElementById("brief-pacing").value;
+        const textAnim = document.getElementById("brief-text-anim").value;
         const footageUrl = document.getElementById("brief-footage").value.trim();
         const details = document.getElementById("brief-details").value.trim();
 
@@ -1254,6 +1269,7 @@ function setupBriefForm() {
                 metadata: {
                     platform: platform,
                     pacing: pacing,
+                    textAnim: textAnim,
                     footageUrl: footageUrl,
                     details: details
                 }
@@ -1268,7 +1284,7 @@ function setupBriefForm() {
                 brand: client.company,
                 service: platform + " Editing",
                 assetsLink: footageUrl,
-                details: `Project: ${title}. Pacing: ${pacing}. Direct Guidelines: ${details}`,
+                details: `Project: ${title}. Pacing: ${pacing}. Subtitles Style: ${textAnim}. Direct Guidelines: ${details}`,
                 scheduledCall: "Awaiting Assignment",
                 dateReceived: new Date().toLocaleDateString()
             });
@@ -1278,7 +1294,7 @@ function setupBriefForm() {
             renderActiveDeliverables(client);
 
             form.reset();
-            alert("Success! Your video brief has been sent to our editor queue. Rifat Khan will review assets and schedule delivery!");
+            alert("Success! Your video brief has been sent to our editor queue. Our creative team will review assets and schedule delivery!");
 
             const tabs = document.querySelectorAll(".dash-tab");
             const contents = document.querySelectorAll(".dash-tab-content");

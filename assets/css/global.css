@@ -1193,4 +1193,305 @@ body.theme-preset-preset-aurora-liquid .portfolio-card:hover {
     animation: progress-breathe 2.5s infinite alternate ease-in-out;
 }
 
+/* ==========================================================================
+   INTERACTIVE BACKGROUND & CHARACTER ASSISTANT (VIDEO EDITOR AVATAR)
+   ========================================================================== */
+#fz-interactive-editor-character {
+    position: fixed;
+    bottom: -15px;
+    left: 40px;
+    width: 170px;
+    height: 210px;
+    z-index: 999;
+    pointer-events: none;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: editor-breath 4s infinite alternate ease-in-out;
+    transform-origin: bottom center;
+    filter: drop-shadow(0 10px 25px rgba(0,0,0,0.5));
+}
+
+#fz-interactive-editor-character.right-bottom {
+    left: auto;
+    right: 110px; /* Offset to sit nicely next to chatbot */
+}
+
+@keyframes editor-breath {
+    0% { transform: translateY(2px) rotate(0deg); }
+    100% { transform: translateY(-4px) rotate(0.5deg); }
+}
+
+.editor-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+/* Color Themes & Accents for Vector Editor Character */
+.editor-torso {
+    fill: var(--card-bg-custom, rgba(20, 15, 35, 0.6));
+    stroke: var(--border-color-custom, rgba(255, 255, 255, 0.15));
+    stroke-width: 1.5;
+    transition: fill 0.3s ease;
+}
+
+.editor-neck {
+    fill: #1e1b4b;
+}
+
+.editor-left-arm {
+    stroke: var(--border-color-custom, rgba(255, 255, 255, 0.12));
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.editor-right-arm-group {
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.editor-right-arm {
+    stroke: var(--accent-primary);
+    stroke-linecap: round;
+}
+
+.editor-hand {
+    fill: var(--accent-secondary);
+    box-shadow: 0 0 10px var(--accent-secondary);
+}
+
+.editor-glowing-mouse {
+    stroke: #ffffff;
+    stroke-linecap: round;
+    animation: mouse-glow 1.5s infinite alternate ease-in-out;
+}
+
+@keyframes mouse-glow {
+    0% { stroke: #fff; filter: drop-shadow(0 0 2px var(--accent-secondary)); }
+    100% { stroke: var(--accent-secondary); filter: drop-shadow(0 0 8px var(--accent-secondary)); }
+}
+
+.editor-head {
+    fill: #090514;
+    stroke: var(--border-color-custom, rgba(255,255,255,0.2));
+    stroke-width: 2;
+}
+
+.editor-headphones {
+    stroke: var(--accent-primary);
+    stroke-linecap: round;
+}
+
+.editor-headphone-ear {
+    fill: #110c22;
+    stroke: var(--accent-primary);
+    stroke-width: 1.5;
+}
+
+.editor-visor {
+    fill: rgba(var(--accent-primary-h), var(--accent-primary-s), 50%, 0.15);
+    stroke: var(--accent-primary);
+    stroke-width: 2;
+    filter: drop-shadow(0 0 5px var(--accent-primary-glow));
+    transition: all 0.3s ease;
+}
+
+.editor-eye-outer {
+    fill: #ffffff;
+    animation: blink 5s infinite;
+    transform-origin: center;
+}
+
+@keyframes blink {
+    0%, 92%, 100% { transform: scaleY(1); }
+    96% { transform: scaleY(0.1); }
+}
+
+.editor-pupil {
+    fill: #000000;
+    transition: transform 0.1s ease-out;
+}
+
+.editor-mouth {
+    stroke: #ffffff;
+    stroke-linecap: round;
+    transition: all 0.3s ease;
+}
+
+/* Character Poses / Contextual Classes Triggered by JS */
+
+/* 1. Smiling / Wink pose */
+#fz-interactive-editor-character.editor-smiling .editor-mouth {
+    d: path("M80 120 Q100 140, 120 120"); /* WIDE GRIN */
+    stroke: var(--accent-secondary);
+    stroke-width: 4;
+}
+#fz-interactive-editor-character.editor-smiling .editor-visor {
+    fill: rgba(var(--accent-secondary-h), var(--accent-secondary-s), 50%, 0.3);
+    stroke: var(--accent-secondary);
+    filter: drop-shadow(0 0 8px rgba(var(--accent-secondary-h), var(--accent-secondary-s), 50%, 0.4));
+}
+#fz-interactive-editor-character.editor-smiling .eye-left {
+    transform: scaleY(0.1); /* WINK! */
+}
+
+/* 2. Focusing pose (Hand-on-chin / Leaning in) */
+#fz-interactive-editor-character.editor-focusing {
+    transform: scale(1.08) translateY(-6px) rotate(-1deg) !important;
+}
+#fz-interactive-editor-character.editor-focusing .editor-mouth {
+    d: path("M90 128 H110"); /* Straight concentration line */
+    stroke-width: 2.5;
+}
+#fz-interactive-editor-character.editor-focusing .editor-right-arm-group {
+    transform: translate(-10px, -15px) rotate(15deg);
+}
+
+/* 3. Pointing pose */
+#fz-interactive-editor-character.editor-pointing {
+    transform: scale(1.05) rotate(2deg) !important;
+}
+#fz-interactive-editor-character.editor-pointing .editor-mouth {
+    d: path("M85 122 Q100 138, 115 122");
+    stroke-width: 3.5;
+}
+#fz-interactive-editor-character.editor-pointing .editor-left-arm {
+    transform: translate(25px, -50px) rotate(-85deg);
+    stroke: var(--accent-secondary);
+    stroke-width: 4;
+}
+
+/* Premium Dynamic Background Overlays & link sharing styles */
+.custom-image-bg-active {
+    background-size: cover !important;
+    background-position: center center !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+}
+.custom-image-bg-active::before {
+    background-color: rgba(2, 0, 10, 0.75) !important; /* Matte dark overlay to preserve typography readability */
+    backdrop-filter: blur(2px);
+}
+
+/* Digital matrix flow background scanlines */
+.cyberpunk-scanline-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 4px, 6px 100%;
+    pointer-events: none;
+    z-index: 998;
+}
+
+/* Floating Timeline track container for extra editor feel */
+.editor-bg-timeline {
+    position: absolute;
+    top: 15px;
+    left: -20px;
+    width: 210px;
+    height: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    overflow: hidden;
+}
+.editor-bg-timeline::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 20px;
+    width: 60px;
+    height: 9px;
+    background: var(--accent-primary);
+    border-radius: 2px;
+    box-shadow: 0 0 10px var(--accent-primary);
+    animation: timeline-track 3s infinite alternate ease-in-out;
+}
+@keyframes timeline-track {
+    0% { left: 10px; width: 40px; }
+    100% { left: 140px; width: 60px; }
+}
+
+/* Dynamic Background Assistant Speech Bubble [NEW] */
+.editor-speech-bubble {
+    position: absolute;
+    top: -65px;
+    left: -20px;
+    width: 220px;
+    background: rgba(10, 8, 24, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1.5px solid var(--accent-primary);
+    border-radius: var(--radius-md, 8px);
+    padding: 10px 14px;
+    color: var(--text-primary);
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.35;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5), 0 0 15px var(--accent-primary-glow);
+    z-index: 1001;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+    transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.editor-speech-bubble.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.editor-speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 45px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid var(--accent-primary);
+}
+
+#fz-interactive-editor-character.right-bottom .editor-speech-bubble {
+    left: auto;
+    right: -20px;
+}
+
+#fz-interactive-editor-character.right-bottom .editor-speech-bubble::after {
+    left: auto;
+    right: 45px;
+}
+
+/* Allow click interaction on character SVGs [NEW] */
+.editor-svg {
+    pointer-events: auto !important;
+    cursor: pointer;
+}
+
+/* Arm Waving animation [NEW] */
+@keyframes editor-wave {
+    0%, 100% { transform: rotate(0deg); }
+    20%, 60% { transform: rotate(-45deg) translate(-8px, -15px); }
+    40%, 80% { transform: rotate(-25deg) translate(-4px, -8px); }
+}
+
+#fz-interactive-editor-character.editor-waving .editor-left-arm {
+    animation: editor-wave 1.5s ease-in-out;
+    transform-origin: 30px 200px;
+}
+
+/* High frequency edit-typing/cursor keys toggle [NEW] */
+@keyframes editor-type-wobble {
+    0%, 100% { transform: rotate(0deg) translate(0, 0); }
+    20% { transform: rotate(3deg) translate(-2px, 1px); }
+    40% { transform: rotate(-2deg) translate(1px, -2px); }
+    60% { transform: rotate(2deg) translate(-1px, -1px); }
+    80% { transform: rotate(-3deg) translate(2px, 2px); }
+}
+
+#fz-interactive-editor-character.editor-typing .editor-right-arm-group {
+    animation: editor-type-wobble 0.12s infinite;
+    transform-origin: 170px 200px;
+}
+
 

@@ -116,15 +116,66 @@
                                      <label class="form-label" for="cfg-logo-icon">Navbar Logo Icon (Tiny Profile Icon) <span style="font-size: 0.72rem; color: var(--text-muted); text-transform: none;">(Optional)</span></label>
                                      <input type="text" id="cfg-logo-icon" class="form-control" placeholder="e.g. assets/img/logo/FZ logo 1.png">
                                  </div>
-                                 
                                  <div class="form-group" style="margin-bottom: 20px;">
-                                     <label class="form-label" for="cfg-theme-select">Website Premium Layout Theme Style *</label>
-                                     <select id="cfg-theme-select" class="form-control" style="background-color: var(--bg-secondary); border-color: var(--border-color); cursor: pointer;" required>
-                                         <option value="default">🌌 Central Obsidian (Default Dark Glass)</option>
-                                         <option value="liquid">💧 3D Liquid Glow (Premium Fluid Gradients)</option>
-                                         <option value="saas">💻 SaaS Professional (Crisp High-Contrast Tech Grid)</option>
-                                     </select>
-                                 </div>
+                                      <label class="form-label" for="cfg-theme-select">Website Premium Layout Theme Style *</label>
+                                      <select id="cfg-theme-select" class="form-control" style="background-color: var(--bg-secondary); border-color: var(--border-color); cursor: pointer;" required>
+                                          <option value="default">🌌 Central Obsidian (Default Dark Glass)</option>
+                                          <option value="liquid">💧 3D Liquid Glow (Premium Fluid Gradients)</option>
+                                          <option value="saas">💻 SaaS Professional (Crisp High-Contrast Tech Grid)</option>
+                                      </select>
+                                  </div>
+
+                                  <!-- Custom Background Settings & Interactive Assistant Studio [NEW] -->
+                                  <h4 style="font-size: 0.95rem; text-transform: uppercase; color: var(--accent-primary); margin-top: 30px; margin-bottom: 16px; font-weight: 700; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;">
+                                      🌌 Background & Character Studio
+                                  </h4>
+
+                                  <div class="form-group" style="margin-bottom: 16px;">
+                                      <label class="form-label" for="cfg-bg-type-select">Background Display Mode</label>
+                                      <select id="cfg-bg-type-select" class="form-control" style="background-color: var(--bg-secondary); border-color: var(--border-color); cursor: pointer;">
+                                          <option value="preset">🌌 Default Theme Preset Background</option>
+                                          <option value="image">🖼️ Custom Shared Background Image Link</option>
+                                          <option value="animation">✨ Custom Dynamic 3D/Effects Animation</option>
+                                      </select>
+                                  </div>
+
+                                  <div class="form-group" id="group-bg-url" style="margin-bottom: 16px;">
+                                      <label class="form-label" for="cfg-bg-url-input">Shared Background Image URL</label>
+                                      <input type="text" id="cfg-bg-url-input" class="form-control" placeholder="e.g. https://images.unsplash.com/... or assets/img/bg.jpg">
+                                  </div>
+
+                                  <div class="form-group" id="group-bg-effect" style="margin-bottom: 16px;">
+                                      <label class="form-label" for="cfg-bg-effect-select">Dynamic Animation Effect</label>
+                                      <select id="cfg-bg-effect-select" class="form-control" style="background-color: var(--bg-secondary); border-color: var(--border-color); cursor: pointer;">
+                                          <option value="kinetic-orbs">💧 3D Neon Orbs (Premium SaaS Liquid)</option>
+                                          <option value="digital-scanlines">🖥️ Cyber Scanlines (Shopify High-Tech Matrix)</option>
+                                          <option value="luxury-dust">⭐ Luxury Star Dust Particles (Boutique Gold)</option>
+                                      </select>
+                                  </div>
+
+                                  <div class="form-group" style="margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
+                                      <input type="checkbox" id="cfg-char-enabled" style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent-primary);">
+                                      <label class="form-label" for="cfg-char-enabled" style="margin-bottom: 0; cursor: pointer; font-weight: 700;">Enable Interactive Animated Editor Character</label>
+                                  </div>
+
+                                  <div id="group-char-configs">
+                                      <div class="form-group" style="margin-bottom: 16px;">
+                                          <label class="form-label" for="cfg-char-avatar">Select Editor Avatar Style</label>
+                                          <select id="cfg-char-avatar" class="form-control" style="background-color: var(--bg-secondary); border-color: var(--border-color); cursor: pointer;">
+                                              <option value="rifat-cinematic">🎬 Rifat Khan (Professional Cinematic Editor)</option>
+                                              <option value="protik-motion">🎨 Protik Hasan (SaaS & Motion Graphic Expert)</option>
+                                              <option value="neon-cyber">⚡ Neon Virtual Director Silhouette</option>
+                                          </select>
+                                      </div>
+
+                                      <div class="form-group" style="margin-bottom: 20px;">
+                                          <label class="form-label" for="cfg-char-pos">On-Screen Character Position</label>
+                                          <select id="cfg-char-pos" class="form-control" style="background-color: var(--bg-secondary); border-color: var(--border-color); cursor: pointer;">
+                                              <option value="left-bottom">📍 Left Bottom (Standard Sidebar Assistant)</option>
+                                              <option value="right-bottom">📍 Right Bottom (Floating Next to Chatbot)</option>
+                                          </select>
+                                      </div>
+                                  </div>
                                  
                                  <div style="text-align: right; margin-top: 24px;">
                                     <button type="submit" class="btn-primary" style="padding: 10px 24px; font-size: 0.92rem;">
@@ -852,9 +903,14 @@
                                 </select>
                             </div>
                             
-                            <button type="submit" class="btn-primary" style="padding: 12px 28px; font-weight: 700; height: 42px; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem;">
-                                Confirm Team Assignment 🤝
-                            </button>
+                            <div style="display: flex; gap: 10px; height: 42px;">
+                                <button type="submit" class="btn-primary" style="padding: 0 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem;">
+                                    Assign Member 🤝
+                                </button>
+                                <button type="button" id="btn-deassign-member" class="btn-secondary" style="padding: 0 20px; font-weight: 700; border-color: rgba(239, 68, 68, 0.4); color: #f87171; display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem;">
+                                    Unassign Member ❌
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>

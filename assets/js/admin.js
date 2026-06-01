@@ -249,11 +249,45 @@ function setupBrandingForm() {
         db.settings.logoIconPath = document.getElementById("cfg-logo-icon").value.trim();
         db.settings.theme = document.getElementById("cfg-theme-select").value;
 
+        // Custom Backgrounds & Characters settings [NEW]
+        db.settings.bgType = document.getElementById("cfg-bg-type-select").value;
+        db.settings.bgImageUrl = document.getElementById("cfg-bg-url-input").value.trim();
+        db.settings.bgEffect = document.getElementById("cfg-bg-effect-select").value;
+        db.settings.characterEnabled = document.getElementById("cfg-char-enabled").checked;
+        db.settings.characterAvatar = document.getElementById("cfg-char-avatar").value;
+        db.settings.characterPos = document.getElementById("cfg-char-pos").value;
+
         saveDB(db);
         injectTheme();
         injectLayouts();
-        alert("Branding configurations saved and applied successfully across all pages!");
+        alert("Branding configurations & Background Studio settings saved and applied successfully across all pages!");
     });
+
+    // Reactive input fields display toggle helpers
+    const bgTypeSelect = document.getElementById("cfg-bg-type-select");
+    const bgUrlInput = document.getElementById("group-bg-url");
+    const bgEffectSelect = document.getElementById("group-bg-effect");
+    
+    const charEnabledCheckbox = document.getElementById("cfg-char-enabled");
+    const charConfigsDiv = document.getElementById("group-char-configs");
+    
+    if (bgTypeSelect && bgUrlInput && bgEffectSelect) {
+        function toggleBgFields() {
+            const val = bgTypeSelect.value;
+            bgUrlInput.style.display = (val === "image") ? "block" : "none";
+            bgEffectSelect.style.display = (val === "animation") ? "block" : "none";
+        }
+        bgTypeSelect.addEventListener("change", toggleBgFields);
+        toggleBgFields(); // initial run
+    }
+
+    if (charEnabledCheckbox && charConfigsDiv) {
+        function toggleCharFields() {
+            charConfigsDiv.style.display = charEnabledCheckbox.checked ? "block" : "none";
+        }
+        charEnabledCheckbox.addEventListener("change", toggleCharFields);
+        toggleCharFields(); // initial run
+    }
 }
 
 function populateBrandingFields() {
@@ -265,6 +299,14 @@ function populateBrandingFields() {
     document.getElementById("cfg-logo-path").value = s.logoPath;
     document.getElementById("cfg-logo-icon").value = s.logoIconPath;
     document.getElementById("cfg-theme-select").value = s.theme || "default";
+
+    // Populate Backgrounds & Character configurations [NEW]
+    document.getElementById("cfg-bg-type-select").value = s.bgType || "preset";
+    document.getElementById("cfg-bg-url-input").value = s.bgImageUrl || "";
+    document.getElementById("cfg-bg-effect-select").value = s.bgEffect || "kinetic-orbs";
+    document.getElementById("cfg-char-enabled").checked = s.characterEnabled !== undefined ? s.characterEnabled : true;
+    document.getElementById("cfg-char-avatar").value = s.characterAvatar || "rifat-cinematic";
+    document.getElementById("cfg-char-pos").value = s.characterPos || "left-bottom";
 }
 
 // 5. Color pickers sliders customizer
@@ -510,6 +552,42 @@ function setupTeamProjectAssignment() {
             alert("Error: Active project not found in database!");
         }
     });
+
+    const deassignBtn = document.getElementById("btn-deassign-member");
+    if (deassignBtn) {
+        deassignBtn.addEventListener("click", () => {
+            const projId = document.getElementById("assign-project-select").value;
+            if (!projId) {
+                alert("Please select a client project to unassign from.");
+                return;
+            }
+
+            const db = getDB();
+            let unassignedSuccessfully = false;
+
+            db.clients.forEach(client => {
+                const clientProjects = client.projects || [];
+                const proj = clientProjects.find(p => p.id === projId);
+                if (proj) {
+                    if (proj.assignedMember) {
+                        delete proj.assignedMember;
+                        unassignedSuccessfully = true;
+                    } else {
+                        alert("This project is already unassigned!");
+                        unassignedSuccessfully = null;
+                    }
+                }
+            });
+
+            if (unassignedSuccessfully) {
+                saveDB(db);
+                alert("Success! Team member has been unassigned from this project.");
+                populateRosterAssignmentDropdowns();
+            } else if (unassignedSuccessfully === false) {
+                alert("Error: Active project not found in database!");
+            }
+        });
+    }
 }
 
 function populateRosterAssignmentDropdowns() {
